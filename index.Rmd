@@ -8,9 +8,63 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Robust statistical inferences using the bootstrap
 
+The slides for all sessions are hosted on [figshare]().
+
 ## Session 1
 
-- [Notebook](session1.html)
-- [Slides](/slides/session1.pdf)
+- [Resources](resources.html)
+- [Exercises](exercises.html)
+
+## Session 2
+
+- [Notebook](session2.html)
+- Resources
+- Exercises
+
+## Session 3
+
+- [Notebook](session2.html)
+- Resources
+- Exercises
+
+## Session 4
+
+- [Notebook](session2.html)
+- Resources
+- Exercises
+
+## Session 5
+
+- [Notebook](session2.html)
+- Resources
+- Exercises
+
+## Session 6
+
+- [Notebook](session2.html)
+- Resources
+- Exercises
+
+## Session 7
+
+- [Notebook](session2.html)
+- Resources
+- Exercises
+
+## Session 8
+
+- [Notebook](session2.html)
+- Resources
+- Exercises
+
+## Session 9
+
+- [Notebook](session2.html)
+- Resources
+- Exercises
+
+## Session 10
+
+- [Notebook](session2.html)
 - Resources
 - Exercises

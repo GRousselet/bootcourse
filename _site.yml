@@ -6,6 +6,11 @@ navbar:
       href: index.html
     - text: "Resources"
       href: resources.html
+    - text: "Exercises"
+      href: exercises.html
+  right:
+    - icon: fa-twitter-square
+      href: https://twitter.com/robustgar
 output_dir: "docs"
 output:
   html_document:
