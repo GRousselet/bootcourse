@@ -1,5 +1,4 @@
-color_scheme: "dark"
-name: "Robust statistical inferences using the bootstrap"
+name: "Bootstrap course"
 navbar:
   title: "Robust statistical inferences using the bootstrap"
   left:
