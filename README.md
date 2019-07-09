@@ -1,6 +1,6 @@
 # Robust statistical inferences using the bootstrap
 
-[Website](https://grousselet.github.io/bootcourse/) for a short introductory course to the bootstrap, focused on the percentile bootstrap and the bootstrap-t.
+[Website](https://grousselet.github.io/bootcourse/) for a short introductory course to the bootstrap, focused on the percentile bootstrap and the bootstrap-t. The course is composed of 10 sessions of 1 hour each. R programming skills are required, but very little math is used. The course also relies on in-class demos and exercises that do not require a computer.
 
 The course is based on these tutorials:
 

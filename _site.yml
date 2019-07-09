@@ -1,6 +1,6 @@
 name: "Bootstrap course"
 navbar:
-  title: "Robust statistical inferences using the bootstrap"
+  title: "Bootstrap course"
   left:
     - text: "Home"
       href: index.html
@@ -9,7 +9,7 @@ navbar:
 output_dir: "docs"
 output:
   html_document:
-    theme: cosmo
+    theme: united
     highlight: textmate
     include:
       after_body: footer.html

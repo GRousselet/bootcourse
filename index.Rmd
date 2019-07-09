@@ -11,6 +11,6 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Session 1
 
 - [Notebook](session1.html)
-- Slides
+- [Slides](/slides/session1.pdf)
 - Resources
 - Exercises
