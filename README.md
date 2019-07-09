@@ -6,12 +6,12 @@ The course is based on these tutorials:
 
 **The percentile bootstrap: a teaser with step-by-step instructions in R**
 Guillaume A Rousselet, Cyril R. Pernet, Rand R Wilcox 
-[Preprint](https://psyarxiv.com/kxarf)
-[Reproducibility package](https://osf.io/dvuze/)
-[GitHub repo](https://github.com/GRousselet/bootsteps)
+[[Preprint](https://psyarxiv.com/kxarf)]
+[[Reproducibility package](https://osf.io/dvuze/)]
+[[GitHub repo](https://github.com/GRousselet/bootsteps)]
 
 **A practical introduction to the bootstrap: a versatile method to make inferences by using data-driven simulations**
 Guillaume A Rousselet, Cyril R. Pernet, Rand R Wilcox 
-[Preprint](https://psyarxiv.com/h8ft7) 
-[Reproducibility package](https://osf.io/8b4t5/)
-[GitHub repo](https://github.com/GRousselet/bootstrap)
+[[Preprint](https://psyarxiv.com/h8ft7)] 
+[[Reproducibility package](https://osf.io/8b4t5/)]
+[[GitHub repo](https://github.com/GRousselet/bootstrap)]
