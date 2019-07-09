@@ -1,4 +1,9 @@
-theme: "just-the-docs"
 color_scheme: "dark"
+name: "Bootstrap"
 navbar:
   title: "Robust statistical inferences using the bootstrap"
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "About"
+      href: about.html
