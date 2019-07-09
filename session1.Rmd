@@ -1,0 +1,27 @@
+---
+title: "session1"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Bootstrap sampling
+
+## The `sample()` function
+
+## Bootstrap loop
+
+## Bootstrap loop using apply
+
+## Bootstrap using existing function
+
+# Illustrating bootstrap samples
+
+## In sampling order
+
+## Histogram
+
+## Kernel density estimate
+

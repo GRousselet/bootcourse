@@ -1,9 +1,10 @@
 color_scheme: "dark"
-name: "Bootstrap"
+name: "Robust statistical inferences using the bootstrap"
 navbar:
   title: "Robust statistical inferences using the bootstrap"
   left:
     - text: "Home"
       href: index.html
-    - text: "About"
-      href: about.html
+    - text: "Resources"
+      href: resources.html
+output_dir: "docs"

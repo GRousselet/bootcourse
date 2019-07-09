@@ -1,0 +1,13 @@
+---
+title: "resources"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+- [Guide to R Markdown](https://bookdown.org/yihui/rmarkdown/)
+
