@@ -9,12 +9,18 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Sampling with replacement demo
 
-image
+> image
 
 ## Dice activity
 
-image
+> image
 
 2 participants per bag/tray. 
 Don't look inside the bag. Shuffle dice, pick one, roll it, write down the value, x5
 put it back in the bag x10
+
+## Sampling distributions
+
+> image
+
+

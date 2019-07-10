@@ -7,13 +7,68 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Class 1
+After each class, work in groups of 2 or 3 to produce an RMarkdown document in which you answer the questions below. Knit your document into a `.pdf` file and submit it to the Slack channel for feeback.
 
-## Class 2
+<button type="button" class="btn btn-success btn-lg btn-block font-weight-bold">Class 1</button>
 
-## Class 3
+## Question 1
+```{r, eval=FALSE}
 
-## Class 4
+```
 
-## Class 5
+## Question 2
+```{r, eval=FALSE}
+
+```
+
+<button type="button" class="btn btn-success btn-lg btn-block font-weight-bold">Class 2</button>
+
+## Question 1
+```{r, eval=FALSE}
+
+```
+
+## Question 2
+```{r, eval=FALSE}
+
+```
+
+<button type="button" class="btn btn-success btn-lg btn-block font-weight-bold">Class 3</button>
+
+## Question 1
+```{r, eval=FALSE}
+
+```
+
+## Question 2
+```{r, eval=FALSE}
+
+```
+
+<button type="button" class="btn btn-success btn-lg btn-block font-weight-bold">Class 4</button>
+
+## Question 1
+```{r, eval=FALSE}
+
+```
+
+## Question 2
+```{r, eval=FALSE}
+
+```
+
+<button type="button" class="btn btn-success btn-lg btn-block font-weight-bold">Class 5</button>
+
+## Question 1
+```{r, eval=FALSE}
+
+```
+
+## Question 2
+```{r, eval=FALSE}
+
+```
+
+
+
 

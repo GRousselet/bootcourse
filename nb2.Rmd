@@ -1,5 +1,5 @@
 ---
-title: "notebook2"
+title: "Notebook 2"
 output: html_document
 ---
 
@@ -7,6 +7,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# -----------------------------
 # Bootstrap sampling
 
 ## The `sample()` function
@@ -17,6 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Bootstrap using existing function
 
+# -----------------------------
 # Illustrating bootstrap samples
 
 ## In sampling order
@@ -24,4 +26,11 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Histogram
 
 ## Kernel density estimate
+
+# -----------------------------
+# Bootstrap confidence interval
+
+# -----------------------------
+# Bootstrap *P* value
+
 

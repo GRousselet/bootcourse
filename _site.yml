@@ -12,8 +12,10 @@ navbar:
       href: activities.html
     - icon: fa-twitter-square
       href: https://twitter.com/robustgar
-    - icon: fa-wordpress-simple
+    - icon: fa-wordpress
       href: https://garstats.wordpress.com
+    - icon: fa-github
+      href: https://github.com/GRousselet/bootcourse
     - text: "v0"
 
 output_dir: "docs"

@@ -7,35 +7,46 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Resources about programming and statistics for the course. The list includes specific resources listed for each class.
+Resources about programming and statistics for the course. The list includes the specific resources already listed for each class, with extra links to code when available.
 
 ## Main statistics readings
 
 **The percentile bootstrap: a teaser with step-by-step instructions in R**
 Guillaume A Rousselet, Cyril R. Pernet, Rand R Wilcox (2019)
 <a href="https://psyarxiv.com/kxarf" class="badge badge-info">Preprint</a>
-[[Preprint](https://psyarxiv.com/kxarf)]
-[[Reproducibility package](https://osf.io/dvuze/)]
-[[GitHub repo](https://github.com/GRousselet/bootsteps)]
+<a href="https://osf.io/dvuze/" class="badge badge-warning">Reproducibility package</a>
+<a href="https://github.com/GRousselet/bootsteps" class="badge badge-dark">GitHub repo</a>
 
 **A practical introduction to the bootstrap: a versatile method to make inferences by using data-driven simulations**
 Guillaume A Rousselet, Cyril R. Pernet, Rand R Wilcox (2019)
-[[Preprint](https://psyarxiv.com/h8ft7)] 
-[[Reproducibility package](https://osf.io/8b4t5/)]
-[[GitHub repo](https://github.com/GRousselet/bootstrap)]
+<a href="https://psyarxiv.com/h8ft7" class="badge badge-info">Preprint</a>
+<a href="https://osf.io/8b4t5/" class="badge badge-warning">Reproducibility package</a>
+<a href="https://github.com/GRousselet/bootstrap" class="badge badge-dark">GitHub repo</a>
 
 **Beyond differences in means: robust graphical methods to compare two groups in neuroscience**
 Rousselet, G., Pernet, C. & Wilcox, R. (2017) 
 European Journal of Neuroscience 46(2):1738-1748. doi: 10.1111/ejn.13610
-[[Article](https://www.ncbi.nlm.nih.gov/pubmed/28544058)]
-[[Preprint](http://biorxiv.org/content/10.1101/121079v2)]
-[[Reproducibility package](https://dx.doi.org/10.6084/m9.figshare.4055970)]
+<a href="https://www.ncbi.nlm.nih.gov/pubmed/28544058" class="badge badge-light">Article</a>
+<a href="http://biorxiv.org/content/10.1101/121079v2" class="badge badge-info">Preprint</a>
+<a href="https://dx.doi.org/10.6084/m9.figshare.4055970" class="badge badge-warning">Reproducibility package</a>
 
 **A few simple steps to improve the description of group results in neuroscience**
 Rousselet, G.A., Foxe, J.J. & Bolam, J.P. (2016) 
 European Journal of Neuroscience https://doi.org/10.1111/ejn.13400
-[[Article](https://onlinelibrary.wiley.com/doi/full/10.1111/ejn.13400)]
-[[Reproducibility package](https://dx.doi.org/10.6084/m9.figshare.3806487)]
+<a href="https://onlinelibrary.wiley.com/doi/full/10.1111/ejn.13400" class="badge badge-light">Article</a>
+<a href="https://dx.doi.org/10.6084/m9.figshare.3806487" class="badge badge-warning">Reproducibility package</a>
+
+**WModern Robust Data Analysis Methods: Measures of Central Tendency**
+Wilcox, R.R. & Keselman, H.J. 
+Psychological Methods 8, no. 3 (September 2003): 254–74. https://doi.org/10.1037/1082-989X.8.3.254.
+<a href="https://pdfs.semanticscholar.org/ae4f/7b6c6ee364049eeed874717b5b499d14156a.pdf" class="badge badge-light">Article</a>
+
+## More advanced resources
+These resources are not required for the course. Only go through them if you are comfortable with everything above.
+
+Tim Hesterberg
+
+Neuroscience tutorial
 
 ## `ggplot2`
 
