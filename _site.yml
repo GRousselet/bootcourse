@@ -10,12 +10,12 @@ navbar:
       href: exercises.html
     - text: "Activities"
       href: activities.html
-  right:
-    - text: "v0"
     - icon: fa-twitter-square
       href: https://twitter.com/robustgar
     - icon: fa-wordpress-simple
       href: https://garstats.wordpress.com
+    - text: "v0"
+
 output_dir: "docs"
 output:
   html_document:
