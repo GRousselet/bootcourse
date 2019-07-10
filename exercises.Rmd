@@ -7,22 +7,13 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Session 1
+## Class 1
 
-## Session 2
+## Class 2
 
-## Session 3
+## Class 3
 
-## Session 4
+## Class 4
 
-## Session 5
+## Class 5
 
-## Session 6
-
-## Session 7
-
-## Session 8
-
-## Session 9
-
-## Session 10

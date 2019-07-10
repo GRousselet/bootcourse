@@ -10,61 +10,78 @@ knitr::opts_chunk$set(echo = TRUE)
 
 The slides for all sessions are hosted on [figshare]().
 
-## Session 1
+## -----------------------------------------------------
+## **Class 1**
 
-- [Resources](resources.html)
-- [Exercises](exercises.html)
+### Session 1:
 
-## Session 2
+#### Resources
 
-- [Notebook](session2.html)
-- Resources
-- Exercises
+There is no notebook for session 1, were doing it code free!
 
-## Session 3
+### Session 2:
 
-- [Notebook](session2.html)
-- Resources
-- Exercises
+#### Resources
 
-## Session 4
+- [Notebook](notebook2.html)
 
-- [Notebook](session2.html)
-- Resources
-- Exercises
+## -----------------------------------------------------
+## **Class 2**
 
-## Session 5
+### Session 3:
 
-- [Notebook](session2.html)
-- Resources
-- Exercises
+#### Resources
 
-## Session 6
+- [Notebook](notebook3.html)
 
-- [Notebook](session2.html)
-- Resources
-- Exercises
+### Session 4:
 
-## Session 7
+#### Resources
 
-- [Notebook](session2.html)
-- Resources
-- Exercises
+- [Notebook](notebook4.html)
 
-## Session 8
+## -----------------------------------------------------
+## **Class 3**
 
-- [Notebook](session2.html)
-- Resources
-- Exercises
+### Session 5:
 
-## Session 9
+#### Resources
 
-- [Notebook](session2.html)
-- Resources
-- Exercises
+- [Notebook](notebook5.html)
 
-## Session 10
+### Session 6:
 
-- [Notebook](session2.html)
-- Resources
-- Exercises
+#### Resources
+
+- [Notebook](notebook6.html)
+
+## -----------------------------------------------------
+## **Class 4**
+
+### Session 7:
+
+#### Resources
+
+- [Notebook](notebook7.html)
+
+### Session 8:
+
+#### Resources
+
+- [Notebook](notebook8.html)
+
+## -----------------------------------------------------
+## **Class 5**
+
+### Session 9:
+
+#### Resources
+
+- [Notebook](notebook9.html)
+
+### Session 10:
+
+#### Resources
+
+- [Notebook](notebook10.html)
+
