@@ -16,7 +16,6 @@ navbar:
       href: https://garstats.wordpress.com
     - icon: fa-github
       href: https://github.com/GRousselet/bootcourse
-    - text: "v0"
 
 output_dir: "docs"
 output:
