@@ -16,7 +16,7 @@ The slides for all sessions are hosted on [figshare]().
 
 #### Resources
 
-There is no notebook for session 1, we're doing it code free!
+- [Notebook](nb1.html)
 
 ### Session 2:
 

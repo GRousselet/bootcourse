@@ -7,11 +7,11 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Sampling with replacement demo
+## Poker chips: sampling with replacement demo
 
 > image
 
-## Dice activity
+## Playing with dice: experiments, random sampling & estimation
 
 > image
 
@@ -19,7 +19,7 @@ knitr::opts_chunk$set(echo = TRUE)
 Don't look inside the bag. Shuffle dice, pick one, roll it, write down the value, x5
 put it back in the bag x10
 
-## Sampling distributions
+## Faux fish: exploring sampling distributions
 
 > image
 

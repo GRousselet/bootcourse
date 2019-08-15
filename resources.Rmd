@@ -29,38 +29,63 @@ Guillaume A Rousselet, Cyril R. Pernet, Rand R Wilcox (2019)
 Rousselet, G., Pernet, C. & Wilcox, R. (2017) 
 European Journal of Neuroscience 46(2):1738-1748. doi: 10.1111/ejn.13610
 
-<a href="https://www.ncbi.nlm.nih.gov/pubmed/28544058" class="badge progress-bar-light">Article</a>
+<a href="https://www.ncbi.nlm.nih.gov/pubmed/28544058" class="badge progress-bar-primary">Article</a>
 <a href="http://biorxiv.org/content/10.1101/121079v2" class="badge progress-bar-info">Preprint</a>
-
-<button href="http://biorxiv.org/content/10.1101/121079v2" class="btn btn-info" type="button"> Preprint </button>
-
 <a href="https://dx.doi.org/10.6084/m9.figshare.4055970" class="badge progress-bar-warning">Reproducibility package</a>
-
-**A few simple steps to improve the description of group results in neuroscience**
-Rousselet, G.A., Foxe, J.J. & Bolam, J.P. (2016) 
-European Journal of Neuroscience https://doi.org/10.1111/ejn.13400
-
-<a href="https://onlinelibrary.wiley.com/doi/full/10.1111/ejn.13400" class="badge progress-bar-light">Article</a>
-<a href="https://dx.doi.org/10.6084/m9.figshare.3806487" class="badge progress-bar-warning">Reproducibility package</a>
 
 **Modern Robust Data Analysis Methods: Measures of Central Tendency**
 Wilcox, R.R. & Keselman, H.J. 
 Psychological Methods 8, no. 3 (September 2003): 254–74. https://doi.org/10.1037/1082-989X.8.3.254
 
-<a href="https://pdfs.semanticscholar.org/ae4f/7b6c6ee364049eeed874717b5b499d14156a.pdf" class="badge progress-bar-light">Article</a>
+<a href="https://pdfs.semanticscholar.org/ae4f/7b6c6ee364049eeed874717b5b499d14156a.pdf" class="badge progress-bar-primary">Article</a>
+
+## Extra recommended readings
+
+**A few simple steps to improve the description of group results in neuroscience**
+Rousselet, G.A., Foxe, J.J. & Bolam, J.P. (2016) 
+European Journal of Neuroscience https://doi.org/10.1111/ejn.13400
+
+<a href="https://onlinelibrary.wiley.com/doi/full/10.1111/ejn.13400" class="badge progress-bar-primary">Article</a>
+<a href="https://dx.doi.org/10.6084/m9.figshare.3806487" class="badge progress-bar-warning">Reproducibility package</a>
+
+**How many discoveries have been lost by ignoring modern statistical methods?**
+Wilcox, R.R. (1998)  
+Am Psychol, 53, 300-314 
+
+<a href="https://pdfs.semanticscholar.org/c597/216929c80168e2da28894ffb1af3aa30b12e.pdf" class="badge progress-bar-primary">Article</a>
 
 ## More advanced resources
 These resources are not required for the course. Only go through them if you are comfortable with everything above.
 
-Tim Hesterberg
+**Bootstrap Methods - Another Look at the Jackknife**
+Efron, B. (1979) 
+Ann Stat, 7, 1-26
 
-Neuroscience tutorial
+<a href="https://projecteuclid.org/euclid.aos/1176344552" class="badge progress-bar-primary">Article</a>
+
+**What Teachers Should Know About the Bootstrap: Resampling in the Undergraduate Statistics Curriculum**
+Hesterberg, Tim C. (2015)  
+The American Statistician 69, no. 4: 371–86. https://doi.org/10.1080/00031305.2015.1089789
+<a href="https://amstat.tandfonline.com/doi/abs/10.1080/00031305.2015.1089789" class="badge progress-bar-primary">Article</a>
+<a href="https://arxiv.org/abs/1411.5279" class="badge progress-bar-info">Preprint (longer version)</a>
+<a href="https://doi.org/10.6084/m9.figshare.1569497.v3" class="badge progress-bar-warning">Reproducibility package</a>
+
+**A guide to robust statistical methods in neuroscience**
+Wilcox, R. & Rousselet, G. (2018) 
+Current Protocols in Neuroscience 82: 8.42.1–8.42.30. doi: 10.1002/cpns.41
+<a href="https://dx.doi.org/10.1002/cpns.41" class="badge progress-bar-primary">Article</a>
+<a href="https://www.biorxiv.org/content/early/2017/06/20/151811" class="badge progress-bar-info">Preprint</a>
+<a href="https://doi.org/10.6084/m9.figshare.5114275" class="badge progress-bar-warning">Reproducibility package</a>
+
+## R programming
+- [YaRrr! The Pirate’s Guide to R](https://bookdown.org/ndphillips/YaRrr/)
+- [R for data science](https://r4ds.had.co.nz)
 
 ## `ggplot2`
 
-- [Official guide]()
-- [Extensions]()
-- [Tutorial with examples]()
+- [Official guide](https://ggplot2.tidyverse.org)
+- [Extensions](https://www.ggplot2-exts.org)
+- [Tutorial with examples](http://www.sthda.com/english/wiki/ggplot2-essentials)
 
 ## RMarkdown
 
