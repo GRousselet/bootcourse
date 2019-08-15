@@ -41,6 +41,12 @@ Psychological Methods 8, no. 3 (September 2003): 254–74. https://doi.org/10.10
 
 ## Extra recommended readings
 
+**What is the bootstrap?**
+Cochran, J.J. (2019)
+Significance, 16, 8-9.
+
+<a href="https://rss.onlinelibrary.wiley.com/doi/10.1111/j.1740-9713.2019.01225.x" class="badge progress-bar-primary">Article</a>
+
 **A few simple steps to improve the description of group results in neuroscience**
 Rousselet, G.A., Foxe, J.J. & Bolam, J.P. (2016) 
 European Journal of Neuroscience https://doi.org/10.1111/ejn.13400
@@ -78,6 +84,7 @@ Current Protocols in Neuroscience 82: 8.42.1–8.42.30. doi: 10.1002/cpns.41
 <a href="https://doi.org/10.6084/m9.figshare.5114275" class="badge progress-bar-warning">Reproducibility package</a>
 
 ## R programming
+
 - [YaRrr! The Pirate’s Guide to R](https://bookdown.org/ndphillips/YaRrr/)
 - [R for data science](https://r4ds.had.co.nz)
 
