@@ -87,6 +87,7 @@ Current Protocols in Neuroscience 82: 8.42.1–8.42.30. doi: 10.1002/cpns.41
 
 - [YaRrr! The Pirate’s Guide to R](https://bookdown.org/ndphillips/YaRrr/)
 - [R for data science](https://r4ds.had.co.nz)
+- [R resources (free courses, books, tutorials, & cheat sheets)](https://paulvanderlaken.com/2017/08/10/r-resources-cheatsheets-tutorials-books/)
 
 ## `ggplot2`
 
