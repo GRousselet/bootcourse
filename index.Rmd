@@ -8,75 +8,63 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Robust statistical inferences using the bootstrap
 
-The slides for all sessions are hosted on [figshare]().
-
 <button type="button" class="btn btn-success btn-lg btn-block font-weight-bold">Class 1</button>
 
-### Session 1:
+## Lecture 1: Introduction
 
-#### Resources
-
+- ILOs (intended learning outcomes): 
 - [Notebook](nb1.html)
 
-### Session 2:
+## Lecture 2: Bootstrap implementation
 
-#### Resources
-
+- ILOs: 
 - [Notebook](nb2.html)
 
 <button type="button" class="btn btn-success btn-lg btn-block font-weight-bold">Class 2</button>
 
-### Session 3:
+## Lecture 3: Robust estimation
 
-#### Resources
-
+- ILOs: 
 - [Notebook](nb3.html)
 
-### Session 4:
+## Lecture 4: Sampling distributions
 
-#### Resources
-
+- ILOs: 
 - [Notebook](nb4.html)
 
 <button type="button" class="btn btn-success btn-lg btn-block font-weight-bold">Class 3</button>
 
-### Session 5:
+## Lecture 5: Bootstrap-t
 
-#### Resources
-
+- ILOs: 
 - [Notebook](nb5.html)
 
-### Session 6:
+## Lecture 6: Correlation
 
-#### Resources
-
+- ILOs: 
 - [Notebook](nbk6.html)
 
 <button type="button" class="btn btn-success btn-lg btn-block font-weight-bold">Class 4</button>
 
-### Session 7:
+## Lecture 7: Perspectives on group comparisons
 
-#### Resources
-
+- ILOs: 
 - [Notebook](nb7.html)
 
-### Session 8:
+## Lecture 8: Shift function
 
-#### Resources
-
+- ILOs: 
 - [Notebook](nb8.html)
 
 <button type="button" class="btn btn-success btn-lg btn-block font-weight-bold">Class 5</button>
 
-### Session 9:
+## Lecture 9: Performance assessment
 
-#### Resources
-
+- ILOs: 
 - [Notebook](nb9.html)
 
-### Session 10:
+## Lecture 10: Hierarchical bootstrap
 
-#### Resources
-
+- ILOs: 
 - [Notebook](nb10.html)
 
