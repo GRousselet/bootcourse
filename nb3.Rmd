@@ -7,3 +7,282 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# Dependencies
+```{r}
+library(tibble)
+library(ggplot2)
+source("./code/yuen.txt") # compare trimmed means of two independent groups
+source("./code/theme_gar.txt") # format ggplot2 figures
+```
+
+# Contaminated normal distribution
+
+## Distribution shape
+```{r}
+alpha <- 0.1 # probability of sampling from population 2
+sd1 <- 1 # standard deviation for population 1
+sd2 <- 3
+x <- seq(-9, 9, 0.1) # x axis values
+n <- length(x)
+
+pdf1 <- dnorm(x, 0, sd1) # probability density function for population 1
+pdf2 <- dnorm(x, 0, sd2) # probability density function for population 2
+pdfc <- (1- alpha)*pdf1 + alpha*pdf2 # contaminated normal
+
+df <- tibble(x = rep(x, 3), 
+             y = c(pdf1, pdf2, pdfc),
+             population = factor(c(rep("sd = 1",n),rep("sd = 3",n),rep("Mixture",n))))
+
+# preserve order of factor levels
+df$population <- as.character(df$population)
+df$population <- factor(df$population, levels=unique(df$population))
+
+ggplot(df, aes(x=x, y=y, colour = population)) + theme_gar +
+  geom_line() +
+  scale_x_continuous(breaks = seq(-10, 10, 2)) +
+  theme(axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14)) +    
+  labs(y = "Density")
+```
+
+## Sampling from a contaminated normal distribution
+```{r}
+set.seed(21) # reproducible example
+n <- 10000 # sample size
+m <- 0 # population mean
+sd.vec <- sample(c(sd1,sd2), n, replace=TRUE, prob=c(1-alpha, alpha)) # vector of random sd values
+samp.c <- rnorm(n, m, sd.vec) # contaminated sample
+samp1 <- rnorm(n, m, sd1) # normal sample 1
+samp2 <- rnorm(n, m, sd2) # normal sample 2
+```
+
+### Distribution variance?
+```{r}
+var(samp1)
+var(samp2)
+var(samp.c)
+```
+
+## Power simulation 1: contaminated normal
+
+### Illustration
+```{r}
+m1 <- 0
+m2 <- 1
+alpha <- 0.1 # probability of sampling from population 2
+sd1 <- 1 # standard deviation for population 1
+sd2 <- 3
+x <- seq(-9, 9, 0.1) # x axis values
+n <- length(x)
+
+# population 1
+pdf1a <- dnorm(x, m1, sd1) 
+pdf1b <- dnorm(x, m1, sd2) 
+pdf1 <- (1- alpha)*pdf1a + alpha*pdf1b # contaminated normal
+
+# population 2
+pdf2a <- dnorm(x, m2, sd1) 
+pdf2b <- dnorm(x, m2, sd2) 
+pdf2 <- (1- alpha)*pdf2a + alpha*pdf2b # contaminated normal
+
+df <- tibble(x = rep(x, 2), 
+             y = c(pdf1, pdf2),
+             population = factor(c(rep("m = 0",n),rep("m = 1",n))))
+
+# preserve order of factor levels
+df$population <- as.character(df$population)
+df$population <- factor(df$population, levels=unique(df$population))
+
+ggplot(df, aes(x=x, y=y, colour = population)) + theme_gar +
+  geom_line() +
+  scale_x_continuous(breaks = seq(-10, 10, 2)) +
+  theme(axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14)) +    
+  labs(y = "Density")
+```
+
+### Simulation
+```{r}
+set.seed(21) # reproducible example
+n <- 25 # sample size
+m1 <- 0 # population 1 mean
+m2 <- 1 # population 2 mean
+alpha <- 0.1 # probability of sampling from population 2
+sd1 <- 1 # standard deviation for population 1
+sd2 <- 3 # standard deviation for population 2
+
+# define simulation variables
+nsim <- 10000 # number of iterations
+sim.m <- vector(mode = "numeric", length = nsim) # results for t-test on means
+sim.tm <- vector(mode = "numeric", length = nsim) # results for t-test on trimmed means
+
+for(S in 1:nsim){
+  sd.vec <- sample(c(sd1,sd2), n, replace=TRUE, prob=c(1-alpha, alpha)) # vector of random sd values
+  samp1 <- rnorm(n, m1, sd.vec) # contaminated sample 1
+  samp2 <- rnorm(n, m2, sd.vec) # contaminated sample 2  
+  sim.m[S] <- t.test(samp1, samp2)$p.value <= 0.05
+  sim.tm[S] <- yuen(samp1, samp2)$p.value <= 0.05 # default to 20% trimming
+}
+
+mean(sim.m) # power of t-test on means
+mean(sim.tm) # power of t-test on 20% trimmed means
+```
+
+## Power simulation 2: normal
+
+### Illustration
+```{r}
+m1 <- 0
+m2 <- 1
+sd <- 1 # standard deviation for the two populations
+x <- seq(-9, 9, 0.1) # x axis values
+n <- length(x)
+
+# population 1
+pdf1 <- dnorm(x, m1, sd) 
+
+# population 2
+pdf2 <- dnorm(x, m2, sd) 
+
+df <- tibble(x = rep(x, 2), 
+             y = c(pdf1, pdf2),
+             population = factor(c(rep("m = 0",n),rep("m = 1",n))))
+
+# preserve order of factor levels
+df$population <- as.character(df$population)
+df$population <- factor(df$population, levels=unique(df$population))
+
+ggplot(df, aes(x=x, y=y, colour = population)) + theme_gar +
+  geom_line() +
+  scale_x_continuous(breaks = seq(-10, 10, 2)) +
+  theme(axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14)) +    
+  labs(y = "Density")
+```
+
+### Simulation
+```{r}
+set.seed(21) # reproducible example
+n <- 25 # sample size
+m1 <- 0 # population 1 mean
+m2 <- 1 # population 2 mean
+sd <- 1 # standard deviation
+
+# define simulation variables
+nsim <- 10000 # number of iterations
+sim.m <- vector(mode = "numeric", length = nsim) # results for t-test on means
+sim.tm <- vector(mode = "numeric", length = nsim) # results for t-test on trimmed means
+
+for(S in 1:nsim){
+  samp1 <- rnorm(n, m1, sd) # normal sample 1
+  samp2 <- rnorm(n, m2, sd) # normal sample 2  
+  sim.m[S] <- t.test(samp1, samp2)$p.value <= 0.05
+  sim.tm[S] <- yuen(samp1, samp2)$p.value <= 0.05 # default to 20% trimming
+}
+
+mean(sim.m) # power of t-test on means
+mean(sim.tm) # power of t-test on 20% trimmed means
+```
+
+# Skewness
+
+The `ghdist()` function is used to generate random numbers from g & h distributions. All such distributions have a median of zero. The parameter g controls the asymmetry of the distribution, while the parameter h controls the thickness of the tails.
+g = h = 0 corresponds to a normal distribution.
+
+## Define g-and-h function
+```{r}
+# code from Rallfun-v35.txt
+ghdist<-function(n,g=0,h=0){
+#
+# generate n observations from a g-and-h dist.
+#
+x<-rnorm(n)
+if (g>0){
+ghdist<-(exp(g*x)-1)*exp(h*x^2/2)/g
+}
+if(g==0)ghdist<-x*exp(h*x^2/2)
+ghdist
+}
+```
+
+## Generate samples and compute variance
+```{r}
+gseq <- seq(0, 1, 0.1) # sequence of g parameters
+ng <- length(gseq)
+svar <- vector(mode = "numeric", length = ng) # vector of sample variances
+n <- 10000 # sample size
+h <- 0 # keep h constant
+
+for(G in 1:ng){
+  svar[G] <- var(ghdist(n, g = gseq[G], h=h))
+}
+
+# Plot variance as a function of g
+df <- tibble(var = svar, g = gseq)
+
+ggplot(df, aes(x = g, y = var)) + theme_gar + 
+  geom_point() +
+  scale_x_continuous(breaks = gseq) +
+  labs(y = "Variance")
+```
+
+# Outliers
+
+To look at the effects of outliers, we consider a small sample, introduce an outlier and increase its size progressively.
+
+# Generate data and compute confidence intervals
+```{r}
+set.seed(21)
+n <- 10
+samp <- rnorm(n, 8, 2) 
+samp <- c(samp, 17)
+samp_mat <- matrix(NA, nrow = 12, ncol = 7)
+ci_mean_t <- matrix(NA, nrow = 2, ncol = 7)
+mean_res <- vector(mode = "numeric", length = 7)
+median_res <- vector(mode = "numeric", length = 7)
+ci_mean_pb <- matrix(NA, nrow = 2, ncol = 7)
+ci_median_pb <- matrix(NA, nrow = 2, ncol = 7)
+ci_median_param <- matrix(NA, nrow = 2, ncol = 7)
+for(C in 1:7){
+  todo <- c(samp, 17+C^2)
+  samp_mat[,C] <- todo
+  mean_res[C] <- mean(todo)
+  median_res[C] <- median(todo)
+  ci_mean_t[,C] <- t.test(todo)$conf.int
+  # ci_mean_pb[,C] <- onesampb(todo, mean)$ci # default to nboot = 2000
+  # ci_median_pb[,C] <- onesampb(todo, median)$ci
+  # ci_median_param[,C] <- sint(todo) # parametric method
+}
+```
+
+# Illustrate results: mean + standard CI
+```{r}
+set.seed(777) # for reproducible jitter
+# raw data
+df <- tibble(res = as.vector(samp_mat),
+             cond = factor(rep(1:7, each = 12)))
+# mean + confidence intervals
+df2 <- tibble(res = mean_res,
+              cond = factor(1:7),
+              ci_low = ci_mean_t[1,],
+              ci_up = ci_mean_t[2,])
+
+p <- ggplot(df, aes(x = cond, y = res)) + theme_gar +
+   # scatterplots
+  geom_jitter(shape = 21, width = .1, colour = 'black', fill = 'grey', size = 2, alpha = 0.5) +
+  geom_hline(yintercept = ci_mean_t[1,1], linetype = 'dashed') +
+  geom_hline(yintercept = ci_mean_t[2,1], linetype = 'dashed') +
+    # confidence intervals
+geom_errorbar(data = df2, aes(x=cond, ymin=ci_low, ymax=ci_up), 
+              width=.05, size=0.75) + 
+  geom_point(data = df2, aes(x=cond, y=res), size=3) +
+   theme(panel.grid.minor.x = element_blank()) +
+  labs(x = "Conditions", y = "Values") +
+  ggtitle("Mean: standard CI") 
+p
+pA <- p
+```
+
+
+
+
