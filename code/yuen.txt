@@ -48,6 +48,41 @@ yuen<-2*(1-pt(test,df))
 list(n1=length(x),n2=length(y),est.1=mean(x,tr),est.2=mean(y,tr),ci=c(low,up),p.value=yuen,dif=dif,se=sqrt(q1+q2),teststat=test,crit=crit,df=df)
 }
 
+yuend<-function(x,y,tr=.2,alpha=.05){
+#
+#  Compare the trimmed means of two dependent random variables
+#  using the data in x and y.
+#  The default amount of trimming is 20%
+#
+#  Any pair with a missing value is eliminated
+#  The function rm2miss allows missing values.
+#
+#  A confidence interval for the trimmed mean of x minus the
+#  the trimmed mean of y is computed and returned in yuend$ci.
+#  The significance level is returned in yuend$p.value
+#
+#  For inferences based on difference scores, use trimci
+#
+if(length(x)!=length(y))stop("The number of observations must be equal")
+m<-cbind(x,y)
+m<-elimna(m)
+x<-m[,1]
+y<-m[,2]
+h1<-length(x)-2*floor(tr*length(x))
+q1<-(length(x)-1)*winvar(x,tr)
+q2<-(length(y)-1)*winvar(y,tr)
+q3<-(length(x)-1)*wincor(x,y,tr)$cov
+df<-h1-1
+se<-sqrt((q1+q2-2*q3)/(h1*(h1-1)))
+crit<-qt(1-alpha/2,df)
+dif<-mean(x,tr)-mean(y,tr)
+low<-dif-crit*se
+up<-dif+crit*se
+test<-dif/se
+yuend<-2*(1-pt(abs(test),df))
+list(ci=c(low,up),p.value=yuend,est1=mean(x,tr),est2=mean(y,tr),dif=dif,se=se,teststat=test,n=length(x),df=df)
+}
+
 winvar<-function(x,tr=.2,na.rm=FALSE,STAND=NULL){
 #
 #  Compute the gamma Winsorized variance for the data in the vector x.
@@ -66,4 +101,74 @@ y<-ifelse(y>=xtop,xtop,y)
 wv<-var(y)
 if(!na.rm)if(sum(is.na(remx)>0))wv=NA
 wv
+}
+
+elimna<-function(m){
+#
+# remove any rows of data having missing values
+#
+DONE=FALSE
+if(is.list(m) && is.matrix(m)){
+z=pool.a.list(m)
+m=matrix(z,ncol=ncol(m))
+DONE=TRUE
+}
+if(!DONE){
+if(is.list(m) && is.matrix(m[[1]])){
+for(j in 1:length(m))m[[j]]=na.omit(m[[j]])
+e=m
+DONE=TRUE
+}}
+if(!DONE){
+if(is.list(m) && is.null(dim(m))){ #!is.matrix(m))
+for(j in 1:length(m))m[[j]]=as.vector(na.omit(m[[j]]))
+e=m
+DONE=TRUE
+}}
+if(!DONE){
+#if(!is.list(m)){
+#if(is.null(dim(m)))
+m<-as.matrix(m)
+ikeep<-c(1:nrow(m))
+for(i in 1:nrow(m))if(sum(is.na(m[i,])>=1))ikeep[i]<-0
+e<-m[ikeep[ikeep>=1],]
+#}
+}
+e
+}
+
+wincov<-function(m,tr=.2){
+m=winall(m,tr=tr)$cov
+m
+}
+
+winall<-function(m,tr=.2){
+#
+#    Compute the Winsorized correlation and covariance matrix for the
+#    data in the n by p matrix m.
+#
+#    This function also returns the two-sided significance level
+#
+if(is.data.frame(m))m=as.matrix(m)
+if(!is.matrix(m))stop("The data must be stored in a n by p matrix")
+wcor<-matrix(1,ncol(m),ncol(m))
+wcov<-matrix(0,ncol(m),ncol(m))
+siglevel<-matrix(NA,ncol(m),ncol(m))
+for (i in 1:ncol(m)){
+ip<-i
+for (j in ip:ncol(m)){
+val<-wincor(m[,i],m[,j],tr)
+wcor[i,j]<-val$cor
+wcor[j,i]<-wcor[i,j]
+if(i==j)wcor[i,j]<-1
+wcov[i,j]<-val$cov
+wcov[j,i]<-wcov[i,j]
+if(i!=j){
+siglevel[i,j]<-val$p.value
+siglevel[j,i]<-siglevel[i,j]
+}
+}
+}
+cent=apply(m,2,mean,tr)
+list(cor=wcor,cov=wcov,center=cent,p.values=siglevel)
 }

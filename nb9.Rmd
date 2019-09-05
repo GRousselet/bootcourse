@@ -1,9 +1,59 @@
 ---
-title: "Notebook 3"
+title: "Notebook 9: Performance assessment"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+# Check CI coverage
+Example of a simple simulation to check the probability coverage of a confidence interval method. 
+The simulation has 4,000 iterations. Increasing this number would lead to more precise results. For a simple test, 10,000 iterations or more could be used. For more complex applications, time might be a constraint.
+
+The sample size is 30, which seems reasonably high for a psychology experiment. A more systematic simulation should include sample size as a parameter. 
+
+The population is lognormal and is generated outside the simulation loop. An alternative is to generate the random numbers directly inside the loop by using `samp <- rlnorm(nsamp)`. The lognormal distribution is one of many skewed mathematical distributions. It serves to illustrate what can happen when sampling from skewed distributions in general. Other shapes could be used to, if some domain specific information is available. For instance, ex-Gaussian distributions do a good job at capturing the shape of reaction time distributions.
+
+The population means and trimmed means differ and are estimated independently in the simulation: the sample mean is used to make inferences about the population mean, whereas the sample trimmed mean is used to make inferences about the population trimmed mean.
+
+```{r, eval=FALSE}
+set.seed(666) # reproducible results
+nsim <- 5000 # simulation iterations
+nsamp <- 30 # sample size
+pop <- rlnorm(1000000) # define population
+pop.m <- mean(pop) # population mean
+pop.tm <- mean(pop, trim = 0.2) # population 20% trimmed mean
+ci.coverage <- matrix(0, nrow = nsim, ncol = 3) # declare matrix of results
+
+for(S in 1:nsim){ # simulation loop
+  samp <- sample(pop, nsamp, replace = TRUE) # random sample from population
+  # Mean + t-test
+  ci <- t.test(samp, mu = pop.m)$conf.int # standard t-test equation
+  ci.coverage[S,1] <- ci[1]<pop.m && ci[2]>pop.m # CI includes population value?
+  # Mean + bootstrap
+  ci <- onesampb(samp, est = mean, SEED = FALSE, nv = pop.m)$ci # get bootstrap confidence interval
+  ci.coverage[S,2] <- ci[1]<pop.m && ci[2]>pop.m # CI includes population value?
+  # 20% Trimmed mean
+  ci <- onesampb(samp, est = mean, SEED = FALSE, nv = pop.m, trim = 0.2)$ci # get bootstrap confidence interval
+  ci.coverage[S,3] <- ci[1]<pop.tm && ci[2]>pop.tm # CI includes population value?
+}
+
+apply(ci.coverage, 2, mean) # average across simulations for each method
+
+# save simulation results to load in next chunk
+save(ci.coverage, file = "./data/ci.coverage.RData")
+```
+
+Here are the results:
+```{r}
+load("./data/ci.coverage.RData")
+out <- apply(ci.coverage, 2, mean) # average across simulations
+```
+
+Coverage is `r round(out[1]*100, digits = 1)`% for the t-test, `r round(out[2]*100, digits = 1)`% for the bootstrap + mean, and `r round(out[3]*100, digits = 1)`% for the bootstrap + 20% trimmed mean. This means that when sampling from a skewed distribution such as the lognormal distribution, coverage can be very different from the expected one (here 95% coverage).
+
+Want to see more examples of simulations + code? Head [**here**](https://garstats.wordpress.com/2017/11/28/your-alpha-is-probably-not-0-05/) for type I error simulations, and [**here**](https://garstats.wordpress.com/2017/11/28/your-power-is-lower-than-you-think/) for power simulations.
+
+
 

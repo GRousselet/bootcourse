@@ -8,17 +8,44 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Robust statistical inferences using the bootstrap
 
+## Description
+
+The bootstrap is a statistical method that uses data-driven simulations to make inferences.
+This course provides a general and practical introduction to the bootstrap, with very little mathematics.
+Examples include applications to popular psychological inference problems.
+
+## Aims
+
+The aim of this course is to introduce students to the bootstrap and how it can be used to make statistical inferences.
+The course teaches practical R skills including how to run simulations, implement the bootstrap, illustrate results in ggplot2 and make reproducible reports using Rmarkdown. Practical applications include inferences about group comparisons and correlation analyses.
+
+## ILOs (intended learning outcomes)
+
+By the end of this course students will be able to:
+
+-	Explain the goal and implementation of the percentile bootstrap at an abstract level.
+-	Interact with and write R code implementing the percentile bootstrap.
+-	Apply the bootstrap to inferences on measures of central tendency and correlations.
+-	Illustrate raw data and bootstrap results using ggplot2.
+-	Use the percentile bootstrap to make statistical inferences and interpret the results, including the description of p values and confidence intervals.
+-	Write reproducible reports using RMarkdown.
+
+The slides for all sessions are hosted on [Moodle](https://moodle.gla.ac.uk/login/index.php). They will be available on [figshare]() later on for external users.
+
 <button type="button" class="btn btn-success btn-lg btn-block font-weight-bold">Class 1</button>
 
 ## Lecture 1: Introduction
 
-- ILOs (intended learning outcomes): 
+- ILOs: 
 - [Notebook](nb1.html)
+- Activities: dice
 
-## Lecture 2: Bootstrap implementation
+## Lecture 2: The percentile bootstrap
 
 - ILOs: 
 - [Notebook](nb2.html)
+- Activities: poker chips
+- [Interactive demo](https://seeing-theory.brown.edu/frequentist-inference/index.html#section2)
 
 <button type="button" class="btn btn-success btn-lg btn-block font-weight-bold">Class 2</button>
 
@@ -26,11 +53,13 @@ knitr::opts_chunk$set(echo = TRUE)
 
 - ILOs: 
 - [Notebook](nb3.html)
+- Activities: dice
 
 ## Lecture 4: Sampling distributions
 
 - ILOs: 
 - [Notebook](nb4.html)
+- Activities: faux fish
 
 <button type="button" class="btn btn-success btn-lg btn-block font-weight-bold">Class 3</button>
 
@@ -38,6 +67,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 - ILOs: 
 - [Notebook](nb5.html)
+- Activities: dice
 
 ## Lecture 6: Correlation
 
@@ -50,6 +80,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 - ILOs: 
 - [Notebook](nb7.html)
+- Activities: dice
 
 ## Lecture 8: Shift function
 
@@ -64,6 +95,11 @@ knitr::opts_chunk$set(echo = TRUE)
 - [Notebook](nb9.html)
 
 ## Lecture 10: Hierarchical bootstrap
+
+This lecture is divided in 3 parts:
+- hierarchical bootstrap;
+- discussion of the dice exercise;
+- general Q&A.
 
 - ILOs: 
 - [Notebook](nb10.html)

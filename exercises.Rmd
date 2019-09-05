@@ -17,6 +17,9 @@ After each class, work in groups of 2 or 3 to produce an RMarkdown document in w
 ```
 
 ## Question 2
+
+Compute bootstrap confidence intervals for the difference between two groups of the dice data.
+
 ```{r, eval=FALSE}
 
 ```

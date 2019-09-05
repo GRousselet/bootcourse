@@ -1,5 +1,5 @@
 ---
-title: "Notebook 3"
+title: "Notebook 3: Robust estimation"
 output: html_document
 ---
 
@@ -12,10 +12,287 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tibble)
 library(ggplot2)
 source("./code/yuen.txt") # compare trimmed means of two independent groups
+source("./code/outliers.txt") # detect outliers
+source("./code/onesampb.txt") # one-sample percentile bootstrap confidence interval
 source("./code/theme_gar.txt") # format ggplot2 figures
+# library(moments) # functions skewness(), kurtosis()
+```
+
+# Description of a distribution
+
+## Example 1: kurtosis
+
+How would you describe the following distribution?
+How would you quantify different aspects of the distribution?
+
+```{r}
+loc <- 0 # location parameter of the logistic distribution
+v <- 1 # target variance
+sc <- sqrt(3*v) / pi # scale parameter
+# see formula for logistic variance: help(dlogis)
+x <- seq(-5, 5, 0.01)
+nx <- length(x)
+dl <- dlogis(x, loc, sc, log = FALSE)
+df <- tibble(x=x, y=dl)
+
+ggplot(df, aes(x = x, y = y)) + theme_gar +
+  geom_line() +
+  labs(y = "Density")
+
+# save figure
+# ggsave(filename = "./figures/nb3_fig1.pdf", width = 20, height = 15, units = "cm")
+```
+
+### Superimpose normal distribution
+
+The two distributions have the same mean and variance. Notice the subtle differences in the tails and shoulders of the distributions.
+
+```{r}
+dn <- dnorm(x, 0, 1)
+df <- tibble(x = rep(x, 2), 
+             y = c(dl, dn), 
+             distribution = factor(rep(c("Logistic", "Normal"), each = nx)))
+
+ggplot(df, aes(x = x, y = y, colour = distribution)) + theme_gar +
+  geom_line()  +
+  theme(legend.position = c(0.2, 0.8)) +
+  labs(y = "Density")
+
+# save figure
+# ggsave(filename = "./figures/nb3_fig2.pdf", width = 20, height = 15, units = "cm")
+```
+
+## Example 2: skewness
+
+```{r}
+m <- 1 # target mean
+v <- 1 # target variance
+loc <- log(m^2 / sqrt(v + m^2)) # location parameter of the logistic distribution
+sh <- sqrt(log(1 + (v / m^2))) # shape parameter
+# https://msalganik.wordpress.com/2017/01/21/making-sense-of-the-rlnorm-function-in-r/
+x <- seq(-5, 5, 0.01)
+nx <- length(x)
+dl <- dlnorm(x, loc, sh)
+df <- tibble(x=x, y=dl)
+
+ggplot(df, aes(x = x, y = y)) + theme_gar +
+  geom_line() +
+  labs(y = "Density")
+
+# save figure
+# ggsave(filename = "./figures/nb3_fig3.pdf", width = 20, height = 15, units = "cm")
+```
+
+### Superimpose normal distribution
+
+The two distributions have the same mean and variance!
+
+```{r}
+dn <- dnorm(x, 1, 1)
+df <- tibble(x = rep(x, 2), 
+             y = c(dl, dn), 
+             distribution = factor(rep(c("Lognormal", "Normal"), each = nx)))
+
+ggplot(df, aes(x = x, y = y, colour = distribution)) + theme_gar +
+  geom_line()  +
+  theme(legend.position = c(0.2, 0.8)) +
+  labs(y = "Density")
+
+# save figure
+# ggsave(filename = "./figures/nb3_fig4.pdf", width = 20, height = 15, units = "cm")
+```
+
+# Outliers
+
+To look at the effects of outliers, we consider a small sample, introduce an outlier and increase its size progressively.
+
+## Generate data and compute estimates of central tendency
+
+```{r}
+set.seed(21) # reproducible results
+n <- 10
+samp <- rnorm(n, 8, 2) 
+samp <- c(samp, 17)
+samp_mat <- matrix(NA, nrow = 12, ncol = 7)
+mean_res <- vector(mode = "numeric", length = 7)
+median_res <- vector(mode = "numeric", length = 7)
+tmean_res <- vector(mode = "numeric", length = 7)
+ci_md_pb <- matrix(NA, nrow = 2, ncol = 7)
+ci_tm_pb <- matrix(NA, nrow = 2, ncol = 7)
+tr <- 0.2 # amount of trimming
+
+for(C in 1:7){
+  todo <- c(samp, 17+C^2)
+  samp_mat[,C] <- todo
+  mean_res[C] <- mean(todo)
+  median_res[C] <- median(todo)
+  tmean_res[C] <- mean(todo, trim = tr)
+  ci_tm_pb[,C] <- onesampb(todo, mean, trim = tr)$ci # default to nboot = 2000
+  ci_md_pb[,C] <- onesampb(todo, median)$ci # default to nboot = 2000
+}
+```
+
+## Illustrate results: mean
+
+```{r}
+set.seed(777) # for reproducible jitter
+# raw data
+df <- tibble(res = as.vector(samp_mat),
+             cond = factor(rep(1:7, each = 12)))
+# measure of central tendency
+df2 <- tibble(res = mean_res,
+              cond = factor(1:7))
+
+ggplot(df, aes(x = cond, y = res)) + theme_gar +
+   # scatterplots
+  geom_jitter(shape = 21, width = .1, colour = 'black', fill = 'grey', size = 2, alpha = 0.5) +
+  # sample statistic
+  geom_point(data = df2, aes(x=cond, y=res), size=3) +
+  geom_hline(yintercept = df2$res[1]) + 
+  theme(panel.grid.minor.x = element_blank()) +
+  labs(x = "Conditions", y = "Values") +
+  ggtitle("Mean") 
+
+# save figure
+# ggsave(filename = "./figures/nb3_fig_outliers_m.pdf", width = 20, height = 15, units = "cm")
+```
+
+## Illustrate results: median
+
+```{r}
+set.seed(777) # for reproducible jitter
+# raw data
+df <- tibble(res = as.vector(samp_mat),
+             cond = factor(rep(1:7, each = 12)))
+# measure of central tendency
+df2 <- tibble(res = median_res,
+              cond = factor(1:7))
+
+ggplot(df, aes(x = cond, y = res)) + theme_gar +
+   # scatterplots
+  geom_jitter(shape = 21, width = .1, colour = 'black', fill = 'grey', size = 2, alpha = 0.5) +
+  # sample statistic
+  geom_point(data = df2, aes(x=cond, y=res), size=3) +
+  geom_hline(yintercept = df2$res[1]) + 
+  theme(panel.grid.minor.x = element_blank()) +
+  labs(x = "Conditions", y = "Values") +
+  ggtitle("Median") 
+
+# save figure
+# ggsave(filename = "./figures/nb3_fig_outliers_md.pdf", width = 20, height = 15, units = "cm")
+```
+
+## Illustrate results: 20% trimmed mean
+
+```{r}
+set.seed(777) # for reproducible jitter
+# raw data
+df <- tibble(res = as.vector(samp_mat),
+             cond = factor(rep(1:7, each = 12)))
+# measure of central tendency
+df2 <- tibble(res = tmean_res,
+              cond = factor(1:7))
+
+ggplot(df, aes(x = cond, y = res)) + theme_gar +
+   # scatterplots
+  geom_jitter(shape = 21, width = .1, colour = 'black', fill = 'grey', size = 2, alpha = 0.5) +
+  # sample statistic
+  geom_point(data = df2, aes(x=cond, y=res), size=3) +
+  geom_hline(yintercept = df2$res[1]) + 
+  theme(panel.grid.minor.x = element_blank()) +
+  labs(x = "Conditions", y = "Values") +
+  ggtitle("20% trimmed mean") 
+
+# save figure
+# ggsave(filename = "./figures/nb3_fig_outliers_tm.pdf", width = 20, height = 15, units = "cm")
+```
+
+## Illustrate results: median + boot CI
+```{r}
+set.seed(777) # for reproducible jitter
+# raw data
+df <- tibble(res = as.vector(samp_mat),
+             cond = factor(rep(1:7, each = 12)))
+# mean + confidence intervals
+df2 <- tibble(res = median_res,
+              cond = factor(1:7),
+              ci_low = ci_md_pb[1,],
+              ci_up = ci_md_pb[2,])
+
+ggplot(df, aes(x = cond, y = res)) + theme_gar +
+   # scatterplots
+  geom_jitter(shape = 21, width = .1, colour = 'black', fill = 'grey', size = 2, alpha = 0.5) +
+  geom_hline(yintercept = df2$ci_low[1], linetype = 'dashed') +
+  geom_hline(yintercept = df2$ci_up[1], linetype = 'dashed') +
+    # confidence intervals
+geom_errorbar(data = df2, aes(x=cond, ymin=ci_low, ymax=ci_up), 
+              width=.05, size=0.75) + 
+  geom_point(data = df2, aes(x=cond, y=res), size=3) +
+   theme(panel.grid.minor.x = element_blank()) +
+  labs(x = "Conditions", y = "Values") +
+  ggtitle("Median: bootstrap CI") 
+
+# save figure
+# ggsave(filename = "./figures/nb3_fig_outliers_md_pbci.pdf", width = 20, height = 15, units = "cm")
+```
+
+## Illustrate results: 20% trimmed mean + boot CI
+```{r}
+set.seed(777) # for reproducible jitter
+# raw data
+df <- tibble(res = as.vector(samp_mat),
+             cond = factor(rep(1:7, each = 12)))
+# mean + confidence intervals
+df2 <- tibble(res = tmean_res,
+              cond = factor(1:7),
+              ci_low = ci_tm_pb[1,],
+              ci_up = ci_tm_pb[2,])
+
+ggplot(df, aes(x = cond, y = res)) + theme_gar +
+   # scatterplots
+  geom_jitter(shape = 21, width = .1, colour = 'black', fill = 'grey', size = 2, alpha = 0.5) +
+  geom_hline(yintercept = df2$ci_low[1], linetype = 'dashed') +
+  geom_hline(yintercept = df2$ci_up[1], linetype = 'dashed') +
+    # confidence intervals
+geom_errorbar(data = df2, aes(x=cond, ymin=ci_low, ymax=ci_up), 
+              width=.05, size=0.75) + 
+  geom_point(data = df2, aes(x=cond, y=res), size=3) +
+   theme(panel.grid.minor.x = element_blank()) +
+  labs(x = "Conditions", y = "Values") +
+  ggtitle("20% trimmed mean: bootstrap CI") 
+
+# save figure
+# ggsave(filename = "./figures/nb3_fig_outliers_tm_pbci.pdf", width = 20, height = 15, units = "cm")
+```
+
+# Illustrate trimming
+
+## 20% trimming - Normal distribution
+```{r}
+tr<-.2
+xv<-seq(-4,4,0.01)
+yv<-dnorm(xv)
+plot(xv,yv,type="l")
+zval<-qnorm(tr, mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)
+polygon(c(xv[xv<=zval],zval),c(yv[xv<=zval],yv[xv==-4]),col=5)
+polygon(c(xv[xv>=-zval],-zval),c(yv[xv>=-zval],yv[xv==4]),col=5)
+```
+
+## 20% trimming - F distribution
+```{r}
+tr<-.2
+xv<-seq(0.01,4,0.01)
+yv<-df(xv,6,18) #fx<-dlnorm(x)
+plot(xv,yv,type="l")
+zval<-qf(tr,6,18)
+polygon(c(xv[xv<=zval],zval),c(yv[xv<=zval],yv[xv==0.01]),col=5)
+zval<-qf(1-tr,6,18)
+polygon(c(xv[xv>=zval],zval),c(yv[xv>=zval],yv[xv==4]),col=5)
 ```
 
 # Contaminated normal distribution
+
+We mix two normal distributions. The resulting, contaminated normal distribution, on its own, looks normal, but has larger variance 
 
 ## Distribution shape
 ```{r}
@@ -184,7 +461,7 @@ mean(sim.m) # power of t-test on means
 mean(sim.tm) # power of t-test on 20% trimmed means
 ```
 
-# Skewness
+# g-and-h distributions
 
 The `ghdist()` function is used to generate random numbers from g & h distributions. All such distributions have a median of zero. The parameter g controls the asymmetry of the distribution, while the parameter h controls the thickness of the tails.
 g = h = 0 corresponds to a normal distribution.
@@ -226,61 +503,88 @@ ggplot(df, aes(x = g, y = var)) + theme_gar +
   labs(y = "Variance")
 ```
 
-# Outliers
+# Discarding outliers 
 
-To look at the effects of outliers, we consider a small sample, introduce an outlier and increase its size progressively.
-
-# Generate data and compute confidence intervals
+Crazy example:
 ```{r}
-set.seed(21)
-n <- 10
-samp <- rnorm(n, 8, 2) 
-samp <- c(samp, 17)
-samp_mat <- matrix(NA, nrow = 12, ncol = 7)
-ci_mean_t <- matrix(NA, nrow = 2, ncol = 7)
-mean_res <- vector(mode = "numeric", length = 7)
-median_res <- vector(mode = "numeric", length = 7)
-ci_mean_pb <- matrix(NA, nrow = 2, ncol = 7)
-ci_median_pb <- matrix(NA, nrow = 2, ncol = 7)
-ci_median_param <- matrix(NA, nrow = 2, ncol = 7)
-for(C in 1:7){
-  todo <- c(samp, 17+C^2)
-  samp_mat[,C] <- todo
-  mean_res[C] <- mean(todo)
-  median_res[C] <- median(todo)
-  ci_mean_t[,C] <- t.test(todo)$conf.int
-  # ci_mean_pb[,C] <- onesampb(todo, mean)$ci # default to nboot = 2000
-  # ci_median_pb[,C] <- onesampb(todo, median)$ci
-  # ci_median_param[,C] <- sint(todo) # parametric method
-}
+x <- c(2,2,3,3,3,4,4,4,100000,100000)
 ```
 
-# Illustrate results: mean + standard CI
+## 2 SD away from the mean rule
 ```{r}
-set.seed(777) # for reproducible jitter
-# raw data
-df <- tibble(res = as.vector(samp_mat),
-             cond = factor(rep(1:7, each = 12)))
-# mean + confidence intervals
-df2 <- tibble(res = mean_res,
-              cond = factor(1:7),
-              ci_low = ci_mean_t[1,],
-              ci_up = ci_mean_t[2,])
+k <- 2
+res <- (abs(x-mean(x)) / sd(x)) > k
+res
+# x[res]
+```
 
-p <- ggplot(df, aes(x = cond, y = res)) + theme_gar +
-   # scatterplots
-  geom_jitter(shape = 21, width = .1, colour = 'black', fill = 'grey', size = 2, alpha = 0.5) +
-  geom_hline(yintercept = ci_mean_t[1,1], linetype = 'dashed') +
-  geom_hline(yintercept = ci_mean_t[2,1], linetype = 'dashed') +
-    # confidence intervals
-geom_errorbar(data = df2, aes(x=cond, ymin=ci_low, ymax=ci_up), 
-              width=.05, size=0.75) + 
-  geom_point(data = df2, aes(x=cond, y=res), size=3) +
-   theme(panel.grid.minor.x = element_blank()) +
-  labs(x = "Conditions", y = "Values") +
-  ggtitle("Mean: standard CI") 
-p
-pA <- p
+
+## Boxplot rule
+
+```{r}
+k <- 1.5
+x.md <- median(x)
+x.iqr <- IQR(x) # interquartile range
+# x.iqr <- quantile(x, 0.75) - quantile(x, 0.25)
+out <- x > x.md + k*x.iqr | x < x.md - k*x.iqr
+out
+```
+
+Using the boxplot function:
+```{r}
+out <- boxplot(x, plot = FALSE)
+out
+```
+
+See also modified boxplot rules in Rand Wilcox's `outbox()`.
+```{r}
+outbox(x)
+```
+
+## MAD-median rule
+
+```{r}
+k <- 2.24
+(abs(x-median(x)) / mad(x)) > k
+```
+
+See other robust outlier detection methods in:
+
+Rousseeuw, P. J. and Hubert, M. (2011), Robust statistics for outlier detection. WIREs Data Mining Knowl Discov, 1: 73-79. doi:10.1002/widm.2
+https://onlinelibrary.wiley.com/doi/full/10.1002/widm.2
+
+# Bootstrap group comparison using Wilcox's functions
+
+## Independent groups
+
+```{r, eval = FALSE}
+# to compare any estimators:
+pb2gen(x, y, alpha=0.05, nboot=1000, est=median, SEED=FALSE)
+# If you use SEED=TRUE, the random seed generator is set to the same starting point every time you use the function, such that for the same data, multiple calls will return exactly the same confidence intervals. I strongly recommend to always use SEED=FALSE. For reproducibility, set the seed in your code chunk instead, using set.seed().
+
+# same as pb2gen but only to compare medians:
+medpb2()
+
+# same as pb2gen but only to compare trimmed means:
+trimpb2()
+
+# to compare variances:
+comvar2()
+
+# For robust measures of scale, use pb2gen
+```
+
+## Dependent groups
+
+```{r, eval = FALSE}
+# percentile bootstrap using any estimator:
+# default to difference scores - dif=TRUE
+bootdpci(x,y,est=median)
+
+# to compare two variances:
+comdvar(x,y,alpha=0.05)
+
+# or apply one-sample functions to the pairwise differences
 ```
 
 
