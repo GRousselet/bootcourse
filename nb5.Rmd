@@ -1,5 +1,5 @@
 ---
-title: "Notebook 3"
+title: "Notebook 5: Bootstrap-t"
 output: html_document
 ---
 

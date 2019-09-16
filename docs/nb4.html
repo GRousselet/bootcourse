@@ -11,7 +11,7 @@
 
 
 
-<title>Notebook 3</title>
+<title>Notebook 4: Sampling distributions</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -327,13 +327,206 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Notebook 3</h1>
+<h1 class="title toc-ignore">Notebook 4: Sampling distributions</h1>
 
 </div>
 
 
+<pre class="r"><code># dependencies
+library(ggplot2)
+library(tibble)</code></pre>
+<pre class="r"><code># population
+m &lt;- 50
+sd &lt;- 10
+ggplot(data.frame(x = c(0, 100)), aes(x)) + theme_linedraw() +
+  stat_function(fun = dnorm, args = list(mean = m, sd = sd)) + 
+labs(y = &quot;Density&quot;) +
+  theme(axis.text = element_text(size = 14),
+        axis.title = element_text(size = 16),
+        plot.title = element_text(size=20)) +
+  ggtitle(paste0(&quot;Normal distribution: mean = &quot;,m,&quot;, sd = &quot;,sd))</code></pre>
+<p><img src="nb4_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<pre class="r"><code># ggsave(filename = &quot;b3_normdist.pdf&quot;)</code></pre>
+<pre class="r"><code># one sample
+set.seed(4)
+n &lt;- 20
+samp &lt;- rnorm(n, m, sd)
+ggplot(data.frame(x = c(0, 100)), aes(x)) + theme_linedraw() +
+  stat_function(fun = dnorm, args = list(mean = m, sd = sd)) +
+  geom_vline(xintercept = samp, colour = &quot;grey&quot;) + 
+labs(y = &quot;Density&quot;) +
+  theme(axis.text = element_text(size = 14),
+        axis.title = element_text(size = 16),
+        plot.title = element_text(size=20)) +
+  ggtitle(paste0(&quot;Normal distribution: mean = &quot;,m,&quot;, sd = &quot;,sd))</code></pre>
+<p><img src="nb4_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<pre class="r"><code># ggsave(filename = &quot;b3_normdist_1samp.pdf&quot;)</code></pre>
+<pre class="r"><code># one sample + mean
+set.seed(4)
+n &lt;- 20
+samp &lt;- rnorm(n, m, sd)
+ggplot(data.frame(x = c(0, 100)), aes(x)) + theme_linedraw() +
+  stat_function(fun = dnorm, args = list(mean = m, sd = sd)) +
+  geom_vline(xintercept = samp, colour = &quot;grey&quot;) +
+  geom_vline(xintercept = mean(samp), size = 2) + 
+labs(y = &quot;Density&quot;) +
+  theme(axis.text = element_text(size = 14),
+        axis.title = element_text(size = 16),
+        plot.title = element_text(size=20)) +
+  ggtitle(paste(&quot;Sample mean =&quot;,round(mean(samp),digits=1),&quot;, sd = &quot;,round(sd(samp),digits=1)))</code></pre>
+<p><img src="nb4_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<pre class="r"><code># ggsave(filename = &quot;b3_normdist_1samp_mean.pdf&quot;)</code></pre>
+<pre class="r"><code># sampling distribution
+set.seed(111) 
+n &lt;- 20
+nsim &lt;- 10000
+samp.dist &lt;- apply(matrix(rnorm(n*nsim, m, sd),nrow = nsim), 1, mean)
 
+ggplot(data.frame(x=samp.dist), aes(x)) + theme_linedraw() +
+  geom_histogram(aes(y = ..density..), colour = &quot;black&quot;, fill = &quot;white&quot;, bins = 50) +
+  theme(axis.text = element_text(size = 14),
+        axis.title = element_text(size = 16),
+        plot.title = element_text(size=20)) +
+  ggtitle(paste(nsim,&quot;sample means: mean =&quot;,round(mean(samp.dist),digits=1),&quot;, sd = &quot;,round(sd(samp.dist),digits=2)))</code></pre>
+<p><img src="nb4_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<pre class="r"><code># ggsave(filename = &quot;b3_normdist_10000samp_mean.pdf&quot;)</code></pre>
+<div id="standard-error-of-the-mean" class="section level1">
+<h1>Standard error of the mean</h1>
+<p>SEM = population sd / sqrt(n)</p>
+<p>Usually estimated using sample sd / sqrt(n)</p>
+<pre class="r"><code>sd / sqrt(n)</code></pre>
+<pre><code>## [1] 2.236068</code></pre>
+<p>SEM = sd of sampling distribution of the sample mean</p>
+<p><a href="https://www.khanacademy.org/math/ap-statistics/sampling-distribution-ap/sampling-distribution-mean/v/standard-error-of-the-mean" class="uri">https://www.khanacademy.org/math/ap-statistics/sampling-distribution-ap/sampling-distribution-mean/v/standard-error-of-the-mean</a></p>
+<pre class="r"><code>sd(samp.dist)</code></pre>
+<pre><code>## [1] 2.255003</code></pre>
+</div>
+<div id="t-test-confidence-interval" class="section level1">
+<h1>t-test confidence interval</h1>
+<div id="get-one-sample-and-apply-t.test-function" class="section level2">
+<h2>Get one sample and apply t.test() function</h2>
+<pre class="r"><code># one sample
+set.seed(4)
+n &lt;- 20
+samp &lt;- rnorm(n, m, sd)
+t.test(samp)</code></pre>
+<pre><code>## 
+##  One Sample t-test
+## 
+## data:  samp
+## t = 30.006, df = 19, p-value &lt; 2.2e-16
+## alternative hypothesis: true mean is not equal to 0
+## 95 percent confidence interval:
+##  50.01276 57.51317
+## sample estimates:
+## mean of x 
+##  53.76296</code></pre>
+</div>
+<div id="compute-t-value" class="section level2">
+<h2>Compute t value</h2>
+<pre class="r"><code># Formula
+samp.m &lt;- mean(samp) # sample mean
+samp.v &lt;- var(samp) # sample variance
+sem &lt;- sqrt(samp.v/n) # standard error of the mean
+samp.t &lt;- samp.m / sem
+samp.t</code></pre>
+<pre><code>## [1] 30.00562</code></pre>
+</div>
+<div id="t-distribution-and-quantiles" class="section level2">
+<h2>t distribution and quantiles</h2>
+<pre class="r"><code>alpha &lt;- 0.05
+df &lt;- n-1 # degrees of freedom
+ggplot(data.frame(x = c(-5, 5)), aes(x)) + theme_linedraw() +
+  stat_function(fun = dt, args = list(df = df)) + 
+labs(y = &quot;Density&quot;) +
+  theme(axis.text = element_text(size = 14),
+        axis.title = element_text(size = 16),
+        plot.title = element_text(size=20)) +
+  ggtitle(paste0(&quot;t distribution: df = &quot;,df,&quot;, &quot;,(1-alpha/2)*100,&quot;th quantile = &quot;,round(qt(1-alpha/2, df), digits=2))) +
+  geom_vline(xintercept = c(-qt(1-alpha/2, df), qt(1-alpha/2, df)), colour = &quot;green&quot;, size = 1)</code></pre>
+<p><img src="nb4_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+</div>
+<div id="compute-confidence-interval" class="section level2">
+<h2>Compute confidence interval</h2>
+<pre class="r"><code>ci &lt;- vector(&quot;numeric&quot;,2)
+ci[1] &lt;- samp.m - qt(1-alpha/2, df)  * sem
+ci[2] &lt;- samp.m + qt(1-alpha/2, df)  * sem
+ci</code></pre>
+<pre><code>## [1] 50.01276 57.51317</code></pre>
+</div>
+</div>
+<div id="example-using-the-lognormal" class="section level1">
+<h1>Example using the lognormal</h1>
+<p><a href="https://msalganik.wordpress.com/2017/01/21/making-sense-of-the-rlnorm-function-in-r/">Blog post</a> on how to use <code>rlnorm()</code>.</p>
+<div id="illustrate-lognormal" class="section level2">
+<h2>Illustrate lognormal</h2>
+<pre class="r"><code># population
+m &lt;- 5
+s &lt;- 5
+location &lt;- log(m^2 / sqrt(s^2 + m^2))
+shape &lt;- sqrt(log(1 + (s^2 / m^2)))
+x &lt;- seq(0, 20, .05)
+ggplot(as_tibble(x), aes(value)) +
+  theme_linedraw() +
+  stat_function(fun = dlnorm, args = list(meanlog = location, sdlog = shape), size = 1) +
+  labs(y = &quot;Density&quot;) +
+  theme(axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14),
+        plot.title = element_text(size=20)) +
+  ggtitle(paste0(&quot;Log normal distribution: mean = &quot;,m,&quot;, sd = &quot;,sd))</code></pre>
+<p><img src="nb4_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<pre class="r"><code># ggsave(filename = &quot;b3_lnormdist.pdf&quot;)</code></pre>
+</div>
+<div id="one-sample-from-lognormal-distribution" class="section level2">
+<h2>One sample from lognormal distribution</h2>
+<pre class="r"><code>set.seed(777)
+n &lt;- 20
+samp &lt;- rlnorm(n, meanlog = location, sdlog = shape)
+x &lt;- seq(0, 20, .05)
+ggplot(as_tibble(x), aes(value)) +
+  theme_linedraw() +
+  stat_function(fun = dlnorm, args = list(meanlog = location, sdlog = shape), size = 1) +
+  geom_vline(xintercept = samp, colour = &quot;grey&quot;) + 
+  geom_vline(xintercept = mean(samp), size = 1.5) + 
+labs(y = &quot;Density&quot;) +
+  theme(axis.text = element_text(size = 14),
+        axis.title = element_text(size = 16),
+        plot.title = element_text(size=20)) +
+  ggtitle(paste0(&quot;Log normal distribution: mean = &quot;,m,&quot;, sd = &quot;,sd))</code></pre>
+<p><img src="nb4_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<pre class="r"><code># ggsave(filename = &quot;b3_lnormdist_1samp.pdf&quot;)</code></pre>
+</div>
+<div id="many-samples-from-lognormal-distribution" class="section level2">
+<h2>Many samples from lognormal distribution</h2>
+<pre class="r"><code>set.seed(777)
+m &lt;- 5
+s &lt;- 5
+location &lt;- log(m^2 / sqrt(s^2 + m^2))
+shape &lt;- sqrt(log(1 + (s^2 / m^2)))
 
+# population mean?
+lnorm.pop.m &lt;- mean(rlnorm(1000000, meanlog = location, sdlog = shape))
+
+n &lt;- 20
+nsamp &lt;- 10000
+# nsamp experiments in one go + compute mean for each one:
+dist.samp &lt;- apply(matrix(rlnorm(n*nsamp, meanlog = location, sdlog = shape), nrow = nsamp), 1, mean)
+
+v &lt;- as_tibble(dist.samp) 
+ggplot(v, aes(x = value)) + theme_linedraw() +
+        geom_histogram(aes(y = ..density..), colour = &quot;black&quot;, fill = &quot;white&quot;, bins = 50) +
+  # geom_vline(xintercept = mean(dist.samp), size = 1.5) + 
+  theme(axis.text = element_text(size = 14),
+        axis.title = element_text(size = 16),
+        plot.title = element_text(size=20)) +
+  ggtitle(paste(nsim,&quot;sample means: mean =&quot;,round(mean(dist.samp),digits=1),&quot;, sd = &quot;,round(sd(dist.samp),digits=2)))</code></pre>
+<p><img src="nb4_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<pre class="r"><code># ggsave(filename = &quot;b3_lnormdist_10000samp_mean.pdf&quot;)</code></pre>
+</div>
+</div>
+
+<p> </p>
+<p> </p>
 <p> </p>
 <p>Guillaume A. Rousselet, 2019, University of Glasgow.</p>
 

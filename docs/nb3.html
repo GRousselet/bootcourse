@@ -11,7 +11,7 @@
 
 
 
-<title>Notebook 3</title>
+<title>Notebook 3: Robust estimation</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -327,13 +327,606 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Notebook 3</h1>
+<h1 class="title toc-ignore">Notebook 3: Robust estimation</h1>
 
 </div>
 
 
+<div id="dependencies" class="section level1">
+<h1>Dependencies</h1>
+<pre class="r"><code>library(tibble)
+library(ggplot2)
+source(&quot;./code/yuen.txt&quot;) # compare trimmed means of two independent groups
+source(&quot;./code/outliers.txt&quot;) # detect outliers
+source(&quot;./code/onesampb.txt&quot;) # one-sample percentile bootstrap confidence interval
+source(&quot;./code/theme_gar.txt&quot;) # format ggplot2 figures
+# library(moments) # functions skewness(), kurtosis()</code></pre>
+</div>
+<div id="description-of-a-distribution" class="section level1">
+<h1>Description of a distribution</h1>
+<div id="example-1-kurtosis" class="section level2">
+<h2>Example 1: kurtosis</h2>
+<p>How would you describe the following distribution? How would you quantify different aspects of the distribution?</p>
+<pre class="r"><code>loc &lt;- 0 # location parameter of the logistic distribution
+v &lt;- 1 # target variance
+sc &lt;- sqrt(3*v) / pi # scale parameter
+# see formula for logistic variance: help(dlogis)
+x &lt;- seq(-5, 5, 0.01)
+nx &lt;- length(x)
+dl &lt;- dlogis(x, loc, sc, log = FALSE)
+df &lt;- tibble(x=x, y=dl)
 
+ggplot(df, aes(x = x, y = y)) + theme_gar +
+  geom_line() +
+  labs(y = &quot;Density&quot;)</code></pre>
+<p><img src="nb3_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<pre class="r"><code># save figure
+# ggsave(filename = &quot;./figures/nb3_fig1.pdf&quot;, width = 20, height = 15, units = &quot;cm&quot;)</code></pre>
+<div id="superimpose-normal-distribution" class="section level3">
+<h3>Superimpose normal distribution</h3>
+<p>The two distributions have the same mean and variance. Notice the subtle differences in the tails and shoulders of the distributions.</p>
+<pre class="r"><code>dn &lt;- dnorm(x, 0, 1)
+df &lt;- tibble(x = rep(x, 2), 
+             y = c(dl, dn), 
+             distribution = factor(rep(c(&quot;Logistic&quot;, &quot;Normal&quot;), each = nx)))
 
+ggplot(df, aes(x = x, y = y, colour = distribution)) + theme_gar +
+  geom_line()  +
+  theme(legend.position = c(0.2, 0.8)) +
+  labs(y = &quot;Density&quot;)</code></pre>
+<p><img src="nb3_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<pre class="r"><code># save figure
+# ggsave(filename = &quot;./figures/nb3_fig2.pdf&quot;, width = 20, height = 15, units = &quot;cm&quot;)</code></pre>
+</div>
+</div>
+<div id="example-2-skewness" class="section level2">
+<h2>Example 2: skewness</h2>
+<pre class="r"><code>m &lt;- 1 # target mean
+v &lt;- 1 # target variance
+loc &lt;- log(m^2 / sqrt(v + m^2)) # location parameter of the logistic distribution
+sh &lt;- sqrt(log(1 + (v / m^2))) # shape parameter
+# https://msalganik.wordpress.com/2017/01/21/making-sense-of-the-rlnorm-function-in-r/
+x &lt;- seq(-5, 5, 0.01)
+nx &lt;- length(x)
+dl &lt;- dlnorm(x, loc, sh)
+df &lt;- tibble(x=x, y=dl)
+
+ggplot(df, aes(x = x, y = y)) + theme_gar +
+  geom_line() +
+  labs(y = &quot;Density&quot;)</code></pre>
+<p><img src="nb3_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<pre class="r"><code># save figure
+# ggsave(filename = &quot;./figures/nb3_fig3.pdf&quot;, width = 20, height = 15, units = &quot;cm&quot;)</code></pre>
+<div id="superimpose-normal-distribution-1" class="section level3">
+<h3>Superimpose normal distribution</h3>
+<p>The two distributions have the same mean and variance!</p>
+<pre class="r"><code>dn &lt;- dnorm(x, 1, 1)
+df &lt;- tibble(x = rep(x, 2), 
+             y = c(dl, dn), 
+             distribution = factor(rep(c(&quot;Lognormal&quot;, &quot;Normal&quot;), each = nx)))
+
+ggplot(df, aes(x = x, y = y, colour = distribution)) + theme_gar +
+  geom_line()  +
+  theme(legend.position = c(0.2, 0.8)) +
+  labs(y = &quot;Density&quot;)</code></pre>
+<p><img src="nb3_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<pre class="r"><code># save figure
+# ggsave(filename = &quot;./figures/nb3_fig4.pdf&quot;, width = 20, height = 15, units = &quot;cm&quot;)</code></pre>
+</div>
+</div>
+</div>
+<div id="outliers" class="section level1">
+<h1>Outliers</h1>
+<p>To look at the effects of outliers, we consider a small sample, introduce an outlier and increase its size progressively.</p>
+<div id="generate-data-and-compute-estimates-of-central-tendency" class="section level2">
+<h2>Generate data and compute estimates of central tendency</h2>
+<pre class="r"><code>set.seed(21) # reproducible results
+n &lt;- 10
+samp &lt;- rnorm(n, 8, 2) 
+samp &lt;- c(samp, 17)
+samp_mat &lt;- matrix(NA, nrow = 12, ncol = 7)
+mean_res &lt;- vector(mode = &quot;numeric&quot;, length = 7)
+median_res &lt;- vector(mode = &quot;numeric&quot;, length = 7)
+tmean_res &lt;- vector(mode = &quot;numeric&quot;, length = 7)
+ci_md_pb &lt;- matrix(NA, nrow = 2, ncol = 7)
+ci_tm_pb &lt;- matrix(NA, nrow = 2, ncol = 7)
+tr &lt;- 0.2 # amount of trimming
+
+for(C in 1:7){
+  todo &lt;- c(samp, 17+C^2)
+  samp_mat[,C] &lt;- todo
+  mean_res[C] &lt;- mean(todo)
+  median_res[C] &lt;- median(todo)
+  tmean_res[C] &lt;- mean(todo, trim = tr)
+  ci_tm_pb[,C] &lt;- onesampb(todo, mean, trim = tr)$ci # default to nboot = 2000
+  ci_md_pb[,C] &lt;- onesampb(todo, median)$ci # default to nboot = 2000
+}</code></pre>
+</div>
+<div id="illustrate-results-mean" class="section level2">
+<h2>Illustrate results: mean</h2>
+<pre class="r"><code>set.seed(777) # for reproducible jitter
+# raw data
+df &lt;- tibble(res = as.vector(samp_mat),
+             cond = factor(rep(1:7, each = 12)))
+# measure of central tendency
+df2 &lt;- tibble(res = mean_res,
+              cond = factor(1:7))
+
+ggplot(df, aes(x = cond, y = res)) + theme_gar +
+   # scatterplots
+  geom_jitter(shape = 21, width = .1, colour = &#39;black&#39;, fill = &#39;grey&#39;, size = 2, alpha = 0.5) +
+  # sample statistic
+  geom_point(data = df2, aes(x=cond, y=res), size=3) +
+  geom_hline(yintercept = df2$res[1]) + 
+  theme(panel.grid.minor.x = element_blank()) +
+  labs(x = &quot;Conditions&quot;, y = &quot;Values&quot;) +
+  ggtitle(&quot;Mean&quot;) </code></pre>
+<p><img src="nb3_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<pre class="r"><code># save figure
+# ggsave(filename = &quot;./figures/nb3_fig_outliers_m.pdf&quot;, width = 20, height = 15, units = &quot;cm&quot;)</code></pre>
+</div>
+<div id="illustrate-results-median" class="section level2">
+<h2>Illustrate results: median</h2>
+<pre class="r"><code>set.seed(777) # for reproducible jitter
+# raw data
+df &lt;- tibble(res = as.vector(samp_mat),
+             cond = factor(rep(1:7, each = 12)))
+# measure of central tendency
+df2 &lt;- tibble(res = median_res,
+              cond = factor(1:7))
+
+ggplot(df, aes(x = cond, y = res)) + theme_gar +
+   # scatterplots
+  geom_jitter(shape = 21, width = .1, colour = &#39;black&#39;, fill = &#39;grey&#39;, size = 2, alpha = 0.5) +
+  # sample statistic
+  geom_point(data = df2, aes(x=cond, y=res), size=3) +
+  geom_hline(yintercept = df2$res[1]) + 
+  theme(panel.grid.minor.x = element_blank()) +
+  labs(x = &quot;Conditions&quot;, y = &quot;Values&quot;) +
+  ggtitle(&quot;Median&quot;) </code></pre>
+<p><img src="nb3_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<pre class="r"><code># save figure
+# ggsave(filename = &quot;./figures/nb3_fig_outliers_md.pdf&quot;, width = 20, height = 15, units = &quot;cm&quot;)</code></pre>
+</div>
+<div id="illustrate-results-20-trimmed-mean" class="section level2">
+<h2>Illustrate results: 20% trimmed mean</h2>
+<pre class="r"><code>set.seed(777) # for reproducible jitter
+# raw data
+df &lt;- tibble(res = as.vector(samp_mat),
+             cond = factor(rep(1:7, each = 12)))
+# measure of central tendency
+df2 &lt;- tibble(res = tmean_res,
+              cond = factor(1:7))
+
+ggplot(df, aes(x = cond, y = res)) + theme_gar +
+   # scatterplots
+  geom_jitter(shape = 21, width = .1, colour = &#39;black&#39;, fill = &#39;grey&#39;, size = 2, alpha = 0.5) +
+  # sample statistic
+  geom_point(data = df2, aes(x=cond, y=res), size=3) +
+  geom_hline(yintercept = df2$res[1]) + 
+  theme(panel.grid.minor.x = element_blank()) +
+  labs(x = &quot;Conditions&quot;, y = &quot;Values&quot;) +
+  ggtitle(&quot;20% trimmed mean&quot;) </code></pre>
+<p><img src="nb3_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<pre class="r"><code># save figure
+# ggsave(filename = &quot;./figures/nb3_fig_outliers_tm.pdf&quot;, width = 20, height = 15, units = &quot;cm&quot;)</code></pre>
+</div>
+<div id="illustrate-results-median-boot-ci" class="section level2">
+<h2>Illustrate results: median + boot CI</h2>
+<pre class="r"><code>set.seed(777) # for reproducible jitter
+# raw data
+df &lt;- tibble(res = as.vector(samp_mat),
+             cond = factor(rep(1:7, each = 12)))
+# mean + confidence intervals
+df2 &lt;- tibble(res = median_res,
+              cond = factor(1:7),
+              ci_low = ci_md_pb[1,],
+              ci_up = ci_md_pb[2,])
+
+ggplot(df, aes(x = cond, y = res)) + theme_gar +
+   # scatterplots
+  geom_jitter(shape = 21, width = .1, colour = &#39;black&#39;, fill = &#39;grey&#39;, size = 2, alpha = 0.5) +
+  geom_hline(yintercept = df2$ci_low[1], linetype = &#39;dashed&#39;) +
+  geom_hline(yintercept = df2$ci_up[1], linetype = &#39;dashed&#39;) +
+    # confidence intervals
+geom_errorbar(data = df2, aes(x=cond, ymin=ci_low, ymax=ci_up), 
+              width=.05, size=0.75) + 
+  geom_point(data = df2, aes(x=cond, y=res), size=3) +
+   theme(panel.grid.minor.x = element_blank()) +
+  labs(x = &quot;Conditions&quot;, y = &quot;Values&quot;) +
+  ggtitle(&quot;Median: bootstrap CI&quot;) </code></pre>
+<p><img src="nb3_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<pre class="r"><code># save figure
+# ggsave(filename = &quot;./figures/nb3_fig_outliers_md_pbci.pdf&quot;, width = 20, height = 15, units = &quot;cm&quot;)</code></pre>
+</div>
+<div id="illustrate-results-20-trimmed-mean-boot-ci" class="section level2">
+<h2>Illustrate results: 20% trimmed mean + boot CI</h2>
+<pre class="r"><code>set.seed(777) # for reproducible jitter
+# raw data
+df &lt;- tibble(res = as.vector(samp_mat),
+             cond = factor(rep(1:7, each = 12)))
+# mean + confidence intervals
+df2 &lt;- tibble(res = tmean_res,
+              cond = factor(1:7),
+              ci_low = ci_tm_pb[1,],
+              ci_up = ci_tm_pb[2,])
+
+ggplot(df, aes(x = cond, y = res)) + theme_gar +
+   # scatterplots
+  geom_jitter(shape = 21, width = .1, colour = &#39;black&#39;, fill = &#39;grey&#39;, size = 2, alpha = 0.5) +
+  geom_hline(yintercept = df2$ci_low[1], linetype = &#39;dashed&#39;) +
+  geom_hline(yintercept = df2$ci_up[1], linetype = &#39;dashed&#39;) +
+    # confidence intervals
+geom_errorbar(data = df2, aes(x=cond, ymin=ci_low, ymax=ci_up), 
+              width=.05, size=0.75) + 
+  geom_point(data = df2, aes(x=cond, y=res), size=3) +
+   theme(panel.grid.minor.x = element_blank()) +
+  labs(x = &quot;Conditions&quot;, y = &quot;Values&quot;) +
+  ggtitle(&quot;20% trimmed mean: bootstrap CI&quot;) </code></pre>
+<p><img src="nb3_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<pre class="r"><code># save figure
+# ggsave(filename = &quot;./figures/nb3_fig_outliers_tm_pbci.pdf&quot;, width = 20, height = 15, units = &quot;cm&quot;)</code></pre>
+</div>
+</div>
+<div id="illustrate-trimming" class="section level1">
+<h1>Illustrate trimming</h1>
+<div id="trimming---normal-distribution" class="section level2">
+<h2>20% trimming - Normal distribution</h2>
+<pre class="r"><code>tr&lt;-.2
+xv&lt;-seq(-4,4,0.01)
+yv&lt;-dnorm(xv)
+plot(xv,yv,type=&quot;l&quot;)
+zval&lt;-qnorm(tr, mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)
+polygon(c(xv[xv&lt;=zval],zval),c(yv[xv&lt;=zval],yv[xv==-4]),col=5)
+polygon(c(xv[xv&gt;=-zval],-zval),c(yv[xv&gt;=-zval],yv[xv==4]),col=5)</code></pre>
+<p><img src="nb3_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+</div>
+<div id="trimming---f-distribution" class="section level2">
+<h2>20% trimming - F distribution</h2>
+<pre class="r"><code>tr&lt;-.2
+xv&lt;-seq(0.01,4,0.01)
+yv&lt;-df(xv,6,18) #fx&lt;-dlnorm(x)
+plot(xv,yv,type=&quot;l&quot;)
+zval&lt;-qf(tr,6,18)
+polygon(c(xv[xv&lt;=zval],zval),c(yv[xv&lt;=zval],yv[xv==0.01]),col=5)
+zval&lt;-qf(1-tr,6,18)
+polygon(c(xv[xv&gt;=zval],zval),c(yv[xv&gt;=zval],yv[xv==4]),col=5)</code></pre>
+<p><img src="nb3_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+</div>
+</div>
+<div id="contaminated-normal-distribution" class="section level1">
+<h1>Contaminated normal distribution</h1>
+<p>We mix two normal distributions. The resulting, contaminated normal distribution, on its own, looks normal, but has larger variance</p>
+<div id="distribution-shape" class="section level2">
+<h2>Distribution shape</h2>
+<pre class="r"><code>alpha &lt;- 0.1 # probability of sampling from population 2
+sd1 &lt;- 1 # standard deviation for population 1
+sd2 &lt;- 3
+x &lt;- seq(-9, 9, 0.1) # x axis values
+n &lt;- length(x)
+
+pdf1 &lt;- dnorm(x, 0, sd1) # probability density function for population 1
+pdf2 &lt;- dnorm(x, 0, sd2) # probability density function for population 2
+pdfc &lt;- (1- alpha)*pdf1 + alpha*pdf2 # contaminated normal
+
+df &lt;- tibble(x = rep(x, 3), 
+             y = c(pdf1, pdf2, pdfc),
+             population = factor(c(rep(&quot;sd = 1&quot;,n),rep(&quot;sd = 3&quot;,n),rep(&quot;Mixture&quot;,n))))
+
+# preserve order of factor levels
+df$population &lt;- as.character(df$population)
+df$population &lt;- factor(df$population, levels=unique(df$population))
+
+ggplot(df, aes(x=x, y=y, colour = population)) + theme_gar +
+  geom_line() +
+  scale_x_continuous(breaks = seq(-10, 10, 2)) +
+  theme(axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14)) +    
+  labs(y = &quot;Density&quot;)</code></pre>
+<p><img src="nb3_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+</div>
+<div id="sampling-from-a-contaminated-normal-distribution" class="section level2">
+<h2>Sampling from a contaminated normal distribution</h2>
+<pre class="r"><code>set.seed(21) # reproducible example
+n &lt;- 10000 # sample size
+m &lt;- 0 # population mean
+sd.vec &lt;- sample(c(sd1,sd2), n, replace=TRUE, prob=c(1-alpha, alpha)) # vector of random sd values
+samp.c &lt;- rnorm(n, m, sd.vec) # contaminated sample
+samp1 &lt;- rnorm(n, m, sd1) # normal sample 1
+samp2 &lt;- rnorm(n, m, sd2) # normal sample 2</code></pre>
+<div id="distribution-variance" class="section level3">
+<h3>Distribution variance?</h3>
+<pre class="r"><code>var(samp1)</code></pre>
+<pre><code>## [1] 1.044602</code></pre>
+<pre class="r"><code>var(samp2)</code></pre>
+<pre><code>## [1] 9.050612</code></pre>
+<pre class="r"><code>var(samp.c)</code></pre>
+<pre><code>## [1] 1.775634</code></pre>
+</div>
+</div>
+<div id="power-simulation-1-contaminated-normal" class="section level2">
+<h2>Power simulation 1: contaminated normal</h2>
+<div id="illustration" class="section level3">
+<h3>Illustration</h3>
+<pre class="r"><code>m1 &lt;- 0
+m2 &lt;- 1
+alpha &lt;- 0.1 # probability of sampling from population 2
+sd1 &lt;- 1 # standard deviation for population 1
+sd2 &lt;- 3
+x &lt;- seq(-9, 9, 0.1) # x axis values
+n &lt;- length(x)
+
+# population 1
+pdf1a &lt;- dnorm(x, m1, sd1) 
+pdf1b &lt;- dnorm(x, m1, sd2) 
+pdf1 &lt;- (1- alpha)*pdf1a + alpha*pdf1b # contaminated normal
+
+# population 2
+pdf2a &lt;- dnorm(x, m2, sd1) 
+pdf2b &lt;- dnorm(x, m2, sd2) 
+pdf2 &lt;- (1- alpha)*pdf2a + alpha*pdf2b # contaminated normal
+
+df &lt;- tibble(x = rep(x, 2), 
+             y = c(pdf1, pdf2),
+             population = factor(c(rep(&quot;m = 0&quot;,n),rep(&quot;m = 1&quot;,n))))
+
+# preserve order of factor levels
+df$population &lt;- as.character(df$population)
+df$population &lt;- factor(df$population, levels=unique(df$population))
+
+ggplot(df, aes(x=x, y=y, colour = population)) + theme_gar +
+  geom_line() +
+  scale_x_continuous(breaks = seq(-10, 10, 2)) +
+  theme(axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14)) +    
+  labs(y = &quot;Density&quot;)</code></pre>
+<p><img src="nb3_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+</div>
+<div id="simulation" class="section level3">
+<h3>Simulation</h3>
+<pre class="r"><code>set.seed(21) # reproducible example
+n &lt;- 25 # sample size
+m1 &lt;- 0 # population 1 mean
+m2 &lt;- 1 # population 2 mean
+alpha &lt;- 0.1 # probability of sampling from population 2
+sd1 &lt;- 1 # standard deviation for population 1
+sd2 &lt;- 3 # standard deviation for population 2
+
+# define simulation variables
+nsim &lt;- 10000 # number of iterations
+sim.m &lt;- vector(mode = &quot;numeric&quot;, length = nsim) # results for t-test on means
+sim.tm &lt;- vector(mode = &quot;numeric&quot;, length = nsim) # results for t-test on trimmed means
+
+for(S in 1:nsim){
+  sd.vec &lt;- sample(c(sd1,sd2), n, replace=TRUE, prob=c(1-alpha, alpha)) # vector of random sd values
+  samp1 &lt;- rnorm(n, m1, sd.vec) # contaminated sample 1
+  samp2 &lt;- rnorm(n, m2, sd.vec) # contaminated sample 2  
+  sim.m[S] &lt;- t.test(samp1, samp2)$p.value &lt;= 0.05
+  sim.tm[S] &lt;- yuen(samp1, samp2)$p.value &lt;= 0.05 # default to 20% trimming
+}
+
+mean(sim.m) # power of t-test on means</code></pre>
+<pre><code>## [1] 0.7431</code></pre>
+<pre class="r"><code>mean(sim.tm) # power of t-test on 20% trimmed means</code></pre>
+<pre><code>## [1] 0.8212</code></pre>
+</div>
+</div>
+<div id="power-simulation-2-normal" class="section level2">
+<h2>Power simulation 2: normal</h2>
+<div id="illustration-1" class="section level3">
+<h3>Illustration</h3>
+<pre class="r"><code>m1 &lt;- 0
+m2 &lt;- 1
+sd &lt;- 1 # standard deviation for the two populations
+x &lt;- seq(-9, 9, 0.1) # x axis values
+n &lt;- length(x)
+
+# population 1
+pdf1 &lt;- dnorm(x, m1, sd) 
+
+# population 2
+pdf2 &lt;- dnorm(x, m2, sd) 
+
+df &lt;- tibble(x = rep(x, 2), 
+             y = c(pdf1, pdf2),
+             population = factor(c(rep(&quot;m = 0&quot;,n),rep(&quot;m = 1&quot;,n))))
+
+# preserve order of factor levels
+df$population &lt;- as.character(df$population)
+df$population &lt;- factor(df$population, levels=unique(df$population))
+
+ggplot(df, aes(x=x, y=y, colour = population)) + theme_gar +
+  geom_line() +
+  scale_x_continuous(breaks = seq(-10, 10, 2)) +
+  theme(axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14)) +    
+  labs(y = &quot;Density&quot;)</code></pre>
+<p><img src="nb3_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+</div>
+<div id="simulation-1" class="section level3">
+<h3>Simulation</h3>
+<pre class="r"><code>set.seed(21) # reproducible example
+n &lt;- 25 # sample size
+m1 &lt;- 0 # population 1 mean
+m2 &lt;- 1 # population 2 mean
+sd &lt;- 1 # standard deviation
+
+# define simulation variables
+nsim &lt;- 10000 # number of iterations
+sim.m &lt;- vector(mode = &quot;numeric&quot;, length = nsim) # results for t-test on means
+sim.tm &lt;- vector(mode = &quot;numeric&quot;, length = nsim) # results for t-test on trimmed means
+
+for(S in 1:nsim){
+  samp1 &lt;- rnorm(n, m1, sd) # normal sample 1
+  samp2 &lt;- rnorm(n, m2, sd) # normal sample 2  
+  sim.m[S] &lt;- t.test(samp1, samp2)$p.value &lt;= 0.05
+  sim.tm[S] &lt;- yuen(samp1, samp2)$p.value &lt;= 0.05 # default to 20% trimming
+}
+
+mean(sim.m) # power of t-test on means</code></pre>
+<pre><code>## [1] 0.9328</code></pre>
+<pre class="r"><code>mean(sim.tm) # power of t-test on 20% trimmed means</code></pre>
+<pre><code>## [1] 0.8859</code></pre>
+</div>
+</div>
+</div>
+<div id="g-and-h-distributions" class="section level1">
+<h1>g-and-h distributions</h1>
+<p>The <code>ghdist()</code> function is used to generate random numbers from g &amp; h distributions. All such distributions have a median of zero. The parameter g controls the asymmetry of the distribution, while the parameter h controls the thickness of the tails. g = h = 0 corresponds to a normal distribution.</p>
+<div id="define-g-and-h-function" class="section level2">
+<h2>Define g-and-h function</h2>
+<pre class="r"><code># code from Rallfun-v35.txt
+ghdist&lt;-function(n,g=0,h=0){
+#
+# generate n observations from a g-and-h dist.
+#
+x&lt;-rnorm(n)
+if (g&gt;0){
+ghdist&lt;-(exp(g*x)-1)*exp(h*x^2/2)/g
+}
+if(g==0)ghdist&lt;-x*exp(h*x^2/2)
+ghdist
+}</code></pre>
+</div>
+<div id="generate-samples-and-compute-variance" class="section level2">
+<h2>Generate samples and compute variance</h2>
+<pre class="r"><code>gseq &lt;- seq(0, 1, 0.1) # sequence of g parameters
+ng &lt;- length(gseq)
+svar &lt;- vector(mode = &quot;numeric&quot;, length = ng) # vector of sample variances
+n &lt;- 10000 # sample size
+h &lt;- 0 # keep h constant
+
+for(G in 1:ng){
+  svar[G] &lt;- var(ghdist(n, g = gseq[G], h=h))
+}
+
+# Plot variance as a function of g
+df &lt;- tibble(var = svar, g = gseq)
+
+ggplot(df, aes(x = g, y = var)) + theme_gar + 
+  geom_point() +
+  scale_x_continuous(breaks = gseq) +
+  labs(y = &quot;Variance&quot;)</code></pre>
+<p><img src="nb3_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+</div>
+</div>
+<div id="discarding-outliers" class="section level1">
+<h1>Discarding outliers</h1>
+<p>Crazy example:</p>
+<pre class="r"><code>x &lt;- c(2,2,3,3,3,4,4,4,100000,100000)</code></pre>
+<div id="sd-away-from-the-mean-rule" class="section level2">
+<h2>2 SD away from the mean rule</h2>
+<pre class="r"><code>k &lt;- 2
+res &lt;- (abs(x-mean(x)) / sd(x)) &gt; k
+res</code></pre>
+<pre><code>##  [1] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE</code></pre>
+<pre class="r"><code># x[res]</code></pre>
+</div>
+<div id="boxplot-rule" class="section level2">
+<h2>Boxplot rule</h2>
+<pre class="r"><code>k &lt;- 1.5
+x.md &lt;- median(x)
+x.iqr &lt;- IQR(x) # interquartile range
+# x.iqr &lt;- quantile(x, 0.75) - quantile(x, 0.25)
+out &lt;- x &gt; x.md + k*x.iqr | x &lt; x.md - k*x.iqr
+out</code></pre>
+<pre><code>##  [1] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE</code></pre>
+<p>Using the boxplot function:</p>
+<pre class="r"><code>out &lt;- boxplot(x, plot = FALSE)
+out</code></pre>
+<pre><code>## $stats
+##      [,1]
+## [1,]  2.0
+## [2,]  3.0
+## [3,]  3.5
+## [4,]  4.0
+## [5,]  4.0
+## 
+## $n
+## [1] 10
+## 
+## $conf
+##         [,1]
+## [1,] 3.00036
+## [2,] 3.99964
+## 
+## $out
+## [1] 1e+05 1e+05
+## 
+## $group
+## [1] 1 1
+## 
+## $names
+## [1] &quot;1&quot;</code></pre>
+<p>See also modified boxplot rules in Rand Wilcox’s <code>outbox()</code>.</p>
+<pre class="r"><code>outbox(x)</code></pre>
+<pre><code>## $out.val
+## [1] 1e+05 1e+05
+## 
+## $out.id
+## [1]  9 10
+## 
+## $keep
+## [1] 1 2 3 4 5 6 7 8
+## 
+## $n
+## [1] 10
+## 
+## $n.out
+## [1] 2
+## 
+## $cl
+## [1] -12498.21
+## 
+## $cu
+## [1] 20838.12</code></pre>
+</div>
+<div id="mad-median-rule" class="section level2">
+<h2>MAD-median rule</h2>
+<pre class="r"><code>k &lt;- 2.24
+(abs(x-median(x)) / mad(x)) &gt; k</code></pre>
+<pre><code>##  [1] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE</code></pre>
+<p>See other robust outlier detection methods in:</p>
+<ul>
+<li>Rousseeuw, P. J. and Hubert, M. (2011), <a href="https://onlinelibrary.wiley.com/doi/full/10.1002/widm.2">Robust statistics for outlier detection</a>. WIREs Data Mining Knowl Discov, 1: 73-79. <a href="doi:10.1002/widm.2" class="uri">doi:10.1002/widm.2</a></li>
+</ul>
+<p><code>robustbase</code> R package [<a href="https://cran.r-project.org/web/packages/robustbase/index.html">CRAN</a>].</p>
+</div>
+</div>
+<div id="bootstrap-group-comparison-using-wilcoxs-functions" class="section level1">
+<h1>Bootstrap group comparison using Wilcox’s functions</h1>
+<div id="independent-groups" class="section level2">
+<h2>Independent groups</h2>
+<pre class="r"><code># to compare any estimators:
+pb2gen(x, y, alpha=0.05, nboot=1000, est=median, SEED=FALSE)
+# If you use SEED=TRUE, the random seed generator is set to the same starting point every time you use the function, such that for the same data, multiple calls will return exactly the same confidence intervals. I strongly recommend to always use SEED=FALSE. For reproducibility, set the seed in your code chunk instead, using set.seed().
+
+# same as pb2gen but only to compare medians:
+medpb2()
+
+# same as pb2gen but only to compare trimmed means:
+trimpb2()
+
+# to compare variances:
+comvar2()
+
+# For robust measures of scale, use pb2gen</code></pre>
+</div>
+<div id="dependent-groups" class="section level2">
+<h2>Dependent groups</h2>
+<pre class="r"><code># percentile bootstrap using any estimator:
+# default to difference scores - dif=TRUE
+bootdpci(x,y,est=median)
+
+# to compare two variances:
+comdvar(x,y,alpha=0.05)
+
+# or apply one-sample functions to the pairwise differences</code></pre>
+</div>
+</div>
+
+<p> </p>
+<p> </p>
 <p> </p>
 <p>Guillaume A. Rousselet, 2019, University of Glasgow.</p>
 

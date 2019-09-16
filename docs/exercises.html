@@ -332,53 +332,85 @@ $(document).ready(function () {
 </div>
 
 
-<p>After each class, work in groups of 2 or 3 to produce an RMarkdown document in which you answer the questions below. Knit your document into a <code>.pdf</code> file and submit it to the Slack channel for feeback.</p>
+<p>After each class, work in groups of 2 or 3 to produce an RMarkdown document in which you answer the questions below. Knit your document into a <code>.pdf</code> file and submit it to the Moodle discussion forum for feedback.</p>
+<p>Here is an example of header for your RMarkdown document:</p>
+<pre><code>---
+title: &quot;Analog teaching activities about sampling and resampling&quot;
+author: &quot;Guillaume A. Rousselet&quot;
+date: &quot;2019-09-16&quot;
+output:
+  pdf_document:
+    fig_caption: no
+    number_sections: no
+    toc: yes
+    toc_depth: 2
+---</code></pre>
+<p>For the pdf output to work, you need TeX installed on your computer. On a Mac, try <a href="http://www.tug.org/mactex/">MacTeX</a>, on a PC, see options <a href="https://www.latex-project.org/get/">here</a>. If you cannot get a pdf output, try exporting as Word or html (change <code>pdf_document</code> to <code>word_document</code> or <code>html_document</code> in the header), then print the html document as pdf.</p>
 <button type="button" class="btn btn-success btn-lg btn-block font-weight-bold">
 Class 1
 </button>
-<div id="question-1" class="section level2">
-<h2>Question 1</h2>
+<div id="exercise-1" class="section level2">
+<h2>Exercise 1</h2>
+<p>Illustrate the results from the dice exercise using the code in the <a href="activities.html">activities</a> tab. Apply at least two inferential statistical tests of your choice to each pairwise combinations of groups. - Do you have sufficient evidence to suggest that the groups were sampled from different populations?<br />
+- In what way do you think the groups differ?</p>
 </div>
-<div id="question-2" class="section level2">
-<h2>Question 2</h2>
+<div id="exercise-2" class="section level2">
+<h2>Exercise 2</h2>
+<p>Compute one-sample bootstrap confidence intervals of the mean for each group. Compute bootstrap confidence intervals for the difference in means between two groups of the dice data. Do that for all pairwise combinations. - Describe the results using numerical values, graphical representations, or both. - Do you have sufficient evidence to suggest that the groups were sampled from different populations?</p>
+</div>
+<div id="exercise-3" class="section level2">
+<h2>Exercise 3</h2>
+<p>Choose 3 research articles you have read recently or are planning to read.<br />
+What types of data do they analyse?<br />
+What statistical tests do they use? Are the choices of statistical tests justified by the authors? Do you think the tests are appropriate?</p>
 <button type="button" class="btn btn-success btn-lg btn-block font-weight-bold">
 Class 2
 </button>
 </div>
-<div id="question-1-1" class="section level2">
-<h2>Question 1</h2>
+<div id="exercise-1-1" class="section level2">
+<h2>Exercise 1</h2>
+<p>Simulate the sampling distribution of 10,000 throws of a dice with 6 facets. Simulate the same sampling distribution, but for a biased dice, which is twice as likely to land on 6 than any other facet. Hint: use the <code>sample()</code> function. The bias can be controlled using the <code>prob</code> argument.</p>
 </div>
-<div id="question-2-1" class="section level2">
-<h2>Question 2</h2>
+<div id="exercise-2-1" class="section level2">
+<h2>Exercise 2</h2>
+<p>Consider a standard lognormal population. Compare the sampling distributions for the mean, the median and a trimmed mean for sample sizes n = 10, 20, 50, 100. Use 10,000 simulations to derive the sampling distributions. Illustrate the sampling distributions using ggplot2. Try using <code>facet_grid</code> or <code>facet_wrap</code> to combine multiple plots into one figure.</p>
+<div id="generate-a-random-sample-of-size-n10-from-a-standard-lognormal-population" class="section level3">
+<h3>Generate a random sample of size n=10 from a standard lognormal population</h3>
+<pre class="r"><code>set.seed(21) # reproducible example
+n &lt;- 10
+rlnorm(n)</code></pre>
 <button type="button" class="btn btn-success btn-lg btn-block font-weight-bold">
 Class 3
 </button>
 </div>
-<div id="question-1-2" class="section level2">
-<h2>Question 1</h2>
 </div>
-<div id="question-2-2" class="section level2">
-<h2>Question 2</h2>
+<div id="exercise-1-2" class="section level2">
+<h2>Exercise 1</h2>
+</div>
+<div id="exercise-2-2" class="section level2">
+<h2>Exercise 2</h2>
 <button type="button" class="btn btn-success btn-lg btn-block font-weight-bold">
 Class 4
 </button>
 </div>
-<div id="question-1-3" class="section level2">
-<h2>Question 1</h2>
+<div id="exercise-1-3" class="section level2">
+<h2>Exercise 1</h2>
 </div>
-<div id="question-2-3" class="section level2">
-<h2>Question 2</h2>
+<div id="exercise-2-3" class="section level2">
+<h2>Exercise 2</h2>
 <button type="button" class="btn btn-success btn-lg btn-block font-weight-bold">
 Class 5
 </button>
 </div>
-<div id="question-1-4" class="section level2">
-<h2>Question 1</h2>
+<div id="exercise-1-4" class="section level2">
+<h2>Exercise 1</h2>
 </div>
-<div id="question-2-4" class="section level2">
-<h2>Question 2</h2>
+<div id="exercise-2-4" class="section level2">
+<h2>Exercise 2</h2>
 </div>
 
+<p> </p>
+<p> </p>
 <p> </p>
 <p>Guillaume A. Rousselet, 2019, University of Glasgow.</p>
 

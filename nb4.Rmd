@@ -116,6 +116,8 @@ samp.t
 
 ## t distribution and quantiles
 ```{r}
+alpha <- 0.05
+df <- n-1 # degrees of freedom
 ggplot(data.frame(x = c(-5, 5)), aes(x)) + theme_linedraw() +
   stat_function(fun = dt, args = list(df = df)) + 
 labs(y = "Density") +
@@ -128,8 +130,6 @@ labs(y = "Density") +
 
 ## Compute confidence interval
 ```{r}
-alpha <- 0.05
-df <- n-1 # degrees of freedom
 ci <- vector("numeric",2)
 ci[1] <- samp.m - qt(1-alpha/2, df)  * sem
 ci[2] <- samp.m + qt(1-alpha/2, df)  * sem

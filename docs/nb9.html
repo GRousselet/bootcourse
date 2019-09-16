@@ -11,7 +11,7 @@
 
 
 
-<title>Notebook 3</title>
+<title>Notebook 9: Performance assessment</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -327,13 +327,51 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Notebook 3</h1>
+<h1 class="title toc-ignore">Notebook 9: Performance assessment</h1>
 
 </div>
 
 
+<div id="check-ci-coverage" class="section level1">
+<h1>Check CI coverage</h1>
+<p>Example of a simple simulation to check the probability coverage of a confidence interval method. The simulation has 4,000 iterations. Increasing this number would lead to more precise results. For a simple test, 10,000 iterations or more could be used. For more complex applications, time might be a constraint.</p>
+<p>The sample size is 30, which seems reasonably high for a psychology experiment. A more systematic simulation should include sample size as a parameter.</p>
+<p>The population is lognormal and is generated outside the simulation loop. An alternative is to generate the random numbers directly inside the loop by using <code>samp &lt;- rlnorm(nsamp)</code>. The lognormal distribution is one of many skewed mathematical distributions. It serves to illustrate what can happen when sampling from skewed distributions in general. Other shapes could be used to, if some domain specific information is available. For instance, ex-Gaussian distributions do a good job at capturing the shape of reaction time distributions.</p>
+<p>The population means and trimmed means differ and are estimated independently in the simulation: the sample mean is used to make inferences about the population mean, whereas the sample trimmed mean is used to make inferences about the population trimmed mean.</p>
+<pre class="r"><code>set.seed(666) # reproducible results
+nsim &lt;- 5000 # simulation iterations
+nsamp &lt;- 30 # sample size
+pop &lt;- rlnorm(1000000) # define population
+pop.m &lt;- mean(pop) # population mean
+pop.tm &lt;- mean(pop, trim = 0.2) # population 20% trimmed mean
+ci.coverage &lt;- matrix(0, nrow = nsim, ncol = 3) # declare matrix of results
 
+for(S in 1:nsim){ # simulation loop
+  samp &lt;- sample(pop, nsamp, replace = TRUE) # random sample from population
+  # Mean + t-test
+  ci &lt;- t.test(samp, mu = pop.m)$conf.int # standard t-test equation
+  ci.coverage[S,1] &lt;- ci[1]&lt;pop.m &amp;&amp; ci[2]&gt;pop.m # CI includes population value?
+  # Mean + bootstrap
+  ci &lt;- onesampb(samp, est = mean, SEED = FALSE, nv = pop.m)$ci # get bootstrap confidence interval
+  ci.coverage[S,2] &lt;- ci[1]&lt;pop.m &amp;&amp; ci[2]&gt;pop.m # CI includes population value?
+  # 20% Trimmed mean
+  ci &lt;- onesampb(samp, est = mean, SEED = FALSE, nv = pop.m, trim = 0.2)$ci # get bootstrap confidence interval
+  ci.coverage[S,3] &lt;- ci[1]&lt;pop.tm &amp;&amp; ci[2]&gt;pop.tm # CI includes population value?
+}
 
+apply(ci.coverage, 2, mean) # average across simulations for each method
+
+# save simulation results to load in next chunk
+save(ci.coverage, file = &quot;./data/ci.coverage.RData&quot;)</code></pre>
+<p>Here are the results:</p>
+<pre class="r"><code>load(&quot;./data/ci.coverage.RData&quot;)
+out &lt;- apply(ci.coverage, 2, mean) # average across simulations</code></pre>
+<p>Coverage is 88.2% for the t-test, 87.5% for the bootstrap + mean, and 94.3% for the bootstrap + 20% trimmed mean. This means that when sampling from a skewed distribution such as the lognormal distribution, coverage can be very different from the expected one (here 95% coverage).</p>
+<p>Want to see more examples of simulations + code? Head <a href="https://garstats.wordpress.com/2017/11/28/your-alpha-is-probably-not-0-05/"><strong>here</strong></a> for type I error simulations, and <a href="https://garstats.wordpress.com/2017/11/28/your-power-is-lower-than-you-think/"><strong>here</strong></a> for power simulations.</p>
+</div>
+
+<p> </p>
+<p> </p>
 <p> </p>
 <p>Guillaume A. Rousselet, 2019, University of Glasgow.</p>
 

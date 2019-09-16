@@ -6,7 +6,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Robust statistical inferences using the bootstrap
+# Robust statistical inferences using the bootstrap (PSYCH4091)
 
 ## Description
 

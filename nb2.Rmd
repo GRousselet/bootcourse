@@ -11,9 +11,34 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library(tibble)
 library(ggplot2)
+source("./code/yuen.txt")
 source("./code/onesampb.txt") # one-sample percentile bootstrap confidence interval
+source("./code/pb2gen.txt") # two-sample percentile bootstrap confidence interval
 source("./code/theme_gar.txt") # format ggplot2 figures
 ```
+
+# T-test
+
+## Built-in function
+
+```{r}
+n <- 20
+x <- rlnorm(n)
+t.test(x)
+# help(t.test)
+```
+
+Confidence interval intereactive demo: 
+https://seeing-theory.brown.edu/frequentist-inference/index.html#section2
+
+## Rand Wilcox's function for trimmed means
+
+```{r}
+tr <- 0 # amount of trimming - 0 = mean
+trimci(x, tr = tr)
+# edit(trimci)
+```
+
 
 # Bootstrap implementation
 
@@ -220,6 +245,7 @@ You can get the bootstrap confidence interval and P value by calling the `onesam
 set.seed(21)
 onesampb(samp,est=mean,alpha=.05,nboot=1000,SEED=FALSE,nv=2)
 ```
+
 It can be used with any estimator, define with the `est` argument, for the median (`median`), a [**trimmed mean**](https://garstats.wordpress.com/2017/11/28/trimmed-means/) (`tm`), a [**quantile estimate**](https://garstats.wordpress.com/2016/06/09/the-harrell-davis-quantile-estimator/) (`hd`) or some measure of variability, such as the median absolute deviation to the median (`mad`).
 
 Set `SEED` to `TRUE` to get the same results every time you use the function. Set it to `FALSE` to use difference random bootstrap samples, so the function returns different results every time you use it.
@@ -439,21 +465,21 @@ df <- tibble(val = c(g1, g2),
 
 df.q1 <- tibble(y = rep(0.9,2), 
                 yend = rep(1.1,2),
-                x = c(hd(g1,0.25), hd(g2, 0.25)), 
+                x = c(quantile(g1,0.25), quantile(g2, 0.25)), 
                 xend = x,
                 gp = factor(c("Group 1","Group 2"))
                 )
 
 df.q2 <- tibble(y = rep(0.9,2), 
                 yend = rep(1.1,2),
-                x = c(hd(g1,0.5), hd(g2, 0.5)), 
+                x = c(quantile(g1,0.5), quantile(g2, 0.5)), 
                 xend = x,
                 gp = factor(c("Group 1","Group 2"))
                 )
 
 df.q3 <- tibble(y = rep(0.9,2), 
                 yend = rep(1.1,2),
-                x = c(hd(g1,0.75), hd(g2, 0.75)), 
+                x = c(quantile(g1,0.75), quantile(g2, 0.75)), 
                 xend = x,
                 gp = factor(c("Group 1","Group 2"))
                 )
@@ -484,7 +510,7 @@ p <- ggplot(data = df, aes(x = val, y = y)) + theme_gar +
   scale_x_continuous(breaks = seq(0, 1000, 100))
 p
 
-# ggsave(filename=('./figures/figure_2gps.pdf'),width=7,height=2.5)
+# ggsave(filename=('./figures/nb2_fig_2gps.pdf'),width=7,height=2.5)
 ```
 
 ## Bootstrap
@@ -553,11 +579,11 @@ ggplot(df, aes(x = x, y = y)) + theme_gar +
   annotate(geom = "label", x = ci2-0.15, y = 0.1*max(df$y), size = 7,
              colour = "white", fill = "orange", fontface = "bold",
              label = paste("U = ", round(ci2, digits = 2)))
-# ggsave(filename=('./figures/figure_2gpsbootres.pdf'),width=7,height=5)
+# ggsave(filename=('./figures/nb2_fig_2gpsbootres.pdf'),width=7,height=5)
 ```
 
 # Compare 2 groups: difference in spread
-Using the same data, now we look at differences in spread between group 1 and group 2. We make inferences on MAD, the median absolute deviation from the median, which is a robust measure of spread.
+Using the same data, now we look at differences in spread between group 1 and group 2. We make inferences on MAD, the median absolute deviation from the median, which is a robust measure of spread (more on robust estimation in lecture 3).
 
 ## Bootstrap
 We already have generated bootstrap samples, so here we simply compute MAD for each of them.
@@ -608,7 +634,7 @@ ggplot(df, aes(x = x, y = y)) + theme_gar +
   annotate(geom = "label", x = ci2-0.15, y = 0.1*max(df$y), size = 7,
              colour = "white", fill = "orange", fontface = "bold",
              label = paste("U = ", round(ci2, digits = 2)))
-# ggsave(filename=('./figures/figure_mad.pdf'),width=7,height=5)
+# ggsave(filename=('./figures/nb2_fig_mad.pdf'),width=7,height=5)
 ```
 
 ## Function
@@ -617,5 +643,5 @@ set.seed(1)
 pb2gen(g1, g2, alpha=0.05, nboot=1000, est=mad, SEED=FALSE)
 ```
 
-Instead of looking separately at group differences in central tendency and spread, you can have a more detailed look at how distributions differ by using a [**shift function**](https://garstats.wordpress.com/2016/07/12/shift-function/), which is available in the [**rogme**](https://github.com/GRousselet/rogme) R package.
+Instead of looking separately at group differences in central tendency and spread, you can have a more detailed look at how distributions differ by using a [**shift function**](https://garstats.wordpress.com/2016/07/12/shift-function/), which is available in the [**rogme**](https://github.com/GRousselet/rogme) R package. More on this later on in the course.
 

@@ -1,5 +1,5 @@
 ---
-title: "Notebook 3"
+title: "Notebook 7: Perspectives on group comparisons"
 output: html_document
 ---
 

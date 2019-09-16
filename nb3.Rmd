@@ -511,6 +511,7 @@ x <- c(2,2,3,3,3,4,4,4,100000,100000)
 ```
 
 ## 2 SD away from the mean rule
+
 ```{r}
 k <- 2
 res <- (abs(x-mean(x)) / sd(x)) > k
@@ -550,8 +551,9 @@ k <- 2.24
 
 See other robust outlier detection methods in:
 
-Rousseeuw, P. J. and Hubert, M. (2011), Robust statistics for outlier detection. WIREs Data Mining Knowl Discov, 1: 73-79. doi:10.1002/widm.2
-https://onlinelibrary.wiley.com/doi/full/10.1002/widm.2
+- Rousseeuw, P. J. and Hubert, M. (2011), [Robust statistics for outlier detection](https://onlinelibrary.wiley.com/doi/full/10.1002/widm.2). WIREs Data Mining Knowl Discov, 1: 73-79. doi:10.1002/widm.2
+
+`robustbase` R package [[CRAN](https://cran.r-project.org/web/packages/robustbase/index.html)].
 
 # Bootstrap group comparison using Wilcox's functions
 

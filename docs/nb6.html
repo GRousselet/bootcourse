@@ -11,7 +11,7 @@
 
 
 
-<title>Notebook 3</title>
+<title>Notebook 6: Correlation</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -327,13 +327,280 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Notebook 3</h1>
+<h1 class="title toc-ignore">Notebook 6: Correlation</h1>
 
 </div>
 
 
+<pre class="r"><code># dependencies
+library(ggplot2)
+library(tibble)
+source(&quot;./code/theme_gar.txt&quot;)
+source(&quot;./code/Rallfun-v35.txt&quot;)</code></pre>
+<div id="bootstrap-correlation-coefficient" class="section level1">
+<h1>Bootstrap correlation coefficient</h1>
+<p>In this example we sample from 2 weakly correlated variables. Changing the random seed or commenting out the line <code>set.seed(21)</code> will give different results. You can also change the population correlation by changing <code>rho</code>.</p>
+<div id="make-data" class="section level2">
+<h2>Make data</h2>
+<pre class="r"><code>set.seed(21)
+n &lt;- 50 # sample size
+mu &lt;- c(0, 0) # means of the variables
+rho &lt;- 0.2 # population correlation between variables
+sigma1 &lt;- matrix(c(1, rho, rho, 1), nrow = 2, byrow = TRUE) # covariance matrix
 
+# group 1
+data &lt;- MASS::mvrnorm(n = n, mu = mu, Sigma = sigma1)
+x1 &lt;- data[,1]
+y1 &lt;- data[,2]</code></pre>
+</div>
+<div id="illustrate-data" class="section level2">
+<h2>Illustrate data</h2>
+<pre class="r"><code># make data frame
+df &lt;- tibble(x = x1,
+             y = y1)
 
+# ggplot figure
+p &lt;- ggplot(df, aes(x = x, y = y)) + theme_gar +
+          geom_point(alpha = 0.4, size = 3) +
+          coord_cartesian(xlim = c(-2.5, 2.5), ylim = c(-2.5, 2.5)) +
+    theme(axis.title = element_text(size = 15, colour = &quot;black&quot;),
+          axis.text = element_text(size = 13, colour = &quot;black&quot;),
+          strip.text = element_text(size = 15, face = &quot;bold&quot;)) +
+    labs(x = expression(italic(&quot;Variable A&quot;)), y = expression(italic(&quot;Variable B&quot;))) +
+    ggtitle(&quot;Group 1&quot;)
+pA &lt;- p
+p</code></pre>
+<p><img src="nb6_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>For this sample, Spearman’s correlation coefficient is 0.26.</p>
+</div>
+<div id="bootstrap" class="section level2">
+<h2>Bootstrap</h2>
+<pre class="r"><code>set.seed(21)
+nboot &lt;- 5000 # number of bootstrap samples
+alpha &lt;- 0.05 # alpha level for confidence interval
+boot.corr1 &lt;- vector(mode = &quot;numeric&quot;, length = nboot) # vector of bootstrap correlations
+for(B in 1:nboot){
+  boot.id &lt;- sample(n, size = n, replace=TRUE) # bootstrap pairs of observations
+  boot.corr1[B] &lt;- spear(x1[boot.id], y1[boot.id])$cor
+}</code></pre>
+</div>
+<div id="bootstrap-confidence-interval" class="section level2">
+<h2>Bootstrap confidence interval</h2>
+<pre class="r"><code>corci1 &lt;- quantile(boot.corr1, probs = c(alpha/2, 1-alpha/2))</code></pre>
+</div>
+<div id="p-value" class="section level2">
+<h2>P value</h2>
+<pre class="r"><code>pval &lt;- sum(boot.corr1 &lt; 0)/nboot
+pval &lt;- 2 * min(pval, 1 - pval)</code></pre>
+<p>The bootstrap results can be obtained by calling the R command: <code>corb(x1,y1, corfun = spear, SEED = FALSE)</code>. The argument <code>corfun</code> can be changed from <code>spear</code> to another correlation function, such as <code>pbcor</code> for a percentage bend correlation or <code>wincor</code> for a Winsorized correlation. For bootstrap inferences about the non-robust Pearson’s correlation, a modified bootstrap technique is required, which is implemented in the function <code>pcorb</code>.</p>
+</div>
+<div id="illustrate-bootstrap-correlation-coefficients" class="section level2">
+<h2>Illustrate bootstrap correlation coefficients</h2>
+<pre class="r"><code>cor1 &lt;- spear(x1, y1)$cor
+
+df &lt;- as_tibble(with(density(boot.corr1),data.frame(x,y)))
+
+p &lt;- ggplot(df, aes(x = x, y = y)) + theme_gar +
+    geom_vline(xintercept = cor1, colour = &quot;grey&quot;, size = 1) +
+    geom_line(size = 2) +
+    labs(x = &quot;Bootstrap Spearman&#39;s correlations&quot;, y = &quot;Density&quot;) +
+    # confidence interval ----------------------
+    geom_segment(x = corci1[1], xend = corci1[2],
+                 y = 0, yend = 0,
+                 lineend = &quot;round&quot;, size = 3, colour = &quot;orange&quot;) +
+    annotate(geom = &quot;label&quot;, x = corci1[1], y = 0.1*max(df$y), size = 7,
+               colour = &quot;white&quot;, fill = &quot;orange&quot;, fontface = &quot;bold&quot;,
+               label = paste(&quot;L = &quot;, round(corci1[1], digits = 2))) +
+    annotate(geom = &quot;label&quot;, x = corci1[2], y = 0.1*max(df$y), size = 7,
+               colour = &quot;white&quot;, fill = &quot;orange&quot;, fontface = &quot;bold&quot;,
+               label = paste(&quot;U = &quot;, round(corci1[2], digits = 2)))
+pB &lt;- p
+p</code></pre>
+<p><img src="nb6_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>For simulations on the (large) sample sizes needed to precisely estimate correlation analyses, see this <a href="https://garstats.wordpress.com/2018/06/01/smallncorr/"><strong>blog post</strong></a>. To see why conditioning correlation results on P values can lead to a literature full of false positives, see this <a href="https://garstats.wordpress.com/2018/06/22/corrcondpval/"><strong>blog post</strong></a>. Finally, simulations of statistical power for correlation analyses are available <a href="https://garstats.wordpress.com/2018/06/29/corrpower/"><strong>here</strong></a>.</p>
+</div>
+</div>
+<div id="compare-correlation-coefficients-independent-case" class="section level1">
+<h1>Compare correlation coefficients: independent case</h1>
+<p>In this situation, we have 2 groups, for each group we measure variables A and B and then estimate their correlations.</p>
+<div id="rand-wilcoxs-functions" class="section level2">
+<h2>Rand Wilcox’s functions</h2>
+<div id="compare-two-pearson-correlations" class="section level3">
+<h3>Compare two Pearson correlations</h3>
+<pre class="r"><code>twopcor(x1,y1,x2,y2, SEED = FALSE)</code></pre>
+</div>
+<div id="compare-two-robust-correlations" class="section level3">
+<h3>Compare two robust correlations</h3>
+<pre class="r"><code>twocor(x1,y1,x2,y2, corfun = pbcor)</code></pre>
+</div>
+</div>
+<div id="make-data-1" class="section level2">
+<h2>Make data</h2>
+<pre class="r"><code>set.seed(777)
+# group 2
+rho &lt;- 0.5 # correlation between variables
+sigma2 &lt;- matrix(c(1, rho, rho, 1), nrow = 2, byrow = TRUE) # covariance matrix
+data &lt;- MASS::mvrnorm(n = n, mu = mu, Sigma = sigma2)
+x2 &lt;- data[,1]
+y2 &lt;- data[,2]</code></pre>
+</div>
+<div id="illustrate-data-1" class="section level2">
+<h2>Illustrate data</h2>
+<pre class="r"><code># make data frame
+df &lt;- tibble(x = x2,
+             y = y2)
+
+# ggplot figure
+p &lt;- ggplot(df, aes(x = x, y = y)) + theme_gar +
+        geom_point(alpha = 0.4, size = 3) +
+        coord_cartesian(xlim = c(-2.5, 2.5), ylim = c(-2.5, 2.5)) +
+        theme(axis.title = element_text(size = 15, colour = &quot;black&quot;),
+              axis.text = element_text(size = 13, colour = &quot;black&quot;),
+              strip.text = element_text(size = 15, face = &quot;bold&quot;)) +
+        labs(x = expression(italic(&quot;Variable A&quot;)), y = expression(italic(&quot;Variable B&quot;))) +
+      ggtitle(&quot;Group 2&quot;)
+pC &lt;- p
+p</code></pre>
+<p><img src="nb6_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p>For this sample, Spearman’s correlation coefficient is 0.52.</p>
+</div>
+<div id="bootstrap-1" class="section level2">
+<h2>Bootstrap</h2>
+<p>Bootstrap samples are obtained independently in each group. Pairs of observations are sampled with replacement.</p>
+<pre class="r"><code>set.seed(21)
+nboot &lt;- 5000 # number of bootstrap samples
+alpha &lt;- 0.05 # alpha level for confidence interval
+boot.diff &lt;- vector(mode = &quot;numeric&quot;, length = nboot) # vector of bootstrap correlations
+for(B in 1:nboot){
+  boot.id1 &lt;- sample(n, size = n, replace=TRUE) # bootstrap pairs of observations in group 1
+  boot.id2 &lt;- sample(n, size = n, replace=TRUE) # bootstrap pairs of observations in group 2
+  boot.diff[B] &lt;- spear(x1[boot.id1], y1[boot.id1])$cor - spear(x2[boot.id2], y2[boot.id2])$cor
+}</code></pre>
+</div>
+<div id="bootstrap-confidence-interval-1" class="section level2">
+<h2>Bootstrap confidence interval</h2>
+<pre class="r"><code>diff.ci &lt;- quantile(boot.diff, probs = c(alpha/2, 1-alpha/2)) # [-0.616, 0.104]</code></pre>
+</div>
+<div id="p-value-1" class="section level2">
+<h2>P value</h2>
+<pre class="r"><code>pval &lt;- sum(boot.diff &lt; 0)/nboot
+pval &lt;- 2 * min(pval, 1 - pval) # 0.1644</code></pre>
+<p>The bootstrap results can be obtained by calling the R command: <code>twocor(x1,y1,x2,y2, corfun = spear)</code>. To compare two percentage bend correlations, use this command instead: <code>twocor(x1,y1,x2,y2, corfun = pbcor)</code>. And to compare two Pearson’s correlations: <code>twopcor(x1,y1,x2,y2, SEED = FALSE)</code>.</p>
+</div>
+<div id="bootstrap-correlation-coefficients" class="section level2">
+<h2>Bootstrap correlation coefficients</h2>
+<pre class="r"><code>corr.diff &lt;- spear(x1, y1)$cor - spear(x2, y2)$cor
+
+df &lt;- as_tibble(with(density(boot.diff),data.frame(x,y)))
+
+p &lt;- ggplot(df, aes(x = x, y = y)) + theme_gar +
+    geom_vline(xintercept = corr.diff, colour = &quot;grey&quot;, size = 1) +
+    geom_line(size = 2) +
+    labs(x = &quot;Bootstrap Spearman&#39;s corr. differences&quot;, y = &quot;Density&quot;) +
+      # confidence interval ----------------------
+    geom_segment(x = diff.ci[1], xend = diff.ci[2],
+                 y = 0, yend = 0,
+                 lineend = &quot;round&quot;, size = 3, colour = &quot;orange&quot;) +
+    annotate(geom = &quot;label&quot;, x = diff.ci[1], y = 0.1*max(df$y), size = 7,
+               colour = &quot;white&quot;, fill = &quot;orange&quot;, fontface = &quot;bold&quot;,
+               label = paste(&quot;L = &quot;, round(diff.ci[1], digits = 2))) +
+    annotate(geom = &quot;label&quot;, x = diff.ci[2], y = 0.1*max(df$y), size = 7,
+               colour = &quot;white&quot;, fill = &quot;orange&quot;, fontface = &quot;bold&quot;,
+               label = paste(&quot;U = &quot;, round(diff.ci[2], digits = 2)))
+pD &lt;- p
+p</code></pre>
+<p><img src="nb6_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+</div>
+<div id="summary-figure" class="section level2">
+<h2>Summary figure</h2>
+<pre class="r"><code>cowplot::plot_grid(pA, pC, pB, pD,
+                    labels = c(&quot;A&quot;, &quot;C&quot;, &quot;B&quot;, &quot;D&quot;),
+                    ncol = 2,
+                    nrow = 2,
+                    label_size = 20, 
+                    hjust = -0.5, 
+                    scale=.95)
+
+# save figure
+# ggsave(filename=(&#39;./figures/nb6_fig_corr.pdf&#39;),width=12,height=10)</code></pre>
+<p>Simulations of false positives and power for correlation comparisons are reported in this <a href="https://garstats.wordpress.com/2019/06/17/compindcorr/"><strong>blog post</strong></a>. Bottom-line: the Fisher’s r-to-z transform is not robust, and very large sample sizes are required to detect differences between correlation coefficients.</p>
+</div>
+</div>
+<div id="compare-correlation-coefficients-dependent-case" class="section level1">
+<h1>Compare correlation coefficients: dependent case</h1>
+<div id="overlapping-case" class="section level2">
+<h2>Overlapping case</h2>
+<p>For instance, if we have 3 dependent variables, we want to compare the correlation between 1 and 3 to the correlation between 2 and 3.</p>
+<p>Generate data</p>
+<pre class="r"><code>set.seed(21)
+n &lt;- 50 # sample size
+mu &lt;- c(0, 0, 0) # means of the variables
+rho12 &lt;- 0.8 # correlation between variables 1 and 2
+rho13 &lt;- 0.2 # correlation between variables 1 and 3
+rho23 &lt;- 0.6 # correlation between variables 2 and 3
+# define covariance matrix
+sigma &lt;- matrix(c(1, rho12, rho13, 
+                  rho12, 1, rho23,
+                  rho13, rho23, 1), 
+                nrow = 3, byrow = TRUE) 
+
+data &lt;- MASS::mvrnorm(n = n, mu = mu, Sigma = sigma)
+x &lt;- data[,1:2]
+y &lt;- data[,3]
+
+# make data frame
+df &lt;- tibble(x = x[,1],
+             y = y)
+# ggplot figure
+ggplot(df, aes(x = x, y = y)) + theme_classic() +
+  geom_point(alpha = 0.6, size = 3) +
+  geom_smooth(method=&#39;lm&#39;,formula=y~x) +
+  theme(axis.title = element_text(size = 15, colour = &quot;black&quot;),
+        axis.text = element_text(size = 13, colour = &quot;black&quot;),
+        strip.text = element_text(size = 15, face = &quot;bold&quot;)) +
+  # scale_x_continuous(limits = c(-4, 4),
+  #                    breaks = seq(-4, 4, 1)) +
+  labs(x = expression(italic(&quot;Variable A&quot;)), y = expression(italic(&quot;Variable C&quot;)))</code></pre>
+<p><img src="nb6_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<pre class="r"><code> # ggsave(filename = &quot;./corr_samp_dep_ov1.pdf&quot;)
+ 
+ # make data frame
+df &lt;- tibble(x = x[,2],
+             y = y)
+# ggplot figure
+ggplot(df, aes(x = x, y = y)) + theme_classic() +
+  geom_point(alpha = 0.6, size = 3) +
+  geom_smooth(method=&#39;lm&#39;,formula=y~x) +
+  theme(axis.title = element_text(size = 15, colour = &quot;black&quot;),
+        axis.text = element_text(size = 13, colour = &quot;black&quot;),
+        strip.text = element_text(size = 15, face = &quot;bold&quot;)) +
+  # scale_x_continuous(limits = c(-4, 4),
+  #                    breaks = seq(-4, 4, 1)) +
+  labs(x = expression(italic(&quot;Variable B&quot;)), y = expression(italic(&quot;Variable C&quot;)))</code></pre>
+<p><img src="nb6_files/figure-html/unnamed-chunk-17-2.png" width="672" /></p>
+<pre class="r"><code> # ggsave(filename = &quot;./corr_samp_dep_ov2.pdf&quot;)</code></pre>
+<p>For Pearson correlation:</p>
+<pre class="r"><code># x = matrix with 2 columns
+# y = vector
+TWOpov(x,y)
+#TWOpovPV to get a p-value</code></pre>
+<p>For a robust correlation:</p>
+<pre class="r"><code>twoDcorR(x,y, corfun=wincor, SEED=FALSE)</code></pre>
+</div>
+<div id="non-overlapping-case" class="section level2">
+<h2>Non-overlapping case</h2>
+<p>For instance, if we have 4 dependent variables, we want to compare the correlation between 1 and 2 to the correlation between 3 and 4.</p>
+<p>For Pearson correlation:</p>
+<pre class="r"><code># x = matrix with 2 columns
+# y = matrix with 2 columns
+TWOpNOV(x,y)</code></pre>
+<p>For a robust correlation:</p>
+<pre class="r"><code>twoDNOV(x,y, corfun=wincor, SEED=FALSE)</code></pre>
+</div>
+</div>
+
+<p> </p>
+<p> </p>
 <p> </p>
 <p>Guillaume A. Rousselet, 2019, University of Glasgow.</p>
 

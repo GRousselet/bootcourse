@@ -11,7 +11,7 @@
 
 
 
-<title>Notebook 1</title>
+<title>Notebook 1: Introduction</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -327,57 +327,101 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Notebook 1</h1>
+<h1 class="title toc-ignore">Notebook 1: Introduction</h1>
 
 </div>
 
 
-<div id="section" class="section level1">
-<h1>—————————–</h1>
+<div id="dependencies" class="section level1">
+<h1>Dependencies</h1>
+<pre class="r"><code>library(tibble)
+library(ggplot2)</code></pre>
 </div>
-<div id="bootstrap-sampling" class="section level1">
-<h1>Bootstrap sampling</h1>
-<div id="the-sample-function" class="section level2">
-<h2>The <code>sample()</code> function</h2>
+<div id="rand-wilcoxs-code" class="section level1">
+<h1>Rand Wilcox’s code</h1>
+<p>When I mention code from Rand Wilcox, it is available in a giant text file. You access the functions by using the <code>source()</code> function:</p>
+<pre class="r"><code>source(&quot;./code/Rallfun-v35.txt&quot;)</code></pre>
+<p>In some of the notebooks, I’ve extracted one or a few functions so you can source a smaller file. This prevents your environment from being cluttered with functions you don’t need. Creating a well documented R package is a lot of work, so some statisticians don’t spend the time required. But that means their code is less accessible.</p>
+<p>See more detail and updated versions of the code <a href="https://dornsife.usc.edu/labs/rwilcox/software/">here</a>.</p>
+<p>Some of the functions are also available in the <code>WRS2</code> package.</p>
 </div>
-<div id="bootstrap-loop" class="section level2">
-<h2>Bootstrap loop</h2>
+<div id="dice-exercise" class="section level1">
+<h1>Dice exercise</h1>
+<div id="data-capture" class="section level2">
+<h2>Data capture</h2>
+<p>Enter the data in R or a text file: 5 rows (trials) and 10 columns (participants).</p>
+<pre class="r"><code># enter data in matrix with 5 rows, 10 columns:
+
+# dice_res[,1] &lt;- c(,,,,)
+# dice_res[,2] &lt;- c(,,,,)
+# dice_res[,3] &lt;- c(,,,,)
+# dice_res[,4] &lt;- c(,,,,)
+# dice_res[,5] &lt;- c(,,,,)
+# dice_res[,6] &lt;- c(,,,,)
+# dice_res[,7] &lt;- c(,,,,)
+# dice_res[,8] &lt;- c(,,,,)
+# dice_res[,9] &lt;- c(,,,,)
+# dice_res[,10] &lt;- c(,,,,)
+
+# Save in a txt file:
+
+# write.table(dice_res, file = &quot;./data/dice_res_blue.txt&quot;, row.names=FALSE, col.names=FALSE)
+# write.table(dice_res, file = &quot;./data/dice_res_green.txt&quot;, row.names=FALSE, col.names=FALSE)
+# write.table(dice_res, file = &quot;./data/dice_res_red.txt&quot;, row.names=FALSE, col.names=FALSE)</code></pre>
 </div>
-<div id="bootstrap-loop-using-apply" class="section level2">
-<h2>Bootstrap loop using apply</h2>
+<div id="load-simulated-data" class="section level2">
+<h2>Load simulated data</h2>
+<pre class="r"><code>nt &lt;- 5
+np &lt;- 10
+res_red &lt;- matrix(scan(&quot;./data/res1.txt&quot;), nrow=nt, byrow=TRUE)
+res_green &lt;- matrix(scan(&quot;./data/res2.txt&quot;), nrow=nt, byrow=TRUE)
+res_blue &lt;- matrix(scan(&quot;./data/res3.txt&quot;), nrow=nt, byrow=TRUE)</code></pre>
 </div>
-<div id="bootstrap-using-existing-function" class="section level2">
-<h2>Bootstrap using existing function</h2>
+<div id="load-real-data" class="section level2">
+<h2>Load real data</h2>
+<pre class="r"><code>res_red &lt;- matrix(scan(&quot;./data/dice_res_red.txt&quot;), nrow=nt, byrow=TRUE)
+res_green &lt;- matrix(scan(&quot;./data/dice_res_green.txt&quot;), nrow=nt, byrow=TRUE)
+res_blue &lt;- matrix(scan(&quot;./data/dice_res_blue.txt&quot;), nrow=nt, byrow=TRUE)</code></pre>
 </div>
+<div id="illustration" class="section level2">
+<h2>Illustration</h2>
+<p>Mean results</p>
+<pre class="r"><code>m.red &lt;- round(apply(res_red, 2, mean), digits=1)
+m.green &lt;- round(apply(res_green, 2, mean), digits=1)
+m.blue &lt;- round(apply(res_blue, 2, mean), digits=1)</code></pre>
+<p>Illustrate results</p>
+<pre class="r"><code>set.seed(1)
+df &lt;- tibble(obs = c(m.red, m.green, m.blue),
+             gp = factor(c(rep(&quot;Red&quot;,np),rep(&quot;Green&quot;,np),rep(&quot;Blue&quot;,np)))
+             )
+
+# preserve factor order
+df$gp &lt;- as.character(df$gp)
+df$gp &lt;- factor(df$gp, levels=unique(df$gp))
+
+  ggplot(df, aes(gp, obs)) + theme_linedraw() +
+  geom_point(aes(colour = gp), position = position_jitter(width = 0.1)) +
+    scale_color_manual(values=c(&quot;red&quot;, &quot;green4&quot;, &quot;blue&quot;)) +
+  theme(legend.position = &quot;none&quot;,
+        axis.text = element_text(size = 14),
+        axis.title = element_text(size = 16)) +
+  labs(x = &quot;Groups&quot;, y = &quot;Observations&quot;) +   
+    coord_cartesian(ylim = c(0, 12)) +
+    scale_y_continuous(breaks = seq(0, 12, 2)) +
+  geom_errorbar(stat = &quot;summary&quot;, fun.y = mean, fun.ymin = mean,
+                fun.ymax = mean, colour = &quot;grey&quot;, width = .55, size = 3) +
+  geom_errorbar(stat = &quot;summary&quot;, fun.y = mean, fun.ymin = mean,
+                fun.ymax = mean, colour = &quot;black&quot;, width = .5, size = 1)</code></pre>
+<p><img src="nb1_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 </div>
-<div id="section-1" class="section level1">
-<h1>—————————–</h1>
+<div id="inferential-statistics" class="section level2">
+<h2>Inferential statistics?</h2>
+<p>What would you do next with the data?</p>
 </div>
-<div id="illustrating-bootstrap-samples" class="section level1">
-<h1>Illustrating bootstrap samples</h1>
-<div id="in-sampling-order" class="section level2">
-<h2>In sampling order</h2>
-</div>
-<div id="histogram" class="section level2">
-<h2>Histogram</h2>
-</div>
-<div id="kernel-density-estimate" class="section level2">
-<h2>Kernel density estimate</h2>
-</div>
-</div>
-<div id="section-2" class="section level1">
-<h1>—————————–</h1>
-</div>
-<div id="bootstrap-confidence-interval" class="section level1">
-<h1>Bootstrap confidence interval</h1>
-</div>
-<div id="section-3" class="section level1">
-<h1>—————————–</h1>
-</div>
-<div id="bootstrap-p-value" class="section level1">
-<h1>Bootstrap <em>P</em> value</h1>
 </div>
 
+<p> </p>
+<p> </p>
 <p> </p>
 <p>Guillaume A. Rousselet, 2019, University of Glasgow.</p>
 

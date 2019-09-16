@@ -1,0 +1,60 @@
+onesampb<-function(x,est=onestep,alpha=.05,nboot=2000,SEED=TRUE,nv=0,null.value=NULL,...){
+#
+#   Compute a bootstrap, .95 confidence interval for the
+#   measure of location corresponding to the argument est.
+#   By default, a one-step
+#   M-estimator of location based on Huber's Psi is used.
+#   The default number of bootstrap samples is nboot=500
+#
+#    nv=null value when  computing a p-value
+#
+if(!is.null(null.value))nv=null.value
+if(SEED)set.seed(2) # set seed of random number generator so that
+#             results can be duplicated.
+#print("Taking bootstrap samples. Please wait.")
+x=elimna(x)
+data<-matrix(sample(x,size=length(x)*nboot,replace=TRUE),nrow=nboot)
+bvec<-apply(data,1,est,...)
+bvec<-sort(bvec)
+low<-round((alpha/2)*nboot)
+up<-nboot-low
+low<-low+1
+pv=mean(bvec>nv)+.5*mean(bvec==nv)
+pv=2*min(c(pv,1-pv))
+estimate=est(x,...)
+list(ci=c(bvec[low],bvec[up]),n=length(x),estimate=estimate,p.value=pv)
+}
+
+elimna<-function(m){
+#
+# remove any rows of data having missing values
+#
+DONE=FALSE
+if(is.list(m) && is.matrix(m)){
+z=pool.a.list(m)
+m=matrix(z,ncol=ncol(m))
+DONE=TRUE
+}
+if(!DONE){
+if(is.list(m) && is.matrix(m[[1]])){
+for(j in 1:length(m))m[[j]]=na.omit(m[[j]])
+e=m
+DONE=TRUE
+}}
+if(!DONE){
+if(is.list(m) && is.null(dim(m))){ #!is.matrix(m))
+for(j in 1:length(m))m[[j]]=as.vector(na.omit(m[[j]]))
+e=m
+DONE=TRUE
+}}
+if(!DONE){
+#if(!is.list(m)){
+#if(is.null(dim(m)))
+m<-as.matrix(m)
+ikeep<-c(1:nrow(m))
+for(i in 1:nrow(m))if(sum(is.na(m[i,])>=1))ikeep[i]<-0
+e<-m[ikeep[ikeep>=1],]
+#}
+}
+e
+}

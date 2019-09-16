@@ -7,12 +7,20 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# Dependencies
+```{r}
+library(tibble)
+library(ggplot2)
+```
+
 # Rand Wilcox's code
 When I mention code from Rand Wilcox, it is available in a giant text file.
-You access the functions by:
+You access the functions by using the `source()` function:
 ```{r, eval=FALSE}
 source("./code/Rallfun-v35.txt")
 ```
+
+In some of the notebooks, I've extracted one or a few functions so you can source a smaller file. This prevents your environment from being cluttered with functions you don't need. Creating a well documented R package is a lot of work, so some statisticians don't spend the time required. But that means their code is less accessible.
 
 See more detail and updated versions of the code [here](https://dornsife.usc.edu/labs/rwilcox/software/).
 
