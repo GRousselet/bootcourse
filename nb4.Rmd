@@ -155,7 +155,7 @@ ggplot(as_tibble(x), aes(value)) +
   theme(axis.title = element_text(size = 16),
         axis.text = element_text(size = 14),
         plot.title = element_text(size=20)) +
-  ggtitle(paste0("Log normal distribution: mean = ",m,", sd = ",sd))
+  ggtitle(paste0("Log normal distribution: mean = ",m,", sd = ",s))
 # ggsave(filename = "b3_lnormdist.pdf")
 ```
 
@@ -203,5 +203,21 @@ ggplot(v, aes(x = value)) + theme_linedraw() +
         plot.title = element_text(size=20)) +
   ggtitle(paste(nsim,"sample means: mean =",round(mean(dist.samp),digits=1),", sd = ",round(sd(dist.samp),digits=2)))
 # ggsave(filename = "b3_lnormdist_10000samp_mean.pdf")
+```
+
+## SEM
+
+### Based on (otherwise unobservable population)
+```{r}
+s / sqrt(n)
+```
+### Based on (otherwise unachievable) 10,000 experiments
+```{r}
+sd(dist.samp)
+```
+
+### Based on one sample
+```{r}
+sd(samp) / sqrt(n)
 ```
 

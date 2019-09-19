@@ -7,3 +7,45 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# t-test confidence interval
+
+## Get one sample and apply t.test() function
+```{r}
+# one sample
+set.seed(4)
+n <- 20
+samp <- rnorm(n, m, sd)
+t.test(samp)
+```
+
+## Compute t value
+```{r}
+# Formula
+samp.m <- mean(samp) # sample mean
+samp.v <- var(samp) # sample variance
+sem <- sqrt(samp.v/n) # standard error of the mean
+samp.t <- samp.m / sem
+samp.t
+```
+
+## t distribution and quantiles
+```{r}
+ggplot(data.frame(x = c(-5, 5)), aes(x)) + theme_linedraw() +
+  stat_function(fun = dt, args = list(df = df)) + 
+labs(y = "Density") +
+  theme(axis.text = element_text(size = 14),
+        axis.title = element_text(size = 16),
+        plot.title = element_text(size=20)) +
+  ggtitle(paste0("t distribution: df = ",df,", ",(1-alpha/2)*100,"th quantile = ",round(qt(1-alpha/2, df), digits=2))) +
+  geom_vline(xintercept = c(-qt(1-alpha/2, df), qt(1-alpha/2, df)), colour = "green", size = 1)
+```
+
+## Compute confidence interval
+```{r}
+alpha <- 0.05
+df <- n-1 # degrees of freedom
+ci <- vector("numeric",2)
+ci[1] <- samp.m - qt(1-alpha/2, df)  * sem
+ci[2] <- samp.m + qt(1-alpha/2, df)  * sem
+ci
+```

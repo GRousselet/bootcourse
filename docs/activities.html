@@ -448,7 +448,7 @@ ggplot(df, aes(gp, obs)) + theme_linedraw() +
   geom_errorbar(stat = &quot;summary&quot;, 
                 fun.y = foo, fun.ymin = foo, fun.ymax = foo, 
                 colour = &quot;black&quot;, width = .5, size = 0.75, alpha = 0.5)</code></pre>
-<p><img src="activities_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p><img src="activities_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 </div>
 </div>
 </div>
@@ -600,7 +600,7 @@ ggplot(df, aes(x = x)) + theme_bw() +
   scale_y_continuous(minor_breaks = seq(1, 30), limits = c(0, 30)) +
   coord_fixed(ratio = 1) +
   ggtitle(paste0(&#39;n=&#39;,n,&#39; replicates&#39;))</code></pre>
-<p><img src="activities_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+<p><img src="activities_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 <pre class="r"><code># save figure
 # ggsave(file=paste0(&#39;simres_n&#39;,n,&#39;.pdf&#39;), width = 6, height = 6)</code></pre>
 </div>

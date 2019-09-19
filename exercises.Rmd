@@ -13,8 +13,8 @@ Here is an example of header for your RMarkdown document:
 
 ```
 ---
-title: "Analog teaching activities about sampling and resampling"
-author: "Guillaume A. Rousselet"
+title: "Homework #1"
+author: "Group: the kurtotic avengers"
 date: "`r Sys.Date()`"
 output:
   pdf_document:
@@ -32,24 +32,35 @@ For the pdf output to work, you need TeX installed on your computer. On a Mac, t
 ## Exercise 1
 
 Illustrate the results from the dice exercise using the code in the [activities](activities.html) tab.
+
 Apply at least two inferential statistical tests of your choice to each pairwise combinations of groups.
+
 - Do you have sufficient evidence to suggest that the groups were sampled from different populations?  
+
 - In what way do you think the groups differ?  
 
 ## Exercise 2
 
-Compute one-sample bootstrap confidence intervals of the mean for each group. 
+Compute one-sample bootstrap confidence intervals of the mean for each group.
+
 Compute bootstrap confidence intervals for the difference in means between two groups of the dice data.
+
 Do that for all pairwise combinations.
+
 - Describe the results using numerical values, graphical representations, or both.
-- Do you have sufficient evidence to suggest that the groups were sampled from different populations?  
+
+- Do you have sufficient evidence to suggest that the groups were sampled from different populations?
 
 ## Exercise 3
 
-Choose 3 research articles you have read recently or are planning to read.  
+Choose 3 research articles you have read recently or are planning to read.
+
 What types of data do they analyse?   
+
 What statistical tests do they use? 
+
 Are the choices of statistical tests justified by the authors?
+
 Do you think the tests are appropriate?
 
 <button type="button" class="btn btn-success btn-lg btn-block font-weight-bold">Class 2</button>

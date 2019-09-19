@@ -473,7 +473,9 @@ ggplot(as_tibble(x), aes(value)) +
   theme(axis.title = element_text(size = 16),
         axis.text = element_text(size = 14),
         plot.title = element_text(size=20)) +
-  ggtitle(paste0(&quot;Log normal distribution: mean = &quot;,m,&quot;, sd = &quot;,sd))</code></pre>
+  ggtitle(paste0(&quot;Log normal distribution: mean = &quot;,m,&quot;, sd = &quot;,s))</code></pre>
+<pre><code>## Warning: Calling `as_tibble()` on a vector is discouraged, because the behavior is likely to change in the future. Use `tibble::enframe(name = NULL)` instead.
+## This warning is displayed once per session.</code></pre>
 <p><img src="nb4_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <pre class="r"><code># ggsave(filename = &quot;b3_lnormdist.pdf&quot;)</code></pre>
 </div>
@@ -522,6 +524,24 @@ ggplot(v, aes(x = value)) + theme_linedraw() +
   ggtitle(paste(nsim,&quot;sample means: mean =&quot;,round(mean(dist.samp),digits=1),&quot;, sd = &quot;,round(sd(dist.samp),digits=2)))</code></pre>
 <p><img src="nb4_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 <pre class="r"><code># ggsave(filename = &quot;b3_lnormdist_10000samp_mean.pdf&quot;)</code></pre>
+</div>
+<div id="sem" class="section level2">
+<h2>SEM</h2>
+<div id="based-on-otherwise-unobservable-population" class="section level3">
+<h3>Based on (otherwise unobservable population)</h3>
+<pre class="r"><code>s / sqrt(n)</code></pre>
+<pre><code>## [1] 1.118034</code></pre>
+</div>
+<div id="based-on-otherwise-unachievable-10000-experiments" class="section level3">
+<h3>Based on (otherwise unachievable) 10,000 experiments</h3>
+<pre class="r"><code>sd(dist.samp)</code></pre>
+<pre><code>## [1] 1.121328</code></pre>
+</div>
+<div id="based-on-one-sample" class="section level3">
+<h3>Based on one sample</h3>
+<pre class="r"><code>sd(samp) / sqrt(n)</code></pre>
+<pre><code>## [1] 1.172885</code></pre>
+</div>
 </div>
 </div>
 

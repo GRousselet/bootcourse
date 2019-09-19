@@ -332,7 +332,60 @@ $(document).ready(function () {
 </div>
 
 
-
+<div id="t-test-confidence-interval" class="section level1">
+<h1>t-test confidence interval</h1>
+<div id="get-one-sample-and-apply-t.test-function" class="section level2">
+<h2>Get one sample and apply t.test() function</h2>
+<pre class="r"><code># one sample
+set.seed(4)
+n &lt;- 20
+samp &lt;- rnorm(n, m, sd)
+t.test(samp)</code></pre>
+<pre><code>## 
+##  One Sample t-test
+## 
+## data:  samp
+## t = 4.8907, df = 19, p-value = 0.0001015
+## alternative hypothesis: true mean is not equal to 0
+## 95 percent confidence interval:
+##   5.01276 12.51317
+## sample estimates:
+## mean of x 
+##  8.762963</code></pre>
+</div>
+<div id="compute-t-value" class="section level2">
+<h2>Compute t value</h2>
+<pre class="r"><code># Formula
+samp.m &lt;- mean(samp) # sample mean
+samp.v &lt;- var(samp) # sample variance
+sem &lt;- sqrt(samp.v/n) # standard error of the mean
+samp.t &lt;- samp.m / sem
+samp.t</code></pre>
+<pre><code>## [1] 4.890693</code></pre>
+</div>
+<div id="t-distribution-and-quantiles" class="section level2">
+<h2>t distribution and quantiles</h2>
+<pre class="r"><code>ggplot(data.frame(x = c(-5, 5)), aes(x)) + theme_linedraw() +
+  stat_function(fun = dt, args = list(df = df)) + 
+labs(y = &quot;Density&quot;) +
+  theme(axis.text = element_text(size = 14),
+        axis.title = element_text(size = 16),
+        plot.title = element_text(size=20)) +
+  ggtitle(paste0(&quot;t distribution: df = &quot;,df,&quot;, &quot;,(1-alpha/2)*100,&quot;th quantile = &quot;,round(qt(1-alpha/2, df), digits=2))) +
+  geom_vline(xintercept = c(-qt(1-alpha/2, df), qt(1-alpha/2, df)), colour = &quot;green&quot;, size = 1)</code></pre>
+<p><img src="nb5_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+</div>
+<div id="compute-confidence-interval" class="section level2">
+<h2>Compute confidence interval</h2>
+<pre class="r"><code>alpha &lt;- 0.05
+df &lt;- n-1 # degrees of freedom
+ci &lt;- vector(&quot;numeric&quot;,2)
+ci[1] &lt;- samp.m - qt(1-alpha/2, df)  * sem
+ci[2] &lt;- samp.m + qt(1-alpha/2, df)  * sem
+ci</code></pre>
+<pre><code>## [1]  5.01276 12.51317</code></pre>
+</div>
+</div>
 
 <p> </p>
 <p> </p>
