@@ -55,13 +55,13 @@ Do that for all pairwise combinations.
 
 Choose 3 research articles you have read recently or are planning to read.
 
-What types of data do they analyse?   
+- What types of data do they analyse?   
 
-What statistical tests do they use? 
+- What statistical tests do they use? 
 
-Are the choices of statistical tests justified by the authors?
+- Are the choices of statistical tests justified by the authors?
 
-Do you think the tests are appropriate?
+- Do you think the tests are appropriate?
 
 <button type="button" class="btn btn-success btn-lg btn-block font-weight-bold">Class 2</button>
 

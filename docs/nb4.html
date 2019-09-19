@@ -474,8 +474,6 @@ ggplot(as_tibble(x), aes(value)) +
         axis.text = element_text(size = 14),
         plot.title = element_text(size=20)) +
   ggtitle(paste0(&quot;Log normal distribution: mean = &quot;,m,&quot;, sd = &quot;,s))</code></pre>
-<pre><code>## Warning: Calling `as_tibble()` on a vector is discouraged, because the behavior is likely to change in the future. Use `tibble::enframe(name = NULL)` instead.
-## This warning is displayed once per session.</code></pre>
 <p><img src="nb4_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <pre class="r"><code># ggsave(filename = &quot;b3_lnormdist.pdf&quot;)</code></pre>
 </div>
