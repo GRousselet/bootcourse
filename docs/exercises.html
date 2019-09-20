@@ -332,12 +332,12 @@ $(document).ready(function () {
 </div>
 
 
-<p>After each class, work in groups of 2 or 3 to produce an RMarkdown document in which you answer the questions below. Knit your document into a <code>.pdf</code> file and submit it to the Moodle discussion forum for feedback.</p>
+<p>After each class, work in groups of 2 or 3 to produce an RMarkdown document in which you answer the questions below. Knit your document into a <code>.pdf</code> file and submit it to the Moodle discussion forum for feedback. For each question, explain and justify your approach and conclude briefly.</p>
 <p>Here is an example of header for your RMarkdown document:</p>
 <pre><code>---
 title: &quot;Homework #1&quot;
 author: &quot;Group: the kurtotic avengers&quot;
-date: &quot;2019-09-19&quot;
+date: &quot;2019-09-20&quot;
 output:
   pdf_document:
     fig_caption: no
@@ -370,12 +370,18 @@ Class 1
 </div>
 <div id="exercise-3" class="section level2">
 <h2>Exercise 3</h2>
-<p>Choose 3 research articles you have read recently or are planning to read.</p>
+<p>Recently I’ve started to write down by how much my morning bus is delayed. You can load the data in the next chunk.</p>
+<p>Each value is a delay relative to the official bus timetable:</p>
 <ul>
-<li><p>What types of data do they analyse?</p></li>
-<li><p>What statistical tests do they use?</p></li>
-<li><p>Are the choices of statistical tests justified by the authors?</p></li>
-<li><p>Do you think the tests are appropriate?</p></li>
+<li><p>a positive value means the bus was late;</p></li>
+<li><p>a negative value means the bus was early;</p></li>
+<li><p>zero means the bus was exactly on time, within 60 seconds (we’re not in Japan, so I only check the minutes on my watch when the bus arrives, not the seconds).</p></li>
+</ul>
+<pre class="r"><code>delays &lt;- matrix(scan(&quot;./data/bustimes.txt&quot;), byrow=TRUE) # delays in minutes</code></pre>
+<ul>
+<li>[1] Illustrate the results.</li>
+<li>[2] What is the typical waiting time? Provide a confidence interval. You can try several methods.</li>
+<li>[3] Let say I have the hypothesis that I tend to wait at least 3 minutes for my bus in the morning. Given the data, and using bootstrap inferences, what can you conclude about this hypothesis?</li>
 </ul>
 <button type="button" class="btn btn-success btn-lg btn-block font-weight-bold">
 Class 2
@@ -383,10 +389,18 @@ Class 2
 </div>
 <div id="exercise-1-1" class="section level2">
 <h2>Exercise 1</h2>
-<p>Simulate the sampling distribution of 10,000 throws of a dice with 6 facets. Simulate the same sampling distribution, but for a biased dice, which is twice as likely to land on 6 than any other facet. Hint: use the <code>sample()</code> function. The bias can be controlled using the <code>prob</code> argument.</p>
+<ul>
+<li><p>Repeat exercise 1 from last class.</p></li>
+<li><p>How do the current results differ relative to the results from last class?</p></li>
+<li><p>Repeat the group comparisons after combining data across classes, separately for each colour.</p></li>
+</ul>
 </div>
 <div id="exercise-2-1" class="section level2">
 <h2>Exercise 2</h2>
+<p>Simulate the sampling distribution of 10,000 throws of a dice with 6 facets. Simulate the same sampling distribution, but for a biased dice, which is twice as likely to land on 6 than any other facet. Hint: use the <code>sample()</code> function. The bias can be controlled using the <code>prob</code> argument.</p>
+</div>
+<div id="exercise-3-1" class="section level2">
+<h2>Exercise 3</h2>
 <p>Consider a standard lognormal population. Compare the sampling distributions for the mean, the median and a trimmed mean for sample sizes n = 10, 20, 50, 100. Use 10,000 simulations to derive the sampling distributions. Illustrate the sampling distributions using ggplot2. Try using <code>facet_grid</code> or <code>facet_wrap</code> to combine multiple plots into one figure.</p>
 <div id="generate-a-random-sample-of-size-n10-from-a-standard-lognormal-population" class="section level3">
 <h3>Generate a random sample of size n=10 from a standard lognormal population</h3>
@@ -400,6 +414,11 @@ Class 3
 </div>
 <div id="exercise-1-2" class="section level2">
 <h2>Exercise 1</h2>
+<ul>
+<li><p>Repeat exercise 1 from last class.</p></li>
+<li><p>How do the current results differ relative to the results from last class?</p></li>
+<li><p>Repeat the group comparisons after combining data across classes, separately for each colour.</p></li>
+</ul>
 </div>
 <div id="exercise-2-2" class="section level2">
 <h2>Exercise 2</h2>
@@ -409,6 +428,11 @@ Class 4
 </div>
 <div id="exercise-1-3" class="section level2">
 <h2>Exercise 1</h2>
+<ul>
+<li><p>Repeat exercise 1 from last class.</p></li>
+<li><p>How do the current results differ relative to the results from last class?</p></li>
+<li><p>Repeat the group comparisons after combining data across classes, separately for each colour.</p></li>
+</ul>
 </div>
 <div id="exercise-2-3" class="section level2">
 <h2>Exercise 2</h2>

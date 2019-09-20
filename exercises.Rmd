@@ -7,7 +7,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-After each class, work in groups of 2 or 3 to produce an RMarkdown document in which you answer the questions below. Knit your document into a `.pdf` file and submit it to the Moodle discussion forum for feedback.
+After each class, work in groups of 2 or 3 to produce an RMarkdown document in which you answer the questions below. Knit your document into a `.pdf` file and submit it to the Moodle discussion forum for feedback. For each question, explain and justify your approach and conclude briefly.
 
 Here is an example of header for your RMarkdown document:
 
@@ -53,25 +53,43 @@ Do that for all pairwise combinations.
 
 ## Exercise 3
 
-Choose 3 research articles you have read recently or are planning to read.
+Recently I've started to write down by how much my morning bus is delayed. 
+You can load the data in the next chunk. 
 
-- What types of data do they analyse?   
+Each value is a delay relative to the official bus timetable:
 
-- What statistical tests do they use? 
+- a positive value means the bus was late;
 
-- Are the choices of statistical tests justified by the authors?
+- a negative value means the bus was early;
 
-- Do you think the tests are appropriate?
+- zero means the bus was exactly on time, within 60 seconds (we're not in Japan, so I only check the minutes on my watch when the bus arrives, not the seconds).
+
+```{r}
+delays <- matrix(scan("./data/bustimes.txt"), byrow=TRUE) # delays in minutes
+```
+
+- [1] Illustrate the results.
+- [2] What is the typical waiting time? Provide a confidence interval. You can try several methods.
+- [3] Let say I have the hypothesis that I tend to wait at least 3 minutes for my bus in the morning. Given the data, and using bootstrap inferences, what can you conclude about this hypothesis?
 
 <button type="button" class="btn btn-success btn-lg btn-block font-weight-bold">Class 2</button>
 
 ## Exercise 1
 
+- Repeat exercise 1 from last class. 
+
+- How do the current results differ relative to the results from last class?
+
+- Repeat the group comparisons after combining data across classes, separately for each colour.
+
+
+## Exercise 2
+
 Simulate the sampling distribution of 10,000 throws of a dice with 6 facets.
 Simulate the same sampling distribution, but for a biased dice, which is twice as likely to land on 6 than any other facet.
 Hint: use the `sample()` function. The bias can be controlled using the `prob` argument.
 
-## Exercise 2
+## Exercise 3
 
 Consider a standard lognormal population. Compare the sampling distributions for the mean, the median and a trimmed mean for sample sizes n = 10, 20, 50, 100. Use 10,000 simulations to derive the sampling distributions.
 Illustrate the sampling distributions using ggplot2. Try using `facet_grid` or `facet_wrap` to combine multiple plots into one figure.
@@ -86,9 +104,12 @@ rlnorm(n)
 <button type="button" class="btn btn-success btn-lg btn-block font-weight-bold">Class 3</button>
 
 ## Exercise 1
-```{r, eval=FALSE}
 
-```
+- Repeat exercise 1 from last class. 
+
+- How do the current results differ relative to the results from last class?
+
+- Repeat the group comparisons after combining data across classes, separately for each colour.
 
 ## Exercise 2
 ```{r, eval=FALSE}
@@ -98,9 +119,12 @@ rlnorm(n)
 <button type="button" class="btn btn-success btn-lg btn-block font-weight-bold">Class 4</button>
 
 ## Exercise 1
-```{r, eval=FALSE}
 
-```
+- Repeat exercise 1 from last class. 
+
+- How do the current results differ relative to the results from last class?
+
+- Repeat the group comparisons after combining data across classes, separately for each colour.
 
 ## Exercise 2
 ```{r, eval=FALSE}

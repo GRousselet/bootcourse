@@ -36,13 +36,19 @@ The slides for all sessions are hosted on [Moodle](https://moodle.gla.ac.uk/logi
 
 ## Lecture 1: Introduction
 
-- ILOs: 
-- [Notebook](nb1.html)
-- Activities: dice
+- ILOs: to be able to:  
+  - define P values and confidence intervals;
+  - explain in general terms the importance of robust estimation;
+  - justify the need for detailed graphical representations.
+- [Notebook](nb1.html)  
+- Activities: dice  
 
 ## Lecture 2: The percentile bootstrap
 
 - ILOs: 
+  - explain the philosophy of the percentile bootstrap;
+  - describe how the bootstrap can be implemented in R;
+  - use the bootstrap to make inferences.
 - [Notebook](nb2.html)
 - Activities: poker chips
 - [Interactive demo](https://seeing-theory.brown.edu/frequentist-inference/index.html#section2)

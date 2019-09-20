@@ -110,3 +110,66 @@ df$gp <- factor(df$gp, levels=unique(df$gp))
 
 What would you do next with the data?
 
+# 50 experiments - 50 confidence intervals
+
+We perform many experiments, and for each experiment we compute a confidence interval, which we plot as horizontal lines.
+
+## Sample from a normal distribution
+```{r}
+nboot <- 1000
+alpha <- .1
+lo <- nboot*(alpha/2)
+hi <- nboot - lo
+lo <- lo + 1
+
+nexp <- 50 # number of experiments
+n <- 20 # sample size in each experiment
+n.m <- 50 # mean of normal distribution 
+n.sd <- 20 # sd of normal distribution
+ci <- matrix(NA, nrow = nexp, ncol = 2)
+ci.ttest <- matrix(NA, nrow = nexp, ncol = 2)
+for(E in 1:nexp){
+  # sample data + bootstrap + compute mean of each bootstrap sample
+  samp <- rnorm(n, n.m, n.sd)
+  boot.samp <- apply(matrix(sample(samp, n*nboot, replace = TRUE), nrow = nboot), 1, mean)
+  sort.boot.samp <- sort(boot.samp) # sort bootstrap estimates
+  ci[E,1] <- sort.boot.samp[lo] 
+  ci[E,2] <- sort.boot.samp[hi]
+  ci.ttest[E,] <- t.test(samp, conf.level = 1-alpha)$conf.int
+}
+```
+
+### Illustrate results: bootstrap
+```{r, fig.height=3, fig.width=2}
+df <- tibble(x = as.vector(ci),
+             y = rep(1:nexp,2),
+             gr = factor(rep(1:nexp,2))
+            )
+ggplot(df, aes(x = x, y = y)) + theme_linedraw() +
+  geom_point() +
+  geom_line(aes(group = gr)) +
+  geom_vline(xintercept = n.m, colour = "red") +
+  labs(x = "Values", y = "Experiments") +
+  theme(axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14))
+
+# https://stackoverflow.com/questions/12253239/vertical-lines-between-points-with-ggplot2
+# ggsave(filename = './50expt_bootci.pdf')
+```
+
+### Illustrate results: t-test
+```{r, fig.height=3, fig.width=2}
+df <- tibble(x = as.vector(ci.ttest),
+             y = rep(1:nexp,2),
+             gr = factor(rep(1:nexp,2))
+            )
+ggplot(df, aes(x = x, y = y)) + theme_linedraw() +
+  geom_point() +
+  geom_line(aes(group = gr)) +
+  geom_vline(xintercept = n.m, colour = "red") +
+  labs(x = "Values", y = "Experiments") +
+  theme(axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14))
+# ggsave(filename = './50expt_ttci.pdf')
+```
+

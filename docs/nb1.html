@@ -419,6 +419,67 @@ df$gp &lt;- factor(df$gp, levels=unique(df$gp))
 <p>What would you do next with the data?</p>
 </div>
 </div>
+<div id="experiments---50-confidence-intervals" class="section level1">
+<h1>50 experiments - 50 confidence intervals</h1>
+<p>We perform many experiments, and for each experiment we compute a confidence interval, which we plot as horizontal lines.</p>
+<div id="sample-from-a-normal-distribution" class="section level2">
+<h2>Sample from a normal distribution</h2>
+<pre class="r"><code>nboot &lt;- 1000
+alpha &lt;- .1
+lo &lt;- nboot*(alpha/2)
+hi &lt;- nboot - lo
+lo &lt;- lo + 1
+
+nexp &lt;- 50 # number of experiments
+n &lt;- 20 # sample size in each experiment
+n.m &lt;- 50 # mean of normal distribution 
+n.sd &lt;- 20 # sd of normal distribution
+ci &lt;- matrix(NA, nrow = nexp, ncol = 2)
+ci.ttest &lt;- matrix(NA, nrow = nexp, ncol = 2)
+for(E in 1:nexp){
+  # sample data + bootstrap + compute mean of each bootstrap sample
+  samp &lt;- rnorm(n, n.m, n.sd)
+  boot.samp &lt;- apply(matrix(sample(samp, n*nboot, replace = TRUE), nrow = nboot), 1, mean)
+  sort.boot.samp &lt;- sort(boot.samp) # sort bootstrap estimates
+  ci[E,1] &lt;- sort.boot.samp[lo] 
+  ci[E,2] &lt;- sort.boot.samp[hi]
+  ci.ttest[E,] &lt;- t.test(samp, conf.level = 1-alpha)$conf.int
+}</code></pre>
+<div id="illustrate-results-bootstrap" class="section level3">
+<h3>Illustrate results: bootstrap</h3>
+<pre class="r"><code>df &lt;- tibble(x = as.vector(ci),
+             y = rep(1:nexp,2),
+             gr = factor(rep(1:nexp,2))
+            )
+ggplot(df, aes(x = x, y = y)) + theme_linedraw() +
+  geom_point() +
+  geom_line(aes(group = gr)) +
+  geom_vline(xintercept = n.m, colour = &quot;red&quot;) +
+  labs(x = &quot;Values&quot;, y = &quot;Experiments&quot;) +
+  theme(axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14))</code></pre>
+<p><img src="nb1_files/figure-html/unnamed-chunk-9-1.png" width="192" /></p>
+<pre class="r"><code># https://stackoverflow.com/questions/12253239/vertical-lines-between-points-with-ggplot2
+# ggsave(filename = &#39;./50expt_bootci.pdf&#39;)</code></pre>
+</div>
+<div id="illustrate-results-t-test" class="section level3">
+<h3>Illustrate results: t-test</h3>
+<pre class="r"><code>df &lt;- tibble(x = as.vector(ci.ttest),
+             y = rep(1:nexp,2),
+             gr = factor(rep(1:nexp,2))
+            )
+ggplot(df, aes(x = x, y = y)) + theme_linedraw() +
+  geom_point() +
+  geom_line(aes(group = gr)) +
+  geom_vline(xintercept = n.m, colour = &quot;red&quot;) +
+  labs(x = &quot;Values&quot;, y = &quot;Experiments&quot;) +
+  theme(axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14))</code></pre>
+<p><img src="nb1_files/figure-html/unnamed-chunk-10-1.png" width="192" /></p>
+<pre class="r"><code># ggsave(filename = &#39;./50expt_ttci.pdf&#39;)</code></pre>
+</div>
+</div>
+</div>
 
 <p> </p>
 <p> </p>

@@ -7,13 +7,21 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# t-test confidence interval
+```{r message=FALSE, warning=FALSE}
+# dependencies
+library(ggplot2)
+library(tibble)
+```
+
+# t-test confidence interval: example 1
 
 ## Get one sample and apply t.test() function
 ```{r}
 # one sample
 set.seed(4)
 n <- 20
+m <- 0
+sd <- 1
 samp <- rnorm(n, m, sd)
 t.test(samp)
 ```
@@ -28,8 +36,17 @@ samp.t <- samp.m / sem
 samp.t
 ```
 
+## Compute P value
+```{r}
+df <- n-1
+samp.pval <- 2*(1-pt(abs(samp.t),df))
+samp.pval
+```
+
 ## t distribution and quantiles
 ```{r}
+alpha <- 0.05
+
 ggplot(data.frame(x = c(-5, 5)), aes(x)) + theme_linedraw() +
   stat_function(fun = dt, args = list(df = df)) + 
 labs(y = "Density") +
@@ -38,12 +55,119 @@ labs(y = "Density") +
         plot.title = element_text(size=20)) +
   ggtitle(paste0("t distribution: df = ",df,", ",(1-alpha/2)*100,"th quantile = ",round(qt(1-alpha/2, df), digits=2))) +
   geom_vline(xintercept = c(-qt(1-alpha/2, df), qt(1-alpha/2, df)), colour = "green", size = 1)
+  # geom_vline(xintercept = samp.t, colour = "purple", size = 1)
 ```
 
 ## Compute confidence interval
 ```{r}
 alpha <- 0.05
 df <- n-1 # degrees of freedom
+ci <- vector("numeric",2)
+ci[1] <- samp.m - qt(1-alpha/2, df)  * sem
+ci[2] <- samp.m + qt(1-alpha/2, df)  * sem
+ci
+```
+
+# t-test confidence interval: example 2
+
+## Get one sample and apply t.test() function
+```{r}
+# one sample
+set.seed(21)
+n <- 20
+m <- 0
+sd <- 1
+samp <- rnorm(n, m, sd)
+t.test(samp)
+```
+
+## Compute t value
+```{r}
+# Formula
+samp.m <- mean(samp) # sample mean
+samp.v <- var(samp) # sample variance
+sem <- sqrt(samp.v/n) # standard error of the mean
+samp.t <- samp.m / sem
+samp.t
+```
+
+## Compute P value
+```{r}
+df <- n-1 # degrees of freedom
+samp.pval <- 2*(1-pt(abs(samp.t),df))
+samp.pval
+```
+
+## t distribution and quantiles
+```{r}
+alpha <- 0.05 # arbitrary significance threshold
+
+ggplot(data.frame(x = c(-5, 5)), aes(x)) + theme_linedraw() +
+  stat_function(fun = dt, args = list(df = df)) + 
+labs(y = "Density") +
+  theme(axis.text = element_text(size = 14),
+        axis.title = element_text(size = 16),
+        plot.title = element_text(size=20)) +
+  ggtitle(paste0("t distribution: df = ",df,", ",(1-alpha/2)*100,"th quantile = ",round(qt(1-alpha/2, df), digits=2))) +
+  geom_vline(xintercept = c(-qt(1-alpha/2, df), qt(1-alpha/2, df)), colour = "green", size = 1) +
+  geom_vline(xintercept = samp.t, colour = "purple", size = 1)
+```
+
+## Compute confidence interval
+```{r}
+ci <- vector("numeric",2)
+ci[1] <- samp.m - qt(1-alpha/2, df)  * sem
+ci[2] <- samp.m + qt(1-alpha/2, df)  * sem
+ci
+```
+
+# t-test confidence interval: example 3
+
+## Get one sample and apply t.test() function
+```{r}
+# one sample
+set.seed(7)
+n <- 20
+m <- 0.5
+sd <- 1
+samp <- rnorm(n, m, sd)
+t.test(samp)
+```
+
+## Compute t value
+```{r}
+# Formula
+samp.m <- mean(samp) # sample mean
+samp.v <- var(samp) # sample variance
+sem <- sqrt(samp.v/n) # standard error of the mean
+samp.t <- samp.m / sem
+samp.t
+```
+
+## Compute P value
+```{r}
+df <- n-1 # degrees of freedom
+samp.pval <- 2*(1-pt(abs(samp.t),df))
+samp.pval
+```
+
+## t distribution and quantiles
+```{r}
+alpha <- 0.05 # arbitrary significance threshold
+
+ggplot(data.frame(x = c(-5, 5)), aes(x)) + theme_linedraw() +
+  stat_function(fun = dt, args = list(df = df)) + 
+labs(y = "Density") +
+  theme(axis.text = element_text(size = 14),
+        axis.title = element_text(size = 16),
+        plot.title = element_text(size=20)) +
+  ggtitle(paste0("t distribution: df = ",df,", ",(1-alpha/2)*100,"th quantile = ",round(qt(1-alpha/2, df), digits=2))) +
+  geom_vline(xintercept = c(-qt(1-alpha/2, df), qt(1-alpha/2, df)), colour = "green", size = 1) +
+  geom_vline(xintercept = samp.t, colour = "purple", size = 1)
+```
+
+## Compute confidence interval
+```{r}
 ci <- vector("numeric",2)
 ci[1] <- samp.m - qt(1-alpha/2, df)  * sem
 ci[2] <- samp.m + qt(1-alpha/2, df)  * sem
