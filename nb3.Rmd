@@ -292,7 +292,7 @@ polygon(c(xv[xv>=zval],zval),c(yv[xv>=zval],yv[xv==4]),col=5)
 
 # Contaminated normal distribution
 
-We mix two normal distributions. The resulting, contaminated normal distribution, on its own, looks normal, but has larger variance 
+We mix two normal distributions. The resulting, contaminated normal distribution, on its own, looks normal, but has larger variance. 
 
 ## Distribution shape
 ```{r}

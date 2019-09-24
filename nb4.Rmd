@@ -24,7 +24,7 @@ labs(y = "Density") +
         axis.title = element_text(size = 16),
         plot.title = element_text(size=20)) +
   ggtitle(paste0("Normal distribution: mean = ",m,", sd = ",sd))
-# ggsave(filename = "b3_normdist.pdf")
+# ggsave(filename = "./figures/nb4_normdist.pdf")
 ```
 
 ```{r}
@@ -40,7 +40,7 @@ labs(y = "Density") +
         axis.title = element_text(size = 16),
         plot.title = element_text(size=20)) +
   ggtitle(paste0("Normal distribution: mean = ",m,", sd = ",sd))
-# ggsave(filename = "b3_normdist_1samp.pdf")
+# ggsave(filename = "./figures/nb4_normdist_1samp.pdf")
 ```
 
 ```{r}
@@ -57,7 +57,7 @@ labs(y = "Density") +
         axis.title = element_text(size = 16),
         plot.title = element_text(size=20)) +
   ggtitle(paste("Sample mean =",round(mean(samp),digits=1),", sd = ",round(sd(samp),digits=1)))
-# ggsave(filename = "b3_normdist_1samp_mean.pdf")
+# ggsave(filename = "./figures/nb4_normdist_1samp_mean.pdf")
 ```
 
 ```{r}
@@ -73,7 +73,7 @@ ggplot(data.frame(x=samp.dist), aes(x)) + theme_linedraw() +
         axis.title = element_text(size = 16),
         plot.title = element_text(size=20)) +
   ggtitle(paste(nsim,"sample means: mean =",round(mean(samp.dist),digits=1),", sd = ",round(sd(samp.dist),digits=2)))
-# ggsave(filename = "b3_normdist_10000samp_mean.pdf")
+# ggsave(filename = "./figures/nb4_normdist_10000samp_mean.pdf")
 ```
 
 # Standard error of the mean
@@ -87,53 +87,10 @@ sd / sqrt(n)
 ```
 SEM = sd of sampling distribution of the sample mean
 
-https://www.khanacademy.org/math/ap-statistics/sampling-distribution-ap/sampling-distribution-mean/v/standard-error-of-the-mean
+For more on the SEM, see this excellent [video](https://www.khanacademy.org/math/ap-statistics/sampling-distribution-ap/sampling-distribution-mean/v/standard-error-of-the-mean).
 
 ```{r}
 sd(samp.dist)
-```
-
-# t-test confidence interval
-
-## Get one sample and apply t.test() function
-```{r}
-# one sample
-set.seed(4)
-n <- 20
-samp <- rnorm(n, m, sd)
-t.test(samp)
-```
-
-## Compute t value
-```{r}
-# Formula
-samp.m <- mean(samp) # sample mean
-samp.v <- var(samp) # sample variance
-sem <- sqrt(samp.v/n) # standard error of the mean
-samp.t <- samp.m / sem
-samp.t
-```
-
-## t distribution and quantiles
-```{r}
-alpha <- 0.05
-df <- n-1 # degrees of freedom
-ggplot(data.frame(x = c(-5, 5)), aes(x)) + theme_linedraw() +
-  stat_function(fun = dt, args = list(df = df)) + 
-labs(y = "Density") +
-  theme(axis.text = element_text(size = 14),
-        axis.title = element_text(size = 16),
-        plot.title = element_text(size=20)) +
-  ggtitle(paste0("t distribution: df = ",df,", ",(1-alpha/2)*100,"th quantile = ",round(qt(1-alpha/2, df), digits=2))) +
-  geom_vline(xintercept = c(-qt(1-alpha/2, df), qt(1-alpha/2, df)), colour = "green", size = 1)
-```
-
-## Compute confidence interval
-```{r}
-ci <- vector("numeric",2)
-ci[1] <- samp.m - qt(1-alpha/2, df)  * sem
-ci[2] <- samp.m + qt(1-alpha/2, df)  * sem
-ci
 ```
 
 # Example using the lognormal
@@ -156,7 +113,7 @@ ggplot(as_tibble(x), aes(value)) +
         axis.text = element_text(size = 14),
         plot.title = element_text(size=20)) +
   ggtitle(paste0("Log normal distribution: mean = ",m,", sd = ",s))
-# ggsave(filename = "b3_lnormdist.pdf")
+# ggsave(filename = "./figures/nb4_lnormdist.pdf")
 ```
 
 ## One sample from lognormal distribution 
@@ -175,7 +132,7 @@ labs(y = "Density") +
         axis.title = element_text(size = 16),
         plot.title = element_text(size=20)) +
   ggtitle(paste0("Log normal distribution: mean = ",m,", sd = ",sd))
-# ggsave(filename = "b3_lnormdist_1samp.pdf")
+# ggsave(filename = "./figures/nb4_lnormdist_1samp.pdf")
 ```
 
 ## Many samples from lognormal distribution 
@@ -202,7 +159,7 @@ ggplot(v, aes(x = value)) + theme_linedraw() +
         axis.title = element_text(size = 16),
         plot.title = element_text(size=20)) +
   ggtitle(paste(nsim,"sample means: mean =",round(mean(dist.samp),digits=1),", sd = ",round(sd(dist.samp),digits=2)))
-# ggsave(filename = "b3_lnormdist_10000samp_mean.pdf")
+# ggsave(filename = "./figures/nb4_lnormdist_10000samp_mean.pdf")
 ```
 
 ## SEM
@@ -221,3 +178,181 @@ sd(dist.samp)
 sd(samp) / sqrt(n)
 ```
 
+# Bootstrap sampling distribution
+
+## Example 1: samples from a standard normal distribution
+
+### Sampling distribution
+```{r}
+set.seed(777)
+n <- 100 # sample size
+nsamp <- 10000 # number of samples (experiments)
+# sampling distribution of the mean
+dist.samp <- apply(matrix(rnorm(n*nsamp), nrow = nsamp), 1, mean)
+v <- enframe(dist.samp, name = NULL) 
+ggplot(v, aes(x = value)) +
+        geom_histogram(aes(y = ..density..), 
+                       bins = 40,  colour = "black", fill = "white") +
+        geom_line(aes(y = ..density.., colour = 'Sampling'), stat = 'density', size = 1) +     
+        scale_colour_manual(name = "Distributions", values = "orange1") +
+  theme(legend.position = c(0.1, 0.85),
+        axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 14)
+       )
+# ggsave(filename = './figures/nb4_norm_samp_dist.pdf')
+```
+
+### Sampling distribution + bootstrap distribution [1]
+
+The bootstrap distribution can approximate the sampling distribution very well for n = 100 and nboot = 1000. Comment out set.seed, so that different random numbers are generated each time you run the chunk.
+What happens for different random samples?
+
+What happens for lower values of n and nboot? 
+What do you conclude?
+
+```{r}
+set.seed(777)
+n <- 100 # sample size 
+samp <- rnorm(n) # create sample from normal population
+nboot <- 1000 # number of bootstrap samples
+nsamp <- 10000 # number of samples (experiments)
+# bootstrap distribution
+boot.samp <- apply(matrix(sample(samp, n*nboot, replace = TRUE), nrow = nboot), 1, mean)
+# sampling distribution of the mean
+dist.samp <- apply(matrix(rnorm(n*nsamp), nrow = nsamp), 1, mean)
+v <- enframe(dist.samp, name = NULL) 
+ggplot(v, aes(x = value)) +
+        geom_histogram(aes(y = ..density..), 
+                       bins = 40,  colour = "black", fill = "white") +
+        geom_line(aes(y = ..density.., colour = 'Sampling'), stat = 'density', size = 1) +     
+        # stat_function(fun = dnorm, aes(colour = 'Normal'),
+        #                  args = list(mean = mean(boot.samp), sd = sd(boot.samp)), size = 1) +
+        geom_line(data = as_tibble(boot.samp),  
+                  aes(x = value, y = ..density.., colour = 'Bootstrap'), 
+                  stat = 'density', size = 1) +
+        scale_colour_manual(name = "Distributions", values = c("green4", "orange1")) +
+  theme(legend.position = c(0.1, 0.85),
+        axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14),
+        legend.text = element_text(size = 12),
+      legend.title = element_text(size = 14)
+       )
+# ggsave(filename = './figures/nb4_norm_samp_dist_boot.pdf')
+```
+
+### Sampling distribution + bootstrap distribution [2]
+
+```{r}
+set.seed(666)
+n <- 100 # sample size 
+samp <- rnorm(n) # create sample from normal population
+nboot <- 1000 # number of bootstrap samples
+nsamp <- 10000 # number of samples (experiments)
+# bootstrap distribution
+boot.samp <- apply(matrix(sample(samp, n*nboot, replace = TRUE), nrow = nboot), 1, mean)
+# sampling distribution of the mean
+dist.samp <- apply(matrix(rnorm(n*nsamp), nrow = nsamp), 1, mean)
+v <- enframe(dist.samp, name = NULL) 
+ggplot(v, aes(x = value)) +
+        geom_histogram(aes(y = ..density..), 
+                       bins = 40,  colour = "black", fill = "white") +
+        geom_line(aes(y = ..density.., colour = 'Sampling'), stat = 'density', size = 1) +     
+        # stat_function(fun = dnorm, aes(colour = 'Normal'),
+        #                  args = list(mean = mean(boot.samp), sd = sd(boot.samp)), size = 1) +
+        geom_line(data = as_tibble(boot.samp),  
+                  aes(x = value, y = ..density.., colour = 'Bootstrap'), 
+                  stat = 'density', size = 1) +
+        scale_colour_manual(name = "Distributions", values = c("green4", "orange1")) +
+  theme(legend.position = c(0.1, 0.85),
+        axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14),
+        legend.text = element_text(size = 12),
+      legend.title = element_text(size = 14)
+       )
+# ggsave(filename = './figures/nb4_norm_samp_dist_boot2.pdf')
+```
+
+## Example 2: sample from gamma distribution
+
+### Check shape of gamme distribution
+```{r}
+x <- seq(0, 15, .05)
+ggplot(tibble::enframe(x), aes(value)) +
+  theme_linedraw() +
+  stat_function(fun = dgamma, args = list(shape = 2, scale = 2), size = 1) +
+  theme(axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14))
+# ggsave(filename = './figures/nb4_gamma_dist.pdf')
+```
+
+### Sampling distribution + bootstrap distribution [1]
+
+```{r}
+set.seed(777) 
+n <- 100
+gamma_shape <- 2
+gamma_scale <- 2
+# sample n trials from gamma distribution
+samp <- rgamma(n, shape = gamma_shape, scale = gamma_scale)
+nboot <- 1000
+nsamp <- 10000
+# bootstrap distribution
+boot.samp <- apply(matrix(sample(samp, n*nboot, replace = TRUE), nrow = nboot), 1, mean)
+# sampling distribution of the mean of n trials from gamma distribution
+dist.samp <- apply(matrix(rgamma(n*nsamp, shape = gamma_shape, scale = gamma_scale), nrow = nsamp), 1, mean)
+v <- enframe(dist.samp, name = NULL) 
+ggplot(v, aes(x = value)) +
+        geom_histogram(aes(y = ..density..), 
+                       bins = 40,  colour = "black", fill = "white") +
+        geom_line(aes(y = ..density.., colour = 'Sampling'), stat = 'density', size = 1) +     
+        # stat_function(fun = dnorm, aes(colour = 'Normal'),
+        #                  args = list(mean = mean(boot.samp), sd = sd(boot.samp)), size = 1) +
+        geom_line(data = as_tibble(boot.samp),  
+                  aes(x = value, y = ..density.., colour = 'Bootstrap'), 
+                  stat = 'density', size = 1) +
+        scale_colour_manual(name = "Distributions", values = c("green4", "orange1")) +
+  theme(legend.position = c(0.1, 0.85),
+        axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14),
+        legend.text = element_text(size = 12),
+      legend.title = element_text(size = 14)
+       )
+# ggsave(filename = './figures/nb4_gamma_samp_dist_boot.pdf')
+```
+
+### Sampling distribution + bootstrap distribution [2]
+
+```{r}
+set.seed(666) 
+n <- 100
+gamma_shape <- 2
+gamma_scale <- 2
+# sample n trials from gamma distribution
+samp <- rgamma(n, shape = gamma_shape, scale = gamma_scale)
+nboot <- 1000
+nsamp <- 10000
+# bootstrap distribution
+boot.samp <- apply(matrix(sample(samp, n*nboot, replace = TRUE), nrow = nboot), 1, mean)
+# sampling distribution of the mean of n trials from gamma distribution
+dist.samp <- apply(matrix(rgamma(n*nsamp, shape = gamma_shape, scale = gamma_scale), nrow = nsamp), 1, mean)
+v <- enframe(dist.samp, name = NULL) 
+ggplot(v, aes(x = value)) +
+        geom_histogram(aes(y = ..density..), 
+                       bins = 40,  colour = "black", fill = "white") +
+        geom_line(aes(y = ..density.., colour = 'Sampling'), stat = 'density', size = 1) +     
+        # stat_function(fun = dnorm, aes(colour = 'Normal'),
+        #                  args = list(mean = mean(boot.samp), sd = sd(boot.samp)), size = 1) +
+        geom_line(data = as_tibble(boot.samp),  
+                  aes(x = value, y = ..density.., colour = 'Bootstrap'), 
+                  stat = 'density', size = 1) +
+        scale_colour_manual(name = "Distributions", values = c("green4", "orange1")) +
+  theme(legend.position = c(0.1, 0.85),
+        axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14),
+        legend.text = element_text(size = 12),
+      legend.title = element_text(size = 14)
+       )
+# ggsave(filename = './figures/nb4_gamma_samp_dist_boot2.pdf')
+```
