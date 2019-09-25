@@ -43,6 +43,35 @@ samp.pval <- 2*(1-pt(abs(samp.t),df))
 samp.pval
 ```
 
+### Illustrate P value
+```{r}
+alpha <- 0.05
+
+# df <- as_tibble(with(density(boot.m),data.frame(x,y)))
+# 
+# df.pv1 <- tibble(x = df$x[df$x<nv],
+#                 y = df$y[df$x<nv])
+# 
+# df.pv2 <- tibble(x = df$x[df$x>nv],
+#                 y = df$y[df$x>nv])
+
+df.pv2 <- tibble(x = seq(samp.t,5,0.1),
+                 y = dt(seq(samp.t,5,0.1), df))
+
+ggplot(data.frame(x = c(-5, 5)), aes(x)) + theme_linedraw() +
+  stat_function(fun = dt, args = list(df = df)) + 
+labs(y = "Density") +
+  theme(axis.text = element_text(size = 14),
+        axis.title = element_text(size = 16),
+        plot.title = element_text(size=20)) +
+  ggtitle(paste0("t distribution: df = ",df,", t value = ",round(samp.t, digits=2))) +
+  geom_area(data = df.pv2,
+            aes(x = x, y = y),
+            fill = "red", alpha = .2) +
+  geom_vline(xintercept = samp.t, colour = "red", size = 1)
+  # geom_vline(xintercept = samp.t, colour = "purple", size = 1)
+```
+
 ## t distribution and quantiles
 ```{r}
 alpha <- 0.05

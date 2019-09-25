@@ -111,15 +111,16 @@ To look at the effects of outliers, we consider a small sample, introduce an out
 ```{r}
 set.seed(21) # reproducible results
 n <- 10
-samp <- rnorm(n, 8, 2) 
+tr <- 0.2 # amount of trimming
+samp <- rnorm(n, 8, 2) # sample 1
 samp <- c(samp, 17)
+# declare matrices of results
 samp_mat <- matrix(NA, nrow = 12, ncol = 7)
 mean_res <- vector(mode = "numeric", length = 7)
 median_res <- vector(mode = "numeric", length = 7)
 tmean_res <- vector(mode = "numeric", length = 7)
-ci_md_pb <- matrix(NA, nrow = 2, ncol = 7)
-ci_tm_pb <- matrix(NA, nrow = 2, ncol = 7)
-tr <- 0.2 # amount of trimming
+ci_md_pb <- matrix(NA, nrow = 2, ncol = 7) # save bootstrap confidence intervals: median
+ci_tm_pb <- matrix(NA, nrow = 2, ncol = 7) # save bootstrap confidence intervals: trimmed mean
 
 for(C in 1:7){
   todo <- c(samp, 17+C^2)
@@ -268,25 +269,31 @@ geom_errorbar(data = df2, aes(x=cond, ymin=ci_low, ymax=ci_up),
 # Illustrate trimming
 
 ## 20% trimming - Normal distribution
+
+For variety, the example below uses base R graphics to display a normal distribution with each blue area marking 20% of the distribution density (area under the curve). If your head hurts trying to understand the calls to the `polygon` function, don't worry, it took me many trials and errors until I could produce this figure.
+
 ```{r}
-tr<-.2
-xv<-seq(-4,4,0.01)
-yv<-dnorm(xv)
+tr <- .2
+xv <- seq(-4,4,0.01)
+yv <- dnorm(xv)
 plot(xv,yv,type="l")
-zval<-qnorm(tr, mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)
+zval <- qnorm(tr, mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)
 polygon(c(xv[xv<=zval],zval),c(yv[xv<=zval],yv[xv==-4]),col=5)
 polygon(c(xv[xv>=-zval],-zval),c(yv[xv>=-zval],yv[xv==4]),col=5)
 ```
 
 ## 20% trimming - F distribution
+
+Why an F distribution? No particular reason, it is one of many skewed distributions we could choose from.
+
 ```{r}
-tr<-.2
-xv<-seq(0.01,4,0.01)
-yv<-df(xv,6,18) #fx<-dlnorm(x)
+tr <- .2
+xv <- seq(0.01,4,0.01)
+yv <- df(xv,6,18) #fx<-dlnorm(x)
 plot(xv,yv,type="l")
-zval<-qf(tr,6,18)
+zval <- qf(tr,6,18)
 polygon(c(xv[xv<=zval],zval),c(yv[xv<=zval],yv[xv==0.01]),col=5)
-zval<-qf(1-tr,6,18)
+zval <- qf(1-tr,6,18)
 polygon(c(xv[xv>=zval],zval),c(yv[xv>=zval],yv[xv==4]),col=5)
 ```
 
@@ -344,7 +351,7 @@ var(samp.c)
 
 ### Illustration
 ```{r}
-m1 <- 0
+m1 <- 0 # mean of population 1
 m2 <- 1
 alpha <- 0.1 # probability of sampling from population 2
 sd1 <- 1 # standard deviation for population 1
@@ -409,7 +416,7 @@ mean(sim.tm) # power of t-test on 20% trimmed means
 
 ### Illustration
 ```{r}
-m1 <- 0
+m1 <- 0 # mean of population 1
 m2 <- 1
 sd <- 1 # standard deviation for the two populations
 x <- seq(-9, 9, 0.1) # x axis values
@@ -463,10 +470,11 @@ mean(sim.tm) # power of t-test on 20% trimmed means
 
 # g-and-h distributions
 
-The `ghdist()` function is used to generate random numbers from g & h distributions. All such distributions have a median of zero. The parameter g controls the asymmetry of the distribution, while the parameter h controls the thickness of the tails.
-g = h = 0 corresponds to a normal distribution.
+The `ghdist()` function is used to generate random numbers from g & h distributions. All such distributions have a median of zero. The parameter `g` controls the asymmetry of the distribution, while the parameter `h` controls the thickness of the tails. `g` = `h` = 0 corresponds to a normal distribution.
 
 ## Define g-and-h function
+
+The code is provided here if you're curious about the R implementation. Otherwise skip to the outliers section.
 ```{r}
 # code from Rallfun-v35.txt
 ghdist<-function(n,g=0,h=0){
