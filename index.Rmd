@@ -41,7 +41,7 @@ The slides for all sessions are hosted on [Moodle](https://moodle.gla.ac.uk/logi
   - explain in general terms the importance of robust estimation;
   - justify the need for detailed graphical representations.
 - [Notebook](nb1.html)  
-- Activities: dice  
+- Activity: dice  
 
 ## Lecture 2: The percentile bootstrap
 
@@ -50,7 +50,7 @@ The slides for all sessions are hosted on [Moodle](https://moodle.gla.ac.uk/logi
   - describe how the bootstrap can be implemented in R;
   - use the bootstrap to make inferences.
 - [Notebook](nb2.html)
-- Activities: poker chips
+- Activity: poker chips
 - [Interactive demo](https://seeing-theory.brown.edu/frequentist-inference/index.html#section2)
 
 <button type="button" class="btn btn-success btn-lg btn-block font-weight-bold">Class 2</button>
@@ -58,14 +58,25 @@ The slides for all sessions are hosted on [Moodle](https://moodle.gla.ac.uk/logi
 ## Lecture 3: Robust estimation
 
 - ILOs: 
+  - describe distributions by referring to their skewness, kurtosis and the presence of outliers;
+  - explain why we need robust estimators;
+  - define trimmed means and explain their advantages;
+  - explain the imapct of outliers and skewness on estimation and statistical inferences;
+  - describe why classic outlier detection methods are not robust and the foundation of alternative robust methods;
+  - use R functions to detect outliers;
+  - use R to perform inferential statistics on the median and on trimmed means.
 - [Notebook](nb3.html)
-- Activities: dice
+- Activity: dice
 
 ## Lecture 4: Sampling distributions
 
 - ILOs: 
+  - define sampling distribution and standard error;
+  - given a population, compute and illustrate a sampling distribution in R;
+  - decribe the relationship between sampling distributions and bootstrap distributions;
+  - explain the usefulness of simulating sampling distributions.
 - [Notebook](nb4.html)
-- Activities: faux fish
+- Activity: faux fish
 
 <button type="button" class="btn btn-success btn-lg btn-block font-weight-bold">Class 3</button>
 
@@ -73,7 +84,7 @@ The slides for all sessions are hosted on [Moodle](https://moodle.gla.ac.uk/logi
 
 - ILOs: 
 - [Notebook](nb5.html)
-- Activities: dice
+- Activity: dice
 
 ## Lecture 6: Correlation
 
@@ -86,7 +97,7 @@ The slides for all sessions are hosted on [Moodle](https://moodle.gla.ac.uk/logi
 
 - ILOs: 
 - [Notebook](nb7.html)
-- Activities: dice
+- Activity: dice
 
 ## Lecture 8: Shift function
 
