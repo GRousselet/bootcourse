@@ -71,7 +71,9 @@ h6 {
 </style>
 
 
+</head>
 
+<body>
 
 <style type = "text/css">
 .main-container {
@@ -190,6 +192,8 @@ $(document).ready(function () {
 });
 </script>
 
+<div class="container-fluid main-container">
+
 <!-- tabsets -->
 
 <style type="text/css">
@@ -260,15 +264,6 @@ $(document).ready(function () {
 
 <!-- code folding -->
 
-
-
-
-</head>
-
-<body>
-
-
-<div class="container-fluid main-container">
 
 
 
@@ -422,15 +417,16 @@ ggplot(df, aes(x = x, y = y, colour = distribution)) + theme_gar +
 <h2>Generate data and compute estimates of central tendency</h2>
 <pre class="r"><code>set.seed(21) # reproducible results
 n &lt;- 10
-samp &lt;- rnorm(n, 8, 2) 
+tr &lt;- 0.2 # amount of trimming
+samp &lt;- rnorm(n, 8, 2) # sample 1
 samp &lt;- c(samp, 17)
+# declare matrices of results
 samp_mat &lt;- matrix(NA, nrow = 12, ncol = 7)
 mean_res &lt;- vector(mode = &quot;numeric&quot;, length = 7)
 median_res &lt;- vector(mode = &quot;numeric&quot;, length = 7)
 tmean_res &lt;- vector(mode = &quot;numeric&quot;, length = 7)
-ci_md_pb &lt;- matrix(NA, nrow = 2, ncol = 7)
-ci_tm_pb &lt;- matrix(NA, nrow = 2, ncol = 7)
-tr &lt;- 0.2 # amount of trimming
+ci_md_pb &lt;- matrix(NA, nrow = 2, ncol = 7) # save bootstrap confidence intervals: median
+ci_tm_pb &lt;- matrix(NA, nrow = 2, ncol = 7) # save bootstrap confidence intervals: trimmed mean
 
 for(C in 1:7){
   todo &lt;- c(samp, 17+C^2)
@@ -572,31 +568,33 @@ geom_errorbar(data = df2, aes(x=cond, ymin=ci_low, ymax=ci_up),
 <h1>Illustrate trimming</h1>
 <div id="trimming---normal-distribution" class="section level2">
 <h2>20% trimming - Normal distribution</h2>
-<pre class="r"><code>tr&lt;-.2
-xv&lt;-seq(-4,4,0.01)
-yv&lt;-dnorm(xv)
+<p>For variety, the example below uses base R graphics to display a normal distribution with each blue area marking 20% of the distribution density (area under the curve). If your head hurts trying to understand the calls to the <code>polygon</code> function, don’t worry, it took me many trials and errors until I could produce this figure.</p>
+<pre class="r"><code>tr &lt;- .2
+xv &lt;- seq(-4,4,0.01)
+yv &lt;- dnorm(xv)
 plot(xv,yv,type=&quot;l&quot;)
-zval&lt;-qnorm(tr, mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)
+zval &lt;- qnorm(tr, mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)
 polygon(c(xv[xv&lt;=zval],zval),c(yv[xv&lt;=zval],yv[xv==-4]),col=5)
 polygon(c(xv[xv&gt;=-zval],-zval),c(yv[xv&gt;=-zval],yv[xv==4]),col=5)</code></pre>
 <p><img src="nb3_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 </div>
 <div id="trimming---f-distribution" class="section level2">
 <h2>20% trimming - F distribution</h2>
-<pre class="r"><code>tr&lt;-.2
-xv&lt;-seq(0.01,4,0.01)
-yv&lt;-df(xv,6,18) #fx&lt;-dlnorm(x)
+<p>Why an F distribution? No particular reason, it is one of many skewed distributions we could choose from.</p>
+<pre class="r"><code>tr &lt;- .2
+xv &lt;- seq(0.01,4,0.01)
+yv &lt;- df(xv,6,18) #fx&lt;-dlnorm(x)
 plot(xv,yv,type=&quot;l&quot;)
-zval&lt;-qf(tr,6,18)
+zval &lt;- qf(tr,6,18)
 polygon(c(xv[xv&lt;=zval],zval),c(yv[xv&lt;=zval],yv[xv==0.01]),col=5)
-zval&lt;-qf(1-tr,6,18)
+zval &lt;- qf(1-tr,6,18)
 polygon(c(xv[xv&gt;=zval],zval),c(yv[xv&gt;=zval],yv[xv==4]),col=5)</code></pre>
 <p><img src="nb3_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 </div>
 </div>
 <div id="contaminated-normal-distribution" class="section level1">
 <h1>Contaminated normal distribution</h1>
-<p>We mix two normal distributions. The resulting, contaminated normal distribution, on its own, looks normal, but has larger variance</p>
+<p>We mix two normal distributions. The resulting, contaminated normal distribution, on its own, looks normal, but has larger variance.</p>
 <div id="distribution-shape" class="section level2">
 <h2>Distribution shape</h2>
 <pre class="r"><code>alpha &lt;- 0.1 # probability of sampling from population 2
@@ -648,7 +646,7 @@ samp2 &lt;- rnorm(n, m, sd2) # normal sample 2</code></pre>
 <h2>Power simulation 1: contaminated normal</h2>
 <div id="illustration" class="section level3">
 <h3>Illustration</h3>
-<pre class="r"><code>m1 &lt;- 0
+<pre class="r"><code>m1 &lt;- 0 # mean of population 1
 m2 &lt;- 1
 alpha &lt;- 0.1 # probability of sampling from population 2
 sd1 &lt;- 1 # standard deviation for population 1
@@ -715,7 +713,7 @@ mean(sim.m) # power of t-test on means</code></pre>
 <h2>Power simulation 2: normal</h2>
 <div id="illustration-1" class="section level3">
 <h3>Illustration</h3>
-<pre class="r"><code>m1 &lt;- 0
+<pre class="r"><code>m1 &lt;- 0 # mean of population 1
 m2 &lt;- 1
 sd &lt;- 1 # standard deviation for the two populations
 x &lt;- seq(-9, 9, 0.1) # x axis values
@@ -772,9 +770,10 @@ mean(sim.m) # power of t-test on means</code></pre>
 </div>
 <div id="g-and-h-distributions" class="section level1">
 <h1>g-and-h distributions</h1>
-<p>The <code>ghdist()</code> function is used to generate random numbers from g &amp; h distributions. All such distributions have a median of zero. The parameter g controls the asymmetry of the distribution, while the parameter h controls the thickness of the tails. g = h = 0 corresponds to a normal distribution.</p>
+<p>The <code>ghdist()</code> function is used to generate random numbers from g &amp; h distributions. All such distributions have a median of zero. The parameter <code>g</code> controls the asymmetry of the distribution, while the parameter <code>h</code> controls the thickness of the tails. <code>g</code> = <code>h</code> = 0 corresponds to a normal distribution.</p>
 <div id="define-g-and-h-function" class="section level2">
 <h2>Define g-and-h function</h2>
+<p>The code is provided here if you’re curious about the R implementation. Otherwise skip to the outliers section.</p>
 <pre class="r"><code># code from Rallfun-v35.txt
 ghdist&lt;-function(n,g=0,h=0){
 #

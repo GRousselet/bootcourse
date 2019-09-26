@@ -71,7 +71,9 @@ h6 {
 </style>
 
 
+</head>
 
+<body>
 
 <style type = "text/css">
 .main-container {
@@ -190,6 +192,8 @@ $(document).ready(function () {
 });
 </script>
 
+<div class="container-fluid main-container">
+
 <!-- tabsets -->
 
 <style type="text/css">
@@ -263,15 +267,6 @@ $(document).ready(function () {
 
 
 
-</head>
-
-<body>
-
-
-<div class="container-fluid main-container">
-
-
-
 
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
@@ -337,7 +332,7 @@ $(document).ready(function () {
 <pre><code>---
 title: &quot;Homework #1&quot;
 author: &quot;Group: the kurtotic avengers&quot;
-date: &quot;2019-09-20&quot;
+date: &quot;2019-09-26&quot;
 output:
   pdf_document:
     fig_caption: no
@@ -393,15 +388,21 @@ Class 2
 <li><p>Repeat exercise 1 from last class.</p></li>
 <li><p>How do the current results differ relative to the results from last class?</p></li>
 <li><p>Repeat the group comparisons after combining data across classes, separately for each colour.</p></li>
+<li><p>For each dataset, check for outliers using at least one robust method.</p></li>
 </ul>
 </div>
 <div id="exercise-2-1" class="section level2">
 <h2>Exercise 2</h2>
-<p>Simulate the sampling distribution of 10,000 throws of a dice with 6 facets. Simulate the same sampling distribution, but for a biased dice, which is twice as likely to land on 6 than any other facet. Hint: use the <code>sample()</code> function. The bias can be controlled using the <code>prob</code> argument.</p>
+<ul>
+<li><p>Simulate the sampling distribution of 10,000 throws of a dice with 6 facets.</p></li>
+<li><p>Simulate the same sampling distribution, but for a biased dice, which is twice as likely to land on 6 than on any other facet.</p></li>
+<li><p>In a figure, superimpose the two distributions. How do they differ?</p></li>
+</ul>
+<p>Hint: use the <code>sample()</code> function. The bias can be controlled using the <code>prob</code> argument.</p>
 </div>
 <div id="exercise-3-1" class="section level2">
 <h2>Exercise 3</h2>
-<p>Consider a standard lognormal population. Compare the sampling distributions for the mean, the median and a trimmed mean for sample sizes n = 10, 20, 50, 100. Use 10,000 simulations to derive the sampling distributions. Illustrate the sampling distributions using ggplot2. Try using <code>facet_grid</code> or <code>facet_wrap</code> to combine multiple plots into one figure.</p>
+<p>Consider a standard lognormal population. Compare the sampling distributions for the mean, the median and a trimmed mean for sample sizes n = 10, 20, 50, 100. Use 10,000 simulations to derive the sampling distributions. Illustrate the sampling distributions using ggplot2. Try using <code>facet_grid</code> or <code>facet_wrap</code> to combine multiple plots into one figure. Finally, report the standard error for each estimator and sample size. What do you conclude?</p>
 <div id="generate-a-random-sample-of-size-n10-from-a-standard-lognormal-population" class="section level3">
 <h3>Generate a random sample of size n=10 from a standard lognormal population</h3>
 <pre class="r"><code>set.seed(21) # reproducible example

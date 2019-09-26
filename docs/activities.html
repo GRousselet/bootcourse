@@ -71,7 +71,9 @@ h6 {
 </style>
 
 
+</head>
 
+<body>
 
 <style type = "text/css">
 .main-container {
@@ -190,6 +192,8 @@ $(document).ready(function () {
 });
 </script>
 
+<div class="container-fluid main-container">
+
 <!-- tabsets -->
 
 <style type="text/css">
@@ -260,15 +264,6 @@ $(document).ready(function () {
 
 <!-- code folding -->
 
-
-
-
-</head>
-
-<body>
-
-
-<div class="container-fluid main-container">
 
 
 
@@ -448,7 +443,7 @@ ggplot(df, aes(gp, obs)) + theme_linedraw() +
   geom_errorbar(stat = &quot;summary&quot;, 
                 fun.y = foo, fun.ymin = foo, fun.ymax = foo, 
                 colour = &quot;black&quot;, width = .5, size = 0.75, alpha = 0.5)</code></pre>
-<p><img src="activities_files/figure-html/unnamed-chunk-35-1.png" width="672" /></p>
+<p><img src="activities_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
 </div>
 </div>
 </div>
@@ -499,8 +494,8 @@ matrix(sample(samp, size = n*nboot, replace = TRUE), nrow = nboot, byrow = TRUE)
 <p>We sample with replacement from a finite population of faux fish to demonstrate the effect of sample size on the shape of sampling distributions.</p>
 <p>The faux fish activity is mentioned in Steel, Liermann &amp; Guttorp (2019), with pictures of class results. The activity is described in detail in Kelsey &amp; Steel (2001).</p>
 <div class="figure">
-<img src="images/faux%20fish%20ex%20sampdists.png" alt="Faux fish class examples from Steel et al. 2019" />
-<p class="caption">Faux fish class examples from Steel et al. 2019</p>
+<img src="images/faux%20fish%20ex%20sampdists.png" alt="Faux fish class examples from Steel et al. 2019" />
+<p class="caption">Faux fish class examples from Steel et al. 2019</p>
 </div>
 <p>This exercise provides an opportunity to learn about:<br />
 - the distinction between population and sample;<br />
@@ -579,11 +574,13 @@ ggsave(file=&quot;template_n10.pdf&quot;, width = 420, height = 297, units = &qu
 </div>
 <div id="simulate" class="section level3">
 <h3>Simulate</h3>
-<pre class="r"><code>set.seed(21)
+<pre class="r"><code>set.seed(21) # reproducible example - change the seed to get a different random distribution
 n &lt;- 3 # sample size
 nexp &lt;- 100 # number of experiments
+ffsp &lt;- matrix(NA, nrow = nexp, ncol = n) # declare matrix of results
 # sampling distribution
-ffsp &lt;- apply(matrix(sample(ffpop, n*nexp, replace = TRUE), nrow = nexp), 1, mean)
+for(E in 1:nexp){ ffsp[E,] &lt;- sample(ffpop, n, replace = FALSE) }
+ffsp &lt;- apply(ffsp, 1, mean)
 
 df &lt;- tibble(x = ffsp) # make data frame
 
@@ -600,7 +597,7 @@ ggplot(df, aes(x = x)) + theme_bw() +
   scale_y_continuous(minor_breaks = seq(1, 30), limits = c(0, 30)) +
   coord_fixed(ratio = 1) +
   ggtitle(paste0(&#39;n=&#39;,n,&#39; replicates&#39;))</code></pre>
-<p><img src="activities_files/figure-html/unnamed-chunk-44-1.png" width="672" /></p>
+<p><img src="activities_files/figure-html/unnamed-chunk-35-1.png" width="672" /></p>
 <pre class="r"><code># save figure
 # ggsave(file=paste0(&#39;simres_n&#39;,n,&#39;.pdf&#39;), width = 6, height = 6)</code></pre>
 </div>
