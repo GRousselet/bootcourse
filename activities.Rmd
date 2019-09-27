@@ -75,7 +75,8 @@ write.table(dice_res, file = "./data/dice_res_green.txt", row.names=FALSE, col.n
 write.table(dice_res, file = "./data/dice_res_red.txt", row.names=FALSE, col.names=FALSE)
 ```
 
-## Load simulated data
+## Load example data
+Ignore this chunk if you have class data; use the next chunk instead. These examples were created before class to demonstrate what the results could look like and to provide an example of graphical representation (see below "Illustration of example data").
 ```{r}
 nt <- 5 # number of trials
 np <- 10 # number of participants

@@ -71,9 +71,7 @@ h6 {
 </style>
 
 
-</head>
 
-<body>
 
 <style type = "text/css">
 .main-container {
@@ -192,8 +190,6 @@ $(document).ready(function () {
 });
 </script>
 
-<div class="container-fluid main-container">
-
 <!-- tabsets -->
 
 <style type="text/css">
@@ -264,6 +260,15 @@ $(document).ready(function () {
 
 <!-- code folding -->
 
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
 
 
 
@@ -391,8 +396,9 @@ write.table(dice_res, file = &quot;./data/dice_res_blue.txt&quot;, row.names=FAL
 write.table(dice_res, file = &quot;./data/dice_res_green.txt&quot;, row.names=FALSE, col.names=FALSE)
 write.table(dice_res, file = &quot;./data/dice_res_red.txt&quot;, row.names=FALSE, col.names=FALSE)</code></pre>
 </div>
-<div id="load-simulated-data" class="section level2">
-<h2>Load simulated data</h2>
+<div id="load-example-data" class="section level2">
+<h2>Load example data</h2>
+<p>Ignore this chunk if you have class data; use the next chunk instead. These examples were created before class to demonstrate what the results could look like and to provide an example of graphical representation (see below “Illustration of example data”).</p>
 <pre class="r"><code>nt &lt;- 5 # number of trials
 np &lt;- 10 # number of participants
 res_red &lt;- matrix(scan(&quot;./data/res1.txt&quot;), nrow=nt, byrow=TRUE)
@@ -443,7 +449,7 @@ ggplot(df, aes(gp, obs)) + theme_linedraw() +
   geom_errorbar(stat = &quot;summary&quot;, 
                 fun.y = foo, fun.ymin = foo, fun.ymax = foo, 
                 colour = &quot;black&quot;, width = .5, size = 0.75, alpha = 0.5)</code></pre>
-<p><img src="activities_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
+<p><img src="activities_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 </div>
 </div>
 </div>
@@ -494,8 +500,8 @@ matrix(sample(samp, size = n*nboot, replace = TRUE), nrow = nboot, byrow = TRUE)
 <p>We sample with replacement from a finite population of faux fish to demonstrate the effect of sample size on the shape of sampling distributions.</p>
 <p>The faux fish activity is mentioned in Steel, Liermann &amp; Guttorp (2019), with pictures of class results. The activity is described in detail in Kelsey &amp; Steel (2001).</p>
 <div class="figure">
-<img src="images/faux%20fish%20ex%20sampdists.png" alt="Faux fish class examples from Steel et al. 2019" />
-<p class="caption">Faux fish class examples from Steel et al. 2019</p>
+<img src="images/faux%20fish%20ex%20sampdists.png" alt="Faux fish class examples from Steel et al. 2019" />
+<p class="caption">Faux fish class examples from Steel et al. 2019</p>
 </div>
 <p>This exercise provides an opportunity to learn about:<br />
 - the distinction between population and sample;<br />
@@ -597,7 +603,7 @@ ggplot(df, aes(x = x)) + theme_bw() +
   scale_y_continuous(minor_breaks = seq(1, 30), limits = c(0, 30)) +
   coord_fixed(ratio = 1) +
   ggtitle(paste0(&#39;n=&#39;,n,&#39; replicates&#39;))</code></pre>
-<p><img src="activities_files/figure-html/unnamed-chunk-35-1.png" width="672" /></p>
+<p><img src="activities_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 <pre class="r"><code># save figure
 # ggsave(file=paste0(&#39;simres_n&#39;,n,&#39;.pdf&#39;), width = 6, height = 6)</code></pre>
 </div>
