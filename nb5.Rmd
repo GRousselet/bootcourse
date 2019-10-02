@@ -73,6 +73,9 @@ labs(y = "Density") +
 ```
 
 ## t distribution and quantiles
+
+Here we illustrate the alpha/2 and 1-alpha/2 quantiles of the t distribution with 19 degrees of freedom, under the null (given that there is no effect).
+
 ```{r}
 alpha <- 0.05
 
@@ -202,3 +205,7 @@ ci[1] <- samp.m - qt(1-alpha/2, df)  * sem
 ci[2] <- samp.m + qt(1-alpha/2, df)  * sem
 ci
 ```
+
+# Bootstrap-t technique
+
+See detailed explanations and R code in this [tutorial](https://psyarxiv.com/h8ft7/).

@@ -585,7 +585,9 @@ ggplot(df, aes(x = x, y = y)) + theme_classic() +
 TWOpov(x,y)
 #TWOpovPV to get a p-value</code></pre>
 <p>For a robust correlation:</p>
-<pre class="r"><code>twoDcorR(x,y, corfun=wincor, SEED=FALSE)</code></pre>
+<pre class="r"><code># x = matrix with 2 columns
+# y = vector
+twoDcorR(x,y, corfun=wincor, SEED=FALSE)</code></pre>
 </div>
 <div id="non-overlapping-case" class="section level2">
 <h2>Non-overlapping case</h2>
@@ -595,7 +597,9 @@ TWOpov(x,y)
 # y = matrix with 2 columns
 TWOpNOV(x,y)</code></pre>
 <p>For a robust correlation:</p>
-<pre class="r"><code>twoDNOV(x,y, corfun=wincor, SEED=FALSE)</code></pre>
+<pre class="r"><code># x = matrix with 2 columns
+# y = matrix with 2 columns
+twoDNOV(x,y, corfun=wincor, SEED=FALSE)</code></pre>
 </div>
 </div>
 

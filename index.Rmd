@@ -36,80 +36,84 @@ The slides for all sessions are hosted on [Moodle](https://moodle.gla.ac.uk/logi
 
 ## Lecture 1: Introduction
 
-- ILOs: to be able to:  
-  - define P values and confidence intervals;
-  - explain in general terms the importance of robust estimation;
-  - justify the need for detailed graphical representations.
-- [Notebook](nb1.html)  
-- Activity: dice  
+ILOs = to be able to:  
+- define P values and confidence intervals;
+- explain in general terms the importance of robust estimation;
+- justify the need for detailed graphical representations.
+[Notebook](nb1.html)  
+Activity: dice  
 
 ## Lecture 2: The percentile bootstrap
 
-- ILOs: 
-  - explain the philosophy of the percentile bootstrap;
-  - describe how the bootstrap can be implemented in R;
-  - use the bootstrap to make inferences.
-- [Notebook](nb2.html)
-- Activity: poker chips
-- [Interactive demo](https://seeing-theory.brown.edu/frequentist-inference/index.html#section2)
+ILOs: 
+- explain the philosophy of the percentile bootstrap;
+- describe how the bootstrap can be implemented in R;
+- use the bootstrap to make inferences.
+[Notebook](nb2.html)
+Activity: poker chips
+[Interactive demo](https://seeing-theory.brown.edu/frequentist-inference/index.html#section2)
 
 <button type="button" class="btn btn-success btn-lg btn-block font-weight-bold">Class 2</button>
 
 ## Lecture 3: Robust estimation
 
-- ILOs: 
-  - describe distributions by referring to their skewness, kurtosis and the presence of outliers;
-  - explain why we need robust estimators;
-  - define trimmed means and explain their advantages;
-  - explain the imapct of outliers and skewness on estimation and statistical inferences;
-  - describe why classic outlier detection methods are not robust and the foundation of alternative robust methods;
-  - use R functions to detect outliers;
-  - use R to perform inferential statistics on the median and on trimmed means.
-- [Notebook](nb3.html)
-- Activity: dice
+ILOs: 
+- describe distributions by referring to their skewness, kurtosis and the presence of outliers;
+- explain why we need robust estimators;
+- define trimmed means and explain their advantages;
+- explain the imapct of outliers and skewness on estimation and statistical inferences;
+- describe why classic outlier detection methods are not robust and the foundation of alternative robust methods;
+- use R functions to detect outliers;
+- use R to perform inferential statistics on the median and on trimmed means.
+[Notebook](nb3.html)
+Activity: dice
 
 ## Lecture 4: Sampling distributions
 
-- ILOs: 
-  - define sampling distribution and standard error;
-  - given a population, compute and illustrate a sampling distribution in R;
-  - decribe the relationship between sampling distributions and bootstrap distributions;
-  - explain the usefulness of simulating sampling distributions.
-- [Notebook](nb4.html)
-- Activity: faux fish
+ILOs: 
+- define sampling distribution and standard error;
+- given a population, compute and illustrate a sampling distribution in R;
+- decribe the relationship between sampling distributions and bootstrap distributions;
+- explain the usefulness of simulating sampling distributions.
+[Notebook](nb4.html)
 
 <button type="button" class="btn btn-success btn-lg btn-block font-weight-bold">Class 3</button>
 
 ## Lecture 5: Bootstrap-t
 
-- ILOs: 
-- [Notebook](nb5.html)
-- Activity: dice
+ILOs: 
+- Explain the bootstrap-t and its implementation.
+- In R, use functions implementing the bootstrap-t for one group, two independent groups and two dependent groups.
+[Notebook](nb5.html)
+Activities: dice, faux fish
 
 ## Lecture 6: Correlation
 
-- ILOs: 
-- [Notebook](nbk6.html)
+ILOs: 
+- Describe some of the critical problems with Pearson's correlation.
+- Explain how the percentile bootstrap can be used to compute confidence intervals for a correlation coefficient and the difference between two correlation coefficients.
+- In R, use bootstrap functions to make inferences about correlation coefficients. 
+[Notebook](nbk6.html)
 
 <button type="button" class="btn btn-success btn-lg btn-block font-weight-bold">Class 4</button>
 
 ## Lecture 7: Perspectives on group comparisons
 
-- ILOs: 
-- [Notebook](nb7.html)
-- Activity: dice
+ILOs: 
+[Notebook](nb7.html)
+Activity: dice
 
 ## Lecture 8: Shift function
 
-- ILOs: 
-- [Notebook](nb8.html)
+ILOs: 
+[Notebook](nb8.html)
 
 <button type="button" class="btn btn-success btn-lg btn-block font-weight-bold">Class 5</button>
 
 ## Lecture 9: Performance assessment
 
-- ILOs: 
-- [Notebook](nb9.html)
+ILOs: 
+[Notebook](nb9.html)
 
 ## Lecture 10: Hierarchical bootstrap
 
@@ -118,6 +122,6 @@ This lecture is divided in 3 parts:
 - discussion of the dice exercise;
 - general Q&A.
 
-- ILOs: 
-- [Notebook](nb10.html)
+ILOs: 
+[Notebook](nb10.html)
 

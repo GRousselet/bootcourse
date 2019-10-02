@@ -337,7 +337,7 @@ $(document).ready(function () {
 <pre><code>---
 title: &quot;Homework #1&quot;
 author: &quot;Group: the kurtotic avengers&quot;
-date: &quot;2019-09-27&quot;
+date: &quot;2019-10-02&quot;
 output:
   pdf_document:
     fig_caption: no
@@ -424,10 +424,22 @@ Class 3
 <li><p>Repeat exercise 1 from last class.</p></li>
 <li><p>How do the current results differ relative to the results from last class?</p></li>
 <li><p>Repeat the group comparisons after combining data across classes, separately for each colour.</p></li>
+<li><p>Use a selection of approaches to compute CIs using the mean and a trimmed mean in combination with a standard parametric method, the percentile bootstrap and the bootstrap-t. Do not report CIs for all combinations of choices: instead justify carefully your choice of one or two methods based on what we saw in class and the assigned references. By now you know that using standard t-tests on means should not be the default because there are several potentially more appropriate alternatives.</p></li>
 </ul>
 </div>
 <div id="exercise-2-2" class="section level2">
 <h2>Exercise 2</h2>
+<p>The next chunk contains data from Germany, in different years, of the number of brooding pairs of storks and the millions of births of human babies.</p>
+<ul>
+<li>Illustrate the results.</li>
+<li>Is there a relationship between the stork population and human births?</li>
+<li>Compute Pearson and Spearman correlation coefficients.</li>
+<li>Compute CIs using standard methods (implemented in <code>cor.test()</code>) and the percentile bootstrap.</li>
+<li>What do you conclude?</li>
+</ul>
+<pre class="r"><code>years  &lt;- c(1965, 1971, 1974, 1977, 1978, 1979, 1980)
+storks &lt;- c(1920, 1700, 1090, 990, 1030,  995,  930)
+babies &lt;- c(1.04, 0.78, 0.62, 0.58, 0.57, 0.58, 0.62)</code></pre>
 <button type="button" class="btn btn-success btn-lg btn-block font-weight-bold">
 Class 4
 </button>

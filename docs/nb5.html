@@ -406,6 +406,7 @@ labs(y = &quot;Density&quot;) +
 </div>
 <div id="t-distribution-and-quantiles" class="section level2">
 <h2>t distribution and quantiles</h2>
+<p>Here we illustrate the alpha/2 and 1-alpha/2 quantiles of the t distribution with 19 degrees of freedom, under the null (given that there is no effect).</p>
 <pre class="r"><code>alpha &lt;- 0.05
 
 ggplot(data.frame(x = c(-5, 5)), aes(x)) + theme_linedraw() +
@@ -557,6 +558,10 @@ ci[2] &lt;- samp.m + qt(1-alpha/2, df)  * sem
 ci</code></pre>
 <pre><code>## [1] 0.3638419 1.5226508</code></pre>
 </div>
+</div>
+<div id="bootstrap-t-technique" class="section level1">
+<h1>Bootstrap-t technique</h1>
+<p>See detailed explanations and R code in this <a href="https://psyarxiv.com/h8ft7/">tutorial</a>.</p>
 </div>
 
 <p> </p>

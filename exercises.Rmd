@@ -117,9 +117,22 @@ rlnorm(n)
 
 - Repeat the group comparisons after combining data across classes, separately for each colour.
 
-## Exercise 2
-```{r, eval=FALSE}
+- Use a selection of approaches to compute CIs using the mean and a trimmed mean in combination with a standard parametric method, the percentile bootstrap and the bootstrap-t. Do not report CIs for all combinations of choices: instead justify carefully your choice of one or two methods based on what we saw in class and the assigned references. By now you know that using standard t-tests on means should not be the default because there are several potentially more appropriate alternatives.
 
+## Exercise 2
+
+The next chunk contains data from Germany, in different years, of the number of brooding pairs of storks and the millions of births of human babies.
+
+- Illustrate the results.
+- Is there a relationship between the stork population and human births?
+- Compute Pearson and Spearman correlation coefficients.
+- Compute CIs using standard methods (implemented in `cor.test()`) and the percentile bootstrap.
+- What do you conclude?
+
+```{r, eval=FALSE}
+years  <- c(1965, 1971, 1974, 1977, 1978, 1979, 1980)
+storks <- c(1920, 1700, 1090, 990, 1030,  995,  930)
+babies <- c(1.04, 0.78, 0.62, 0.58, 0.57, 0.58, 0.62)
 ```
 
 <button type="button" class="btn btn-success btn-lg btn-block font-weight-bold">Class 4</button>
