@@ -111,11 +111,11 @@ rlnorm(n)
 
 ## Exercise 1
 
-- Repeat exercise 1 from last class. 
+- Illustrate the dice results from the different classes in one figure with multiple panels.
 
-- How do the current results differ relative to the results from last class?
+- How do the results differ among classes? What do you conclude?
 
-- Repeat the group comparisons after combining data across classes, separately for each colour.
+- Perform group comparisons after combining data across classes.
 
 - Use a selection of approaches to compute CIs using the mean and a trimmed mean in combination with a standard parametric method, the percentile bootstrap and the bootstrap-t. Do not report CIs for all combinations of choices: instead justify carefully your choice of one or two methods based on what we saw in class and the assigned references. By now you know that using standard t-tests on means should not be the default because there are several potentially more appropriate alternatives.
 
@@ -139,15 +139,25 @@ babies <- c(1.04, 0.78, 0.62, 0.58, 0.57, 0.58, 0.62)
 
 ## Exercise 1
 
-- Repeat exercise 1 from last class. 
+- Illustrate the dice results from the different classes in one figure with multiple panels.
 
-- How do the current results differ relative to the results from last class?
+- Based on the graphical representations (do not use inferential tests), how do the results differ among classes? What do you conclude?
 
-- Repeat the group comparisons after combining data across classes, separately for each colour.
+- Perform group comparisons only after combining data across the 4 classes. Choose carefully 2 approaches based on everything you have learnt so far. Justify your choices, embed the results in text format using inline code ``r <code>``, and conclude succinctly but carefully.
 
 ## Exercise 2
-```{r, eval=FALSE}
 
+Here are data from a weight gain programme. Weights in pounds were measured before (`t1`) and after (`t2`) the programme in the same participants (`t1[1]` and `t2[1]` are measurements from the same person). 
+
+- Illustrate the results.
+
+- Using inferential statistics and graphical representations, do you have sufficient evidence to conclude that the programme is effective?
+
+- If you had the task to promote the programme, what would be the typical weight change you would advertise?
+
+```{r, eval=FALSE}
+t1 <- c(83.8, 83.3, 86, 82.5, 86.7, 79.6, 76.9, 94.2, 73.4, 80.5, 81.6, 82.1, 77.6, 83.5, 89.9, 86, 87.3)
+t2 <- c(95.2, 94.3, 91.5, 91.9, 100.3, 76.7, 76.8, 101.6, 94.9, 75.2, 77.8, 95.5, 90.7, 92.5, 93.8, 91.7, 98)
 ```
 
 <button type="button" class="btn btn-success btn-lg btn-block font-weight-bold">Class 5</button>

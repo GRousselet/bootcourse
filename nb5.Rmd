@@ -7,8 +7,8 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# Dependencies
 ```{r message=FALSE, warning=FALSE}
-# dependencies
 library(ggplot2)
 library(tibble)
 ```

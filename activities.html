@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Activities</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Bootstrap course</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="resources.html">Resources</a>
+</li>
+<li>
+  <a href="exercises.html">Exercises</a>
+</li>
+<li>
+  <a href="activities.html">Activities</a>
+</li>
+<li>
+  <a href="https://twitter.com/robustgar">
+    <span class="fa fa-twitter-square"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://garstats.wordpress.com">
+    <span class="fa fa-wordpress"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://github.com/GRousselet/bootcourse">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Activities</h1>
+
+</div>
+
+
+<p>Analog class activities. The 3 main activities involve dice, poker chips and wooden fish, to explore different types of sampling, sampling distributions, the distinction between sample and population, resampling…</p>
+<div id="dependencies" class="section level1">
+<h1>Dependencies</h1>
+<pre class="r"><code>library(tibble)
+library(ggplot2)</code></pre>
+</div>
+<div id="activity-1-dice-hierarchical-sampling" class="section level1">
+<h1>Activity 1: dice (hierarchical sampling)</h1>
+<p>We use dice to simulate sampling with replacement from an infinite population of participants and trials.</p>
+<p>This exercise provides an opportunity to learn about:<br />
+- the distinction between population and sample;<br />
+- sampling with replacement;<br />
+- hierarchical sampling;<br />
+- running simulations;<br />
+- estimation;<br />
+- the distinction between finite and infinite populations.</p>
+<p>Material:<br />
+- 3 bags of dice<br />
+- 3 trays (optional)</p>
+<div class="figure">
+<img src="images/dice%20bags.jpg" alt="3 bags = 3 populations" />
+<p class="caption">3 bags = 3 populations</p>
+</div>
+<p>Each bag contains a selection of dice with 4 to 20 facets, forming 3 independent populations. In this activity, we sample from each population and then use the samples to try to make inferences about the populations.</p>
+<p>Here is the setup we will use in class:</p>
+<ul>
+<li>3 participants or groups of participants are involved, each working independently with their own bag/population;<br />
+</li>
+<li>a dice is randomly picked from a bag (without looking inside the bag!) – this is similar to randomly sampling a participant from the population;<br />
+</li>
+<li>the dice is rolled 5 times, and the results written down – this is similar to randomly sampling trials from the participant;<br />
+</li>
+<li>perform the two previous steps 10 times, for a total of 10 participants x 5 trials = 50 trials.</li>
+</ul>
+<div class="figure">
+<img src="images/dice%20bags%20+%20trays.jpg" alt="3 bags, 3 trays, roll one dice at a time" />
+<p class="caption">3 bags, 3 trays, roll one dice at a time</p>
+</div>
+<p>These values are then entered into a text file and shared with the rest of the class. The text files are opened in R, and the main question is: is there evidence that our 3 samples of 10 participants x 5 trials were drawn from different populations? To simplify the problem, in a first step we average over trials, so we are left with 10 values from each group. The second step is to produce some graphical representation of the data. Then we can try various inferential statistics.</p>
+<p>The exercise is performed in classes 1-4, to see how much variability we get between simulated experiments. During the last class, the populations and the sampling distributions are revealed.</p>
+<p>Also, in this exercise, because the dice are sampled with replacement, the population has an infinite size. The content of each bag defines the probability of sampling each type of dice, but it is not the entire population, unlike in the faux fish activity (see below).</p>
+<div id="data-capture" class="section level2">
+<h2>Data capture</h2>
+<p>Enter the data in R or a text file: 5 rows (trials) and 10 columns (participants).</p>
+<pre class="r"><code># enter data in matrix with 5 rows, 10 columns:
+
+dice_res &lt;- matrix(NA, nrow = 5, ncol = 10)
+
+dice_res[,1] &lt;- c(,,,,)
+dice_res[,2] &lt;- c(,,,,)
+dice_res[,3] &lt;- c(,,,,)
+dice_res[,4] &lt;- c(,,,,)
+dice_res[,5] &lt;- c(,,,,)
+dice_res[,6] &lt;- c(,,,,)
+dice_res[,7] &lt;- c(,,,,)
+dice_res[,8] &lt;- c(,,,,)
+dice_res[,9] &lt;- c(,,,,)
+dice_res[,10] &lt;- c(,,,,)
+
+# Save in a txt file:
+write.table(dice_res, file = &quot;./data/dice_res_blue.txt&quot;, row.names=FALSE, col.names=FALSE)
+write.table(dice_res, file = &quot;./data/dice_res_green.txt&quot;, row.names=FALSE, col.names=FALSE)
+write.table(dice_res, file = &quot;./data/dice_res_red.txt&quot;, row.names=FALSE, col.names=FALSE)</code></pre>
+</div>
+<div id="load-example-data" class="section level2">
+<h2>Load example data</h2>
+<p>Ignore this chunk if you have class data; use the next chunk instead. These examples were created before class to demonstrate what the results could look like and to provide an example of graphical representation (see below “Illustration of example data”).</p>
+<pre class="r"><code>nt &lt;- 5 # number of trials
+np &lt;- 10 # number of participants
+res_red &lt;- matrix(scan(&quot;./data/res1.txt&quot;), nrow=nt, byrow=TRUE)
+res_green &lt;- matrix(scan(&quot;./data/res2.txt&quot;), nrow=nt, byrow=TRUE)
+res_blue &lt;- matrix(scan(&quot;./data/res3.txt&quot;), nrow=nt, byrow=TRUE)</code></pre>
+</div>
+<div id="load-real-data" class="section level2">
+<h2>Load real data</h2>
+<pre class="r"><code>res_red &lt;- matrix(scan(&quot;./data/dice_res_red.txt&quot;), nrow=nt, byrow=TRUE)
+res_green &lt;- matrix(scan(&quot;./data/dice_res_green.txt&quot;), nrow=nt, byrow=TRUE)
+res_blue &lt;- matrix(scan(&quot;./data/dice_res_blue.txt&quot;), nrow=nt, byrow=TRUE)</code></pre>
+</div>
+<div id="illustration-of-example-data" class="section level2">
+<h2>Illustration of example data</h2>
+<div id="mean-results" class="section level3">
+<h3>Mean results</h3>
+<p>For each bag, we compute the mean across trials/throws for each participant/dice:</p>
+<pre class="r"><code>m.red &lt;- apply(res_red, 2, mean) 
+m.green &lt;- apply(res_green, 2, mean)
+m.blue &lt;- apply(res_blue, 2, mean)</code></pre>
+</div>
+<div id="illustrate-results" class="section level3">
+<h3>Illustrate results</h3>
+<pre class="r"><code>foo &lt;- median # name of summary statistic
+set.seed(1) # reproducible scatterplot
+# make data frame
+df &lt;- tibble(obs = c(m.red, m.green, m.blue),
+             gp = factor(c(rep(&quot;Red&quot;,np),rep(&quot;Green&quot;,np),rep(&quot;Blue&quot;,np)))
+             )
+
+# preserve factor order
+df$gp &lt;- as.character(df$gp)
+df$gp &lt;- factor(df$gp, levels=unique(df$gp))
+
+ggplot(df, aes(gp, obs)) + theme_linedraw() +
+  geom_point(aes(colour = gp), size = 3,
+             position = position_jitter(width = 0.1)) +
+  scale_color_manual(values=c(&quot;red&quot;, &quot;green4&quot;, &quot;blue&quot;)) +
+  theme(legend.position = &quot;none&quot;,
+        axis.text = element_text(size = 14),
+        axis.title = element_text(size = 16)) +
+  labs(x = &quot;Groups&quot;, y = &quot;Observations&quot;) +   
+  coord_cartesian(ylim = c(0, 12)) +
+  scale_y_continuous(breaks = seq(0, 12, 2)) +
+  geom_errorbar(stat = &quot;summary&quot;, 
+                fun.y = foo, fun.ymin = foo, fun.ymax = foo, 
+                colour = &quot;grey&quot;, width = .55, size = 2, alpha = 0.5) +
+  geom_errorbar(stat = &quot;summary&quot;, 
+                fun.y = foo, fun.ymin = foo, fun.ymax = foo, 
+                colour = &quot;black&quot;, width = .5, size = 0.75, alpha = 0.5)</code></pre>
+<p><img src="activities_files/figure-html/unnamed-chunk-52-1.png" width="672" /></p>
+</div>
+</div>
+</div>
+<div id="activity-2-poker-chips-bootstrap-sampling-with-replacement" class="section level1">
+<h1>Activity 2: poker chips (bootstrap sampling with replacement)</h1>
+<p>We use poker chips to demonstrate sampling with replacement, as done in the bootstrap.</p>
+<p>This exercise provides an opportunity to learn about:<br />
+- sampling with replacement;<br />
+- bootstrap sampling;<br />
+- running simulations.</p>
+<p>A bag contains 8 poker chips, representing the outcome of an experiment. Each chip is like an observation.</p>
+<div class="figure">
+<img src="images/poker%20chips.jpg" alt="Poker chips in a bag" />
+<p class="caption">Poker chips in a bag</p>
+</div>
+<p>First, we demonstrate sampling with replacement by getting a random chip from the bag, writing down its value, and replacing the chip in the bag. Second, we demonstrate bootstrap sampling by performing sampling with replacement 8 times, each time writing down the value of the random chip selected from the bag. In R, sampling with replacement is done using the <code>sample</code> function.</p>
+<div id="r-code" class="section level2">
+<h2>R code</h2>
+<p>The core mechanism of the bootstrap is sampling with replacement, which is equivalent to simulating experiments using only the data at hand. Let’s say we have a sample that is a sequence of integers, from 1 to 8.</p>
+<pre class="r"><code>n &lt;- 8 # sample size
+samp &lt;- 1:n
+samp</code></pre>
+<pre><code>## [1] 1 2 3 4 5 6 7 8</code></pre>
+<p>To make bootstrap inferences, we sample with replacement from that sequence using the <code>sample()</code> function. That’s the engine under the hood of any bootstrap technique. Let’s generate our first bootstrap sample:</p>
+<pre class="r"><code>set.seed(21) # for reproducible results
+sample(samp, size = n, replace = TRUE) # sample with replacement</code></pre>
+<pre><code>## [1] 7 3 6 2 8 8 1 2</code></pre>
+<p>This call to the <code>sample</code> function is equivalent to getting a random poker chip from the bag, writing down the number, replacing the chip in the bag, and starting the process again, for a total of <em>n</em> times. The equivalent of selecting only one poker chip from the bag is to call <code>sample(samp, size = 1)</code>, but that’s unnecessarily time consuming.</p>
+<p>We do it again, getting a different bootstrap sample:</p>
+<pre class="r"><code>sample(samp, size = n, replace = TRUE) # sample with replacement</code></pre>
+<pre><code>## [1] 8 7 6 8 1 5 2 1</code></pre>
+<p>Third time:</p>
+<pre class="r"><code>sample(samp, size = n, replace = TRUE) # sample with replacement</code></pre>
+<pre><code>## [1] 5 3 4 6 1 5 7 8</code></pre>
+<p>We could also generate our 3 bootstrap samples in one go:</p>
+<pre class="r"><code>set.seed(21) # reproducible example
+nboot &lt;- 3
+matrix(sample(samp, size = n*nboot, replace = TRUE), nrow = nboot, byrow = TRUE)</code></pre>
+<pre><code>##      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8]
+## [1,]    7    3    6    2    8    8    1    2
+## [2,]    8    7    6    8    1    5    2    1
+## [3,]    5    3    4    6    1    5    7    8</code></pre>
+<p>As is apparent from these 3 examples, in a bootstrap sample, some observations are sampled more than once and others are not sampled at all. So each bootstrap sample is like a virtual experiment in which we draw random observations from our original sample.</p>
+</div>
+</div>
+<div id="activity-3-faux-fish-sampling-distributions" class="section level1">
+<h1>Activity 3: faux fish (sampling distributions)</h1>
+<p>We sample with replacement from a finite population of faux fish to demonstrate the effect of sample size on the shape of sampling distributions.</p>
+<p>The faux fish activity is mentioned in Steel, Liermann &amp; Guttorp (2019), with pictures of class results. The activity is described in detail in Kelsey &amp; Steel (2001).</p>
+<div class="figure">
+<img src="images/faux%20fish%20ex%20sampdists.png" alt="Faux fish class examples from Steel et al. 2019" />
+<p class="caption">Faux fish class examples from Steel et al. 2019</p>
+</div>
+<p>This exercise provides an opportunity to learn about:<br />
+- the distinction between population and sample;<br />
+- sampling with replacement;<br />
+- running simulations;<br />
+- estimation;<br />
+- sampling distributions.</p>
+<p>Material:<br />
+- two sets of 97 faux fish = fish-shaped bits of paper or other material<br />
+- two containers = ponds<br />
+- two large blank sheets of paper<br />
+- x axis = ‘Mean weight (g)’<br />
+- y axis = ‘Number of experiments’<br />
+- titles = ‘n=3 replicates’ / ‘n=10 replicates’</p>
+<p>Here is the code to generate empty axes for printing:</p>
+<div id="sheet-1" class="section level2">
+<h2>Sheet 1</h2>
+<pre class="r"><code>df &lt;- tibble()
+p &lt;- ggplot(df) + geom_point() + theme_linedraw() +
+        labs(x = &#39;Mean weight (g)&#39;, y = &#39;Number of experiments&#39;) +
+        theme(title = element_text(size = 20),
+              axis.title = element_text(size = 18),
+              axis.text = element_text(size = 16)) +
+        scale_x_continuous(minor_breaks = seq(17, 40), limits = c(17, 40)) +
+        scale_y_continuous(minor_breaks = seq(1, 30), limits = c(0, 30)) +
+        ggtitle(&#39;n=3 replicates&#39;)
+p
+ggsave(file=&quot;template_n3.pdf&quot;, width = 420, height = 297, units = &quot;mm&quot;)</code></pre>
+</div>
+<div id="sheet-2" class="section level2">
+<h2>Sheet 2</h2>
+<pre class="r"><code>p &lt;- p + ggtitle(&#39;n=10 replicates&#39;)
+p
+ggsave(file=&quot;template_n10.pdf&quot;, width = 420, height = 297, units = &quot;mm&quot;)</code></pre>
+<div class="figure">
+<img src="images/faux%20fish.jpg" alt="Faux fish" />
+<p class="caption">Faux fish</p>
+</div>
+<p>Each faux fish has a weight in grams written on it.</p>
+<div class="figure">
+<img src="images/faux%20fish%20making.jpg" alt="Faux fish with weights" />
+<p class="caption">Faux fish with weights</p>
+</div>
+<p>The frequencies of the weights is given in Kelsey &amp; Steel (2001).</p>
+<div class="figure">
+<img src="images/faux%20fish%20population.png" alt="Faux fish population, p.124 of Kelsey &amp; Steel 2001" />
+<p class="caption">Faux fish population, p.124 of Kelsey &amp; Steel 2001</p>
+</div>
+<p>The fish population is stored in a box. Two identical populations are available, so that two groups can work in parallel.</p>
+<div class="figure">
+<img src="images/faux%20fish%20populations.jpg" alt="Two faux fish populations" />
+<p class="caption">Two faux fish populations</p>
+</div>
+<p>The first goal of the exercise is to produce sampling distributions by sampling with replacement from a population. The second goal is to evaluate the effect of the sample size on the shape of the sampling distribution. The third goal is to experiment with a digital version of the analog task, to gain familiarity with simulations.</p>
+<p>Unlike the dice activity, this activity involves a finite size population: each box contains the full population under study.</p>
+<p>Setup:<br />
+- two groups of participants;<br />
+- each group is assigned a box;<br />
+- participants from each group take turn sampling from the box <em>n</em>=3 or <em>n</em>=10 faux fish (depending on the group), without looking inside the box;<br />
+- each participant averages the numbers, writes down the answer and marks it on the large sheet of paper assigned to each group;<br />
+- this is repeated until a sufficient number of simulated experiments have been carried out to assess the shape of the resulting sampling distribution.</p>
+<p>To speed up the exercise, a participant picks <em>n</em> fish, writes down the weights, puts all the fish back in the box, and passes the box to the next participant. While the next participant is sampling fish from the box, the previous participant computes the mean and marks the result on the group graph.</p>
+<p>Once done, we discuss the results by comparing the sampling distributions.</p>
+<p>We can do the same in R, but much quicker!</p>
+</div>
+<div id="simulate-the-faux-fish-sampling-task" class="section level2">
+<h2>Simulate the faux fish sampling task</h2>
+<div id="define-population" class="section level3">
+<h3>Define population</h3>
+<pre class="r"><code>ffpop &lt;- c(17, 17, 18, 19, 19, 21, 21, 22, 22, 22, 22, 23, 23, 23, 24, 24, 24, 24,
+           25, 25, 25, 25, 25, 25, 25, 25, 26, 26, 26, 26, 26, 26, 
+           27, 27, 27, 27, 28, 28, 28, 28, 28, 28, 29, 29, 29, 29, 29, 29, 29, 29, 
+           30, 30, 30, 30, 30, 30, 30, 30, 31, 31, 31, 31, 31, 31, 31,
+           32, 32, 32, 32, 33, 33, 33, 33, 33, 33, 33, 33, 33, 34, 34, 34, 34, 34,
+           35, 35, 35, 36, 36, 36, 36, 36, 36, 37, 37, 38, 39, 40)</code></pre>
+</div>
+<div id="simulate" class="section level3">
+<h3>Simulate</h3>
+<pre class="r"><code>set.seed(21) # reproducible example - change the seed to get a different random distribution
+n &lt;- 3 # sample size
+nexp &lt;- 100 # number of experiments
+ffsp &lt;- matrix(NA, nrow = nexp, ncol = n) # declare matrix of results
+# sampling distribution
+for(E in 1:nexp){ ffsp[E,] &lt;- sample(ffpop, n, replace = FALSE) }
+ffsp &lt;- apply(ffsp, 1, mean)
+
+df &lt;- tibble(x = ffsp) # make data frame
+
+ggplot(df, aes(x = x)) + theme_bw() +
+  # superimpose population mean
+  geom_vline(xintercept = mean(ffpop)) +
+  geom_dotplot(binwidth = 1, fill = &quot;white&quot;, 
+               dotsize = 1, method = &quot;histodot&quot;) +
+  labs(x = &#39;Mean weight (g)&#39;, y = &#39;Number of experiments&#39;) +
+  theme(title = element_text(size = 20),
+        axis.title = element_text(size = 18),
+        axis.text = element_text(size = 16)) +
+  scale_x_continuous(minor_breaks = seq(17, 40), limits = c(17, 40)) +
+  scale_y_continuous(minor_breaks = seq(1, 30), limits = c(0, 30)) +
+  coord_fixed(ratio = 1) +
+  ggtitle(paste0(&#39;n=&#39;,n,&#39; replicates&#39;))</code></pre>
+<p><img src="activities_files/figure-html/unnamed-chunk-61-1.png" width="672" /></p>
+<pre class="r"><code># save figure
+# ggsave(file=paste0(&#39;simres_n&#39;,n,&#39;.pdf&#39;), width = 6, height = 6)</code></pre>
+</div>
+</div>
+</div>
+<div id="references" class="section level1">
+<h1>References</h1>
+<p>Kelsey, Kathryn, and Ashley Steel. <strong>The Truth about Science: A Curriculum for Developing Young Scientists</strong>. NSTA Press, 2001.</p>
+<p>Steel, E. Ashley, Martin Liermann, and Peter Guttorp. <strong>Beyond Calculations: A Course in Statistical Thinking</strong>. The American Statistician 73, no. sup1 (29 March 2019): 392–401. <a href="https://doi.org/10.1080/00031305.2018.1505657" class="uri">https://doi.org/10.1080/00031305.2018.1505657</a>.</p>
+</div>
+
+<p> </p>
+<p> </p>
+<p> </p>
+<p>Guillaume A. Rousselet, 2019, University of Glasgow.</p>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

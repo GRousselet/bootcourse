@@ -7,3 +7,210 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# Dependencies
+```{r message=FALSE, warning=FALSE}
+library(ggplot2)
+library(tibble)
+library(retimes) # to generate exGaussian data
+# install.packages("devtools")
+# devtools::install_github("GRousselet/rogme")
+library(rogme) # *** NOT ON CRAN, SO FOLLOW THE TWO PREVIOUS STEPS TO INSTALL ROGME ***
+```
+
+Here we consider differences in reaction time distributions, modelled using [exGaussian distributions](https://www.ejwagenmakers.com/2009/MatzkeWagenmakers2009.pdf).
+
+We look at 4 types of differences:  
+- uniform shift;  
+- difference in spread;  
+- early difference;
+- late difference.
+
+# Uniform shift
+
+## KDE
+```{r}
+nt <- 1000
+# ex Gaussian parameters
+mu <- 500
+sigma <- 50
+tau <- 200
+ES <- 50
+
+set.seed(21)
+
+g1 <- rexgauss(nt, mu = mu, sigma = sigma, tau = tau) 
+g2 <- rexgauss(nt, mu = mu, sigma = sigma, tau = tau) + ES
+df <- mkt2(g1, g2, group_labels = c("Condition1", "Condition2"))
+
+p <- ggplot(df, aes(x = obs)) + theme_classic() + 
+  stat_density(aes(colour = gr), geom="line",position="identity", size=1) +
+  scale_colour_viridis_d(end = 0.8) +
+  coord_cartesian(xlim = c(0, 2500)) +
+  theme(axis.title.x = element_text(size = 18),
+        axis.text.x = element_text(size = 16, colour="black"),
+        axis.text.y = element_text(size = 16, colour="black"),
+        axis.title.y = element_text(size = 18),
+        legend.key.width = unit(1.5,"cm"),
+        legend.position = c(0.55,0.75),
+        legend.direction = "vertical",
+        legend.text=element_text(size=16),
+        legend.title=element_text(size=18),
+        title = element_text(size=20)) +
+  labs(x = "Reaction times", y = "Density", colour = "Conditions") +
+  ggtitle("Uniform shift")
+p
+p.uni.dist <- p
+```
+
+## Shift function
+```{r}
+out <- shifthd_pbci(df, nboot = 200, adj_ci = FALSE)
+p <- plot_sf(out, plot_theme = 1)[[1]] + 
+     theme(axis.text = element_text(size = 16, colour="black"))
+p
+p.uni.sf <- p
+```
+
+# Difference in spread
+
+## KDE
+```{r}
+nt <- 1000
+# ex Gaussian parameters
+mu <- 500
+sigma <- 50
+tau <- 200
+ES <- 1.5
+
+set.seed(777)
+g1 <- rexgauss(nt, mu = mu, sigma = sigma, tau = tau)
+md.g1 <- median(g1)
+g1 <- (g1 - md.g1) * ES + md.g1 # spread around the median
+g2 <- rexgauss(nt, mu = mu, sigma = sigma, tau = tau)
+df <- mkt2(g1, g2, group_labels = c("Condition1", "Condition2"))
+
+p <- ggplot(df, aes(x = obs)) + theme_classic() + 
+  stat_density(aes(colour = gr), geom="line",position="identity", size=1) +
+  scale_colour_viridis_d(end = 0.8) +
+  coord_cartesian(xlim = c(0, 2500)) +
+  theme(axis.title.x = element_text(size = 18),
+        axis.text.x = element_text(size = 16, colour="black"),
+        axis.text.y = element_text(size = 16, colour="black"),
+        axis.title.y = element_text(size = 18),
+        legend.key.width = unit(1.5,"cm"),
+        legend.position = c(0.55,0.75),
+        legend.direction = "vertical",
+        legend.text=element_text(size=16),
+        legend.title=element_text(size=18),
+        title = element_text(size=20)) +
+  labs(x = "Reaction times", y = "Density", colour = "Groups") + 
+  ggtitle("Spread difference")
+p
+p.spr.dist <- p
+```
+
+## Shift function
+```{r}
+out <- shifthd_pbci(df, nboot = 200, adj_ci = FALSE)
+p <- plot_sf(out, plot_theme = 1)[[1]] + 
+     theme(axis.text = element_text(size = 16, colour="black"))
+p
+p.spr.sf <- p
+```
+
+# Early difference
+
+## KDE
+```{r}
+nt <- 1000
+# ex Gaussian parameters
+mu <- 500
+sigma <- 50
+tau <- 200
+ES <- 1.5
+
+set.seed(777)
+g1 <- rexgauss(nt, mu = mu, sigma = sigma, tau = tau)
+md.g1 <- median(g1)
+q3.g1 <- quantile(g1, probs = 0.75)
+# g1 <- (g1 - md.g1) * ES + md.g1 # spread around the median
+g1 <- (g1 - q3.g1) * ES + q3.g1 # spread around the 3rd quartile
+g2 <- rexgauss(nt, mu = mu, sigma = sigma, tau = tau)
+df <- mkt2(g1, g2, group_labels = c("Condition1", "Condition2"))
+
+p <- ggplot(df, aes(x = obs)) + theme_classic() + 
+  stat_density(aes(colour = gr), geom="line",position="identity", size=1) +
+  scale_colour_viridis_d(end = 0.8) +
+  coord_cartesian(xlim = c(0, 2500)) +
+  theme(axis.title.x = element_text(size = 18),
+        axis.text.x = element_text(size = 16, colour="black"),
+        axis.text.y = element_text(size = 16, colour="black"),
+        axis.title.y = element_text(size = 18),
+        legend.key.width = unit(1.5,"cm"),
+        legend.position = c(0.55,0.75),
+        legend.direction = "vertical",
+        legend.text=element_text(size=16),
+        legend.title=element_text(size=18),
+        title = element_text(size=20)) +
+  labs(x = "Reaction times", y = "Density", colour = "Groups") +
+  ggtitle("Early difference")
+p
+p.early.dist <- p
+```
+
+## Shift function
+```{r}
+out <- shifthd_pbci(df, nboot = 200, adj_ci = FALSE)
+p <- plot_sf(out, plot_theme = 1)[[1]] + 
+     theme(axis.text = element_text(size = 16, colour="black"))
+p
+p.early.sf <- p
+```
+
+# Late difference
+
+## KDE
+```{r}
+nt <- 1000
+# ex Gaussian parameters
+mu <- 500
+sigma <- 50
+tau <- 200
+ES <- 100
+
+set.seed(777)
+g1 <- rexgauss(nt, mu = mu, sigma = sigma, tau = tau + ES)
+g2 <- rexgauss(nt, mu = mu, sigma = sigma, tau = tau)
+df <- mkt2(g1, g2, group_labels = c("Condition1", "Condition2"))
+
+p <- ggplot(df, aes(x = obs)) + theme_classic() + 
+  stat_density(aes(colour = gr), geom="line",position="identity", size=1) +
+  scale_colour_viridis_d(end = 0.8) +
+  coord_cartesian(xlim = c(0, 2500)) +
+  theme(axis.title.x = element_text(size = 18),
+        axis.text.x = element_text(size = 16, colour="black"),
+        axis.text.y = element_text(size = 16, colour="black"),
+        axis.title.y = element_text(size = 18),
+        legend.key.width = unit(1.5,"cm"),
+        legend.position = c(0.55,0.75),
+        legend.direction = "vertical",
+        legend.text=element_text(size=16),
+        legend.title=element_text(size=18),
+        title = element_text(size=20)) +
+  labs(x = "Reaction times", y = "Density", colour = "Groups") + 
+  ggtitle("Late difference")
+p
+p.tau.dist <- p
+```
+
+## Shift function
+```{r}
+out <- shifthd_pbci(df, nboot = 200, adj_ci = FALSE)
+p <- plot_sf(out, plot_theme = 1)[[1]] + 
+     theme(axis.text = element_text(size = 16, colour="black"))
+p
+p.tau.sf <- p
+```
+
+
+
