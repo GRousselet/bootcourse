@@ -1,0 +1,130 @@
+wmwpb<-function(x,y=NULL,est=median,alpha=.05,nboot=2000,SEED=TRUE,pr=TRUE,
+na.rm=TRUE,...){
+#
+#   Compute a bootstrap confidence interval for a
+#   measure of location associated with
+#   the distribution of x-y,
+#   est indicates which measure of location will be used
+#   x and y are possibly dependent
+#
+#   loc2dif.ci  computes a non-bootstrap confidence interval
+#
+if(is.null(y[1])){
+if(!is.matrix(x) & !is.data.frame(x))stop('With y missing, x should be a matrix')
+y=x[,2]
+x=x[,1]
+}
+if(SEED)set.seed(2) # set seed of random number generator so that
+#             results can be duplicated.
+data1<-matrix(sample(length(x),size=length(x)*nboot,replace=TRUE),nrow=nboot)
+data2<-matrix(sample(length(y),size=length(y)*nboot,replace=TRUE),nrow=nboot)
+bvec<-NA
+for(i in 1:nboot)bvec[i]<-wmwloc(x[data1[i,]],y[data2[i,]],est=est,na.rm=na.rm,...)
+bvec<-sort(bvec)
+low<-round((alpha/2)*nboot)+1
+up<-nboot-low
+temp<-sum(bvec<0)/nboot+sum(bvec==0)/(2*nboot)
+sig.level<-2*(min(temp,1-temp))
+estdiff=wmwloc(x,y,est=est,na.rm=na.rm,...)
+list(estimate=estdiff,ci=c(bvec[low],bvec[up]),p.value=sig.level)
+}
+
+wmwloc<-function(x,y,na.rm=TRUE,est=median,...){
+#
+# Estimate the median of the distribution of x-y
+#
+if(na.rm){
+x<-x[!is.na(x)]
+y<-y[!is.na(y)]
+}
+m<-outer(x,y,FUN="-")
+est=est(m,na.rm=TRUE,...)
+est
+}
+
+cid<-function(x,y,alpha=.05,plotit=FALSE,pop=0,fr=.8,rval=15,xlab="",ylab=""){
+#
+#  Compute a confidence interval for delta using the method in
+#  Cliff, 1996, p. 140, eq 5.12.
+#
+#  To compare the lower and upper quantiles of the distribution of D=X-Y,
+#  use cbmhd.
+#
+#  The null hypothesis is that for two independent group, P(X<Y)=P(X>Y).
+#  This function reports a 1-alpha confidence interval for
+#  P(X>Y)-P(X<Y)
+#
+#  Let xi_q be the qth quantile of the distribution of D, q<.5. To test xi_q +xi_1-q=0, use cbmhd
+#  If nothing is going on, D is symmetric about zero, so this function tests for symmetry and provides
+# some sense of how the tails of the distribution D differ.
+#  qwmwhd applies the method using a range of q values
+#
+#  To make inferences about
+#
+#  plotit=TRUE creates a plot of the difference scores.
+#  pop=0 adaptive kernel density estimate
+#  pop=1 results in the expected frequency curve.
+#  pop=2 kernel density estimate (Rosenblatt's shifted histogram)
+#  pop=3 boxplot
+#  pop=4 stem-and-leaf
+#  pop=5 histogram
+#  pop=6  kernel density estimate
+#
+x<-x[!is.na(x)]
+y<-y[!is.na(y)]
+if(length(x)*length(y)>10^6)stop('Use bmp with a large sample size. If using rimul, use ribmp instead')
+m<-outer(x,y,FUN="-")
+msave<-m
+m<-sign(m)
+d<-mean(m)
+phat<-(1-d)/2
+flag=TRUE
+if(phat==0 || phat==1)flag=FALSE
+q0<-sum(msave==0)/length(msave)
+qxly<-sum(msave<0)/length(msave)
+qxgy<-sum(msave>0)/length(msave)
+c.sum<-matrix(c(qxly,q0,qxgy),nrow=1,ncol=3)
+dimnames(c.sum)<-list(NULL,c("P(X<Y)","P(X=Y)","P(X>Y)"))
+if(flag){
+sigdih<-sum((m-d)^2)/(length(x)*length(y)-1)
+di<-NA
+for (i in 1:length(x))di[i]<-sum(x[i]>y)/length(y)-sum(x[i]<y)/length(y)
+dh<-NA
+for (i in 1:length(y))dh[i]<-sum(y[i]>x)/length(x)-sum(y[i]<x)/length(x)
+sdi<-var(di)
+sdh<-var(dh)
+sh<-((length(y)-1)*sdi+(length(x)-1)*sdh+sigdih)/(length(x)*length(y))
+zv<-qnorm(alpha/2)
+cu<-(d-d^3-zv*sqrt(sh)*sqrt((1-d^2)^2+zv^2*sh))/(1-d^2+zv^2*sh)
+cl<-(d-d^3+zv*sqrt(sh)*sqrt((1-d^2)^2+zv^2*sh))/(1-d^2+zv^2*sh)
+}
+if(!flag){
+sh=NULL
+nm=max(c(length(x),length(y)))
+if(phat==1)bci=binomci(nm,nm,alpha=alpha)
+if(phat==0)bci=binomci(0,nm,alpha=alpha)
+}
+if(plotit){
+if(pop==1 || pop==0){
+if(length(x)*length(y)>2500){
+print("Product of sample sizes exceeds 2500.")
+print("Execution time might be high when using pop=0 or 1")
+print("If this is case, might consider changing the argument pop")
+#print("pop=2 might be better")
+}}
+if(pop==0)akerd(as.vector(msave),xlab=xlab,ylab=ylab)
+if(pop==1)rdplot(as.vector(msave),fr=fr,xlab=xlab,ylab=ylab)
+if(pop==2)kdplot(as.vector(msave),rval=rval,xlab=xlab,ylab=ylab)
+if(pop==3)boxplot(as.vector(msave))
+if(pop==4)stem(as.vector(msave))
+if(pop==5)hist(as.vector(msave),xlab=xlab)
+if(pop==6)skerd(as.vector(msave))
+}
+if(flag)pci=c((1-cu)/2,(1-cl)/2)
+if(!flag){
+pci=bci$ci
+cl=1-2*pci[2]
+cu=1-2*pci[1]
+}
+list(n1=length(x),n2=length(y),cl=cl,cu=cu,d=d,sqse.d=sh,phat=phat,summary.dvals=c.sum,ci.p=pci)
+}

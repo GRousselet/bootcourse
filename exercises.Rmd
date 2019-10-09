@@ -143,7 +143,7 @@ babies <- c(1.04, 0.78, 0.62, 0.58, 0.57, 0.58, 0.62)
 
 - Based on the graphical representations (do not use inferential tests), how do the results differ among classes? What do you conclude?
 
-- Perform group comparisons only after combining data across the 4 classes. Choose carefully 2 approaches based on everything you have learnt so far. Justify your choices, embed the results in text format using inline code ``r <code>``, and conclude succinctly but carefully.
+- Perform group comparisons only after combining data across the 4 classes. Choose carefully 2 approaches based on everything you have learnt so far. Justify your choices, embed the results in text format using [inline code](https://rmarkdown.rstudio.com/lesson-4.html), and conclude succinctly but carefully.
 
 ## Exercise 2
 

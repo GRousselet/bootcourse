@@ -71,7 +71,9 @@ h6 {
 </style>
 
 
+</head>
 
+<body>
 
 <style type = "text/css">
 .main-container {
@@ -190,6 +192,8 @@ $(document).ready(function () {
 });
 </script>
 
+<div class="container-fluid main-container">
+
 <!-- tabsets -->
 
 <style type="text/css">
@@ -263,15 +267,6 @@ $(document).ready(function () {
 
 
 
-</head>
-
-<body>
-
-
-<div class="container-fluid main-container">
-
-
-
 
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
@@ -332,7 +327,212 @@ $(document).ready(function () {
 </div>
 
 
+<div id="dependencies" class="section level1">
+<h1>Dependencies</h1>
+<pre class="r"><code>library(ggplot2)
+library(tibble)
+library(retimes) # to generate ex-Gaussian data
+# ROGME PACKAGE: NOT ON CRAN, SO EXECUTE THE NEXT TWO LINES TO INSTALL ROGME
+# install.packages(&quot;devtools&quot;)
+# devtools::install_github(&quot;GRousselet/rogme&quot;)
+library(rogme) </code></pre>
+<p>Here we consider differences in reaction time distributions, modelled using <a href="https://www.ejwagenmakers.com/2009/MatzkeWagenmakers2009.pdf">exGaussian distributions</a>.</p>
+<p>We look at 4 types of differences:<br />
+- uniform shift;<br />
+- difference in spread;<br />
+- early difference; - late difference.</p>
+</div>
+<div id="uniform-shift" class="section level1">
+<h1>Uniform shift</h1>
+<div id="kde" class="section level2">
+<h2>KDE</h2>
+<pre class="r"><code>nt &lt;- 1000
+# ex Gaussian parameters
+mu &lt;- 500
+sigma &lt;- 50
+tau &lt;- 200
+ES &lt;- 50
 
+set.seed(21)
+
+g1 &lt;- rexgauss(nt, mu = mu, sigma = sigma, tau = tau) 
+g2 &lt;- rexgauss(nt, mu = mu, sigma = sigma, tau = tau) + ES
+df &lt;- mkt2(g1, g2, group_labels = c(&quot;Condition1&quot;, &quot;Condition2&quot;))
+
+p &lt;- ggplot(df, aes(x = obs)) + theme_classic() + 
+  stat_density(aes(colour = gr), geom=&quot;line&quot;,position=&quot;identity&quot;, size=1) +
+  scale_colour_viridis_d(end = 0.8) +
+  coord_cartesian(xlim = c(0, 2500)) +
+  theme(axis.title.x = element_text(size = 18),
+        axis.text.x = element_text(size = 16, colour=&quot;black&quot;),
+        axis.text.y = element_text(size = 16, colour=&quot;black&quot;),
+        axis.title.y = element_text(size = 18),
+        legend.key.width = unit(1.5,&quot;cm&quot;),
+        legend.position = c(0.55,0.75),
+        legend.direction = &quot;vertical&quot;,
+        legend.text=element_text(size=16),
+        legend.title=element_text(size=18),
+        title = element_text(size=20)) +
+  labs(x = &quot;Reaction times&quot;, y = &quot;Density&quot;, colour = &quot;Conditions&quot;) +
+  ggtitle(&quot;Uniform shift&quot;)
+p</code></pre>
+<p><img src="nb8_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<pre class="r"><code>p.uni.dist &lt;- p</code></pre>
+</div>
+<div id="shift-function" class="section level2">
+<h2>Shift function</h2>
+<pre class="r"><code>out &lt;- shifthd_pbci(df, nboot = 200, adj_ci = FALSE)
+p &lt;- plot_sf(out, plot_theme = 1)[[1]] + 
+     theme(axis.text = element_text(size = 16, colour=&quot;black&quot;))
+p</code></pre>
+<p><img src="nb8_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<pre class="r"><code>p.uni.sf &lt;- p</code></pre>
+</div>
+</div>
+<div id="difference-in-spread" class="section level1">
+<h1>Difference in spread</h1>
+<div id="kde-1" class="section level2">
+<h2>KDE</h2>
+<pre class="r"><code>nt &lt;- 1000
+# ex Gaussian parameters
+mu &lt;- 500
+sigma &lt;- 50
+tau &lt;- 200
+ES &lt;- 1.5
+
+set.seed(777)
+g1 &lt;- rexgauss(nt, mu = mu, sigma = sigma, tau = tau)
+md.g1 &lt;- median(g1)
+g1 &lt;- (g1 - md.g1) * ES + md.g1 # spread around the median
+g2 &lt;- rexgauss(nt, mu = mu, sigma = sigma, tau = tau)
+df &lt;- mkt2(g1, g2, group_labels = c(&quot;Condition1&quot;, &quot;Condition2&quot;))
+
+p &lt;- ggplot(df, aes(x = obs)) + theme_classic() + 
+  stat_density(aes(colour = gr), geom=&quot;line&quot;,position=&quot;identity&quot;, size=1) +
+  scale_colour_viridis_d(end = 0.8) +
+  coord_cartesian(xlim = c(0, 2500)) +
+  theme(axis.title.x = element_text(size = 18),
+        axis.text.x = element_text(size = 16, colour=&quot;black&quot;),
+        axis.text.y = element_text(size = 16, colour=&quot;black&quot;),
+        axis.title.y = element_text(size = 18),
+        legend.key.width = unit(1.5,&quot;cm&quot;),
+        legend.position = c(0.55,0.75),
+        legend.direction = &quot;vertical&quot;,
+        legend.text=element_text(size=16),
+        legend.title=element_text(size=18),
+        title = element_text(size=20)) +
+  labs(x = &quot;Reaction times&quot;, y = &quot;Density&quot;, colour = &quot;Groups&quot;) + 
+  ggtitle(&quot;Spread difference&quot;)
+p</code></pre>
+<p><img src="nb8_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<pre class="r"><code>p.spr.dist &lt;- p</code></pre>
+</div>
+<div id="shift-function-1" class="section level2">
+<h2>Shift function</h2>
+<pre class="r"><code>out &lt;- shifthd_pbci(df, nboot = 200, adj_ci = FALSE)
+p &lt;- plot_sf(out, plot_theme = 1)[[1]] + 
+     theme(axis.text = element_text(size = 16, colour=&quot;black&quot;))
+p</code></pre>
+<p><img src="nb8_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<pre class="r"><code>p.spr.sf &lt;- p</code></pre>
+</div>
+</div>
+<div id="early-difference" class="section level1">
+<h1>Early difference</h1>
+<div id="kde-2" class="section level2">
+<h2>KDE</h2>
+<pre class="r"><code>nt &lt;- 1000
+# ex Gaussian parameters
+mu &lt;- 500
+sigma &lt;- 50
+tau &lt;- 200
+ES &lt;- 1.5
+
+set.seed(777)
+g1 &lt;- rexgauss(nt, mu = mu, sigma = sigma, tau = tau)
+md.g1 &lt;- median(g1)
+q3.g1 &lt;- quantile(g1, probs = 0.75)
+# g1 &lt;- (g1 - md.g1) * ES + md.g1 # spread around the median
+g1 &lt;- (g1 - q3.g1) * ES + q3.g1 # spread around the 3rd quartile
+g2 &lt;- rexgauss(nt, mu = mu, sigma = sigma, tau = tau)
+df &lt;- mkt2(g1, g2, group_labels = c(&quot;Condition1&quot;, &quot;Condition2&quot;))
+
+p &lt;- ggplot(df, aes(x = obs)) + theme_classic() + 
+  stat_density(aes(colour = gr), geom=&quot;line&quot;,position=&quot;identity&quot;, size=1) +
+  scale_colour_viridis_d(end = 0.8) +
+  coord_cartesian(xlim = c(0, 2500)) +
+  theme(axis.title.x = element_text(size = 18),
+        axis.text.x = element_text(size = 16, colour=&quot;black&quot;),
+        axis.text.y = element_text(size = 16, colour=&quot;black&quot;),
+        axis.title.y = element_text(size = 18),
+        legend.key.width = unit(1.5,&quot;cm&quot;),
+        legend.position = c(0.55,0.75),
+        legend.direction = &quot;vertical&quot;,
+        legend.text=element_text(size=16),
+        legend.title=element_text(size=18),
+        title = element_text(size=20)) +
+  labs(x = &quot;Reaction times&quot;, y = &quot;Density&quot;, colour = &quot;Groups&quot;) +
+  ggtitle(&quot;Early difference&quot;)
+p</code></pre>
+<p><img src="nb8_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<pre class="r"><code>p.early.dist &lt;- p</code></pre>
+</div>
+<div id="shift-function-2" class="section level2">
+<h2>Shift function</h2>
+<pre class="r"><code>out &lt;- shifthd_pbci(df, nboot = 200, adj_ci = FALSE)
+p &lt;- plot_sf(out, plot_theme = 1)[[1]] + 
+     theme(axis.text = element_text(size = 16, colour=&quot;black&quot;))
+p</code></pre>
+<p><img src="nb8_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<pre class="r"><code>p.early.sf &lt;- p</code></pre>
+</div>
+</div>
+<div id="late-difference" class="section level1">
+<h1>Late difference</h1>
+<div id="kde-3" class="section level2">
+<h2>KDE</h2>
+<pre class="r"><code>nt &lt;- 1000
+# ex Gaussian parameters
+mu &lt;- 500
+sigma &lt;- 50
+tau &lt;- 200
+ES &lt;- 100
+
+set.seed(777)
+g1 &lt;- rexgauss(nt, mu = mu, sigma = sigma, tau = tau + ES)
+g2 &lt;- rexgauss(nt, mu = mu, sigma = sigma, tau = tau)
+df &lt;- mkt2(g1, g2, group_labels = c(&quot;Condition1&quot;, &quot;Condition2&quot;))
+
+p &lt;- ggplot(df, aes(x = obs)) + theme_classic() + 
+  stat_density(aes(colour = gr), geom=&quot;line&quot;,position=&quot;identity&quot;, size=1) +
+  scale_colour_viridis_d(end = 0.8) +
+  coord_cartesian(xlim = c(0, 2500)) +
+  theme(axis.title.x = element_text(size = 18),
+        axis.text.x = element_text(size = 16, colour=&quot;black&quot;),
+        axis.text.y = element_text(size = 16, colour=&quot;black&quot;),
+        axis.title.y = element_text(size = 18),
+        legend.key.width = unit(1.5,&quot;cm&quot;),
+        legend.position = c(0.55,0.75),
+        legend.direction = &quot;vertical&quot;,
+        legend.text=element_text(size=16),
+        legend.title=element_text(size=18),
+        title = element_text(size=20)) +
+  labs(x = &quot;Reaction times&quot;, y = &quot;Density&quot;, colour = &quot;Groups&quot;) + 
+  ggtitle(&quot;Late difference&quot;)
+p</code></pre>
+<p><img src="nb8_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<pre class="r"><code>p.tau.dist &lt;- p</code></pre>
+</div>
+<div id="shift-function-3" class="section level2">
+<h2>Shift function</h2>
+<pre class="r"><code>out &lt;- shifthd_pbci(df, nboot = 200, adj_ci = FALSE)
+p &lt;- plot_sf(out, plot_theme = 1)[[1]] + 
+     theme(axis.text = element_text(size = 16, colour=&quot;black&quot;))
+p</code></pre>
+<p><img src="nb8_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<pre class="r"><code>p.tau.sf &lt;- p</code></pre>
+</div>
+</div>
 
 <p> </p>
 <p> </p>

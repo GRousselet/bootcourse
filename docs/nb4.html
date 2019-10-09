@@ -71,7 +71,9 @@ h6 {
 </style>
 
 
+</head>
 
+<body>
 
 <style type = "text/css">
 .main-container {
@@ -190,6 +192,8 @@ $(document).ready(function () {
 });
 </script>
 
+<div class="container-fluid main-container">
+
 <!-- tabsets -->
 
 <style type="text/css">
@@ -263,15 +267,6 @@ $(document).ready(function () {
 
 
 
-</head>
-
-<body>
-
-
-<div class="container-fluid main-container">
-
-
-
 
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
@@ -332,9 +327,11 @@ $(document).ready(function () {
 </div>
 
 
-<pre class="r"><code># dependencies
-library(ggplot2)
+<div id="dependencies" class="section level1">
+<h1>Dependencies</h1>
+<pre class="r"><code>library(ggplot2)
 library(tibble)</code></pre>
+</div>
 <div id="sampling-distributions" class="section level1">
 <h1>Sampling distributions</h1>
 <div id="sampling-from-a-normal-distribution" class="section level2">

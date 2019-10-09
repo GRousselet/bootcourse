@@ -24,13 +24,13 @@ source("./code/summarySE.txt") # Define summary function
 The example is from a 2016 editorial published in the [European Journal of Neuroscience](https://onlinelibrary.wiley.com/doi/full/10.1111/ejn.13400).
 
 ## Load data
-```{r}
+```{r, load_ejn_data}
 data <- read.csv("./data/ejn_data.csv",header=T)
 data$participant <- factor(data$participant)
 ```
 
 ## Bar graph
-```{r}
+```{r, bar_graph}
 datas <- summarySE(data, measurevar="value", groupvars=c("group","condition"))
 
 bargraph <- ggplot(datas, aes(x=group, y=value, fill=condition)) + 
@@ -86,8 +86,7 @@ diffstrip
 
 ## Stripchart + linked observations 
 ```{r}
-p <- ggplot(data, aes(x=condition, y=value, fill=condition, group=participant,shape=group)) +
-  theme_bw() +
+p <- ggplot(data, aes(x=condition, y=value, fill=condition, group=participant,shape=group)) + theme_bw() +
   geom_line(size=1, alpha=1) +
   geom_point(colour = "black", size = 4, stroke = 1) +
   scale_shape_manual(values=c(22,21)) +
@@ -116,6 +115,7 @@ condition2 <- data$value[data$condition=="condition2"]
 participant <- data$participant[data$condition=="condition2"]
 group <- data$group[data$condition=="condition2"]
 rdata <- data.frame(participant,group,condition1,condition2)
+
 scatterdiff <- ggplot(rdata, aes(x=condition1,y=condition2,group=group,fill=group,colour=group,shape=group)) + 
   geom_abline(intercept = 0) +
   geom_point(size=4,stroke=1, alpha = 0.6) +
@@ -276,8 +276,8 @@ ggplot(df, aes(x=group, y=age, group=couple)) + theme_bw() +
 
 ### 1D scatterplot = stripchart of differences
 
-```{r, fig.width=0.75, fig.height=1.5}
-
+```{r}
+# fig.width=0.75, fig.height=1.5
 set.seed(44) # reproducible jitter
 
 df.diff <- tibble(couple = 1:n.couple,
@@ -353,12 +353,12 @@ onesampb(husbands - wives, alpha=.05, nboot=2000, est=median, SEED=FALSE)
 summary(husbands - wives)
 ```
 
-## P(diff > 0)
+## $P(diff > 0)$
 ```{r}
 cdiff <- husbands - wives
 mean(cdiff > 0)
 ```
-## P(diff > 0) + CI
+## $P(diff > 0)$ + confidence interval
 
 ### Define function
 Probability than x is larger than zero.
@@ -470,7 +470,7 @@ Median of all pairwise differences = `r out$estimate` [`r out$ci[1]`, `r out$ci[
 
 This measure answer the questions: what is the typical difference between two observations selected at random from the two groups?
 
-### P(X>Y)
+### $P(X>Y)$
 
 Given two observations selected at random from these two groups, what is the probability that an observation from group 1 will be larger than one in group 2?
 
@@ -480,7 +480,7 @@ out <- cid(control, ozone)
 out$summary.dvals[3]
 ```
 
-`cid()` also returns the complementary probability P(X<Y) and the robust ordinal measure of effect size known as Cliff's delta = P(X>Y) - P(X<Y).
+`cid()` also returns the complementary probability $P(X<Y)$ and the robust ordinal measure of effect size known as Cliff's delta: $d = P(X>Y) - P(X<Y)$.
 
 Make our own function to compute the probability that X is greater than Y:
 ```{r}

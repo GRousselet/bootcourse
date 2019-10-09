@@ -71,7 +71,9 @@ h6 {
 </style>
 
 
+</head>
 
+<body>
 
 <style type = "text/css">
 .main-container {
@@ -190,6 +192,8 @@ $(document).ready(function () {
 });
 </script>
 
+<div class="container-fluid main-container">
+
 <!-- tabsets -->
 
 <style type="text/css">
@@ -263,15 +267,6 @@ $(document).ready(function () {
 
 
 
-</head>
-
-<body>
-
-
-<div class="container-fluid main-container">
-
-
-
 
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
@@ -337,7 +332,7 @@ $(document).ready(function () {
 <pre><code>---
 title: &quot;Homework #1&quot;
 author: &quot;Group: the kurtotic avengers&quot;
-date: &quot;2019-10-02&quot;
+date: &quot;2019-10-09&quot;
 output:
   pdf_document:
     fig_caption: no
@@ -421,9 +416,9 @@ Class 3
 <div id="exercise-1-2" class="section level2">
 <h2>Exercise 1</h2>
 <ul>
-<li><p>Repeat exercise 1 from last class.</p></li>
-<li><p>How do the current results differ relative to the results from last class?</p></li>
-<li><p>Repeat the group comparisons after combining data across classes, separately for each colour.</p></li>
+<li><p>Illustrate the dice results from the different classes in one figure with multiple panels.</p></li>
+<li><p>How do the results differ among classes? What do you conclude?</p></li>
+<li><p>Perform group comparisons after combining data across classes.</p></li>
 <li><p>Use a selection of approaches to compute CIs using the mean and a trimmed mean in combination with a standard parametric method, the percentile bootstrap and the bootstrap-t. Do not report CIs for all combinations of choices: instead justify carefully your choice of one or two methods based on what we saw in class and the assigned references. By now you know that using standard t-tests on means should not be the default because there are several potentially more appropriate alternatives.</p></li>
 </ul>
 </div>
@@ -447,13 +442,21 @@ Class 4
 <div id="exercise-1-3" class="section level2">
 <h2>Exercise 1</h2>
 <ul>
-<li><p>Repeat exercise 1 from last class.</p></li>
-<li><p>How do the current results differ relative to the results from last class?</p></li>
-<li><p>Repeat the group comparisons after combining data across classes, separately for each colour.</p></li>
+<li><p>Illustrate the dice results from the different classes in one figure with multiple panels.</p></li>
+<li><p>Based on the graphical representations (do not use inferential tests), how do the results differ among classes? What do you conclude?</p></li>
+<li><p>Perform group comparisons only after combining data across the 4 classes. Choose carefully 2 approaches based on everything you have learnt so far. Justify your choices, embed the results in text format using <a href="https://rmarkdown.rstudio.com/lesson-4.html">inline code</a>, and conclude succinctly but carefully.</p></li>
 </ul>
 </div>
 <div id="exercise-2-3" class="section level2">
 <h2>Exercise 2</h2>
+<p>Here are data from a weight gain programme. Weights in pounds were measured before (<code>t1</code>) and after (<code>t2</code>) the programme in the same participants (<code>t1[1]</code> and <code>t2[1]</code> are measurements from the same person).</p>
+<ul>
+<li><p>Illustrate the results.</p></li>
+<li><p>Using inferential statistics and graphical representations, do you have sufficient evidence to conclude that the programme is effective?</p></li>
+<li><p>If you had the task to promote the programme, what would be the typical weight change you would advertise?</p></li>
+</ul>
+<pre class="r"><code>t1 &lt;- c(83.8, 83.3, 86, 82.5, 86.7, 79.6, 76.9, 94.2, 73.4, 80.5, 81.6, 82.1, 77.6, 83.5, 89.9, 86, 87.3)
+t2 &lt;- c(95.2, 94.3, 91.5, 91.9, 100.3, 76.7, 76.8, 101.6, 94.9, 75.2, 77.8, 95.5, 90.7, 92.5, 93.8, 91.7, 98)</code></pre>
 <button type="button" class="btn btn-success btn-lg btn-block font-weight-bold">
 Class 5
 </button>

@@ -11,10 +11,11 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r message=FALSE, warning=FALSE}
 library(ggplot2)
 library(tibble)
-library(retimes) # to generate exGaussian data
+library(retimes) # to generate ex-Gaussian data
+# ROGME PACKAGE: NOT ON CRAN, SO EXECUTE THE NEXT TWO LINES TO INSTALL ROGME
 # install.packages("devtools")
 # devtools::install_github("GRousselet/rogme")
-library(rogme) # *** NOT ON CRAN, SO FOLLOW THE TWO PREVIOUS STEPS TO INSTALL ROGME ***
+library(rogme) 
 ```
 
 Here we consider differences in reaction time distributions, modelled using [exGaussian distributions](https://www.ejwagenmakers.com/2009/MatzkeWagenmakers2009.pdf).

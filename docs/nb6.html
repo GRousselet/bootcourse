@@ -71,7 +71,9 @@ h6 {
 </style>
 
 
+</head>
 
+<body>
 
 <style type = "text/css">
 .main-container {
@@ -190,6 +192,8 @@ $(document).ready(function () {
 });
 </script>
 
+<div class="container-fluid main-container">
+
 <!-- tabsets -->
 
 <style type="text/css">
@@ -263,15 +267,6 @@ $(document).ready(function () {
 
 
 
-</head>
-
-<body>
-
-
-<div class="container-fluid main-container">
-
-
-
 
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
@@ -332,11 +327,13 @@ $(document).ready(function () {
 </div>
 
 
-<pre class="r"><code># dependencies
-library(ggplot2)
+<div id="dependencies" class="section level1">
+<h1>Dependencies</h1>
+<pre class="r"><code>library(ggplot2)
 library(tibble)
 source(&quot;./code/theme_gar.txt&quot;)
 source(&quot;./code/Rallfun-v35.txt&quot;)</code></pre>
+</div>
 <div id="bootstrap-correlation-coefficient" class="section level1">
 <h1>Bootstrap correlation coefficient</h1>
 <p>In this example we sample from 2 weakly correlated variables. Changing the random seed or commenting out the line <code>set.seed(21)</code> will give different results. You can also change the population correlation by changing <code>rho</code>.</p>

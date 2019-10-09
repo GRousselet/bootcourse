@@ -71,7 +71,9 @@ h6 {
 </style>
 
 
+</head>
 
+<body>
 
 <style type = "text/css">
 .main-container {
@@ -190,6 +192,8 @@ $(document).ready(function () {
 });
 </script>
 
+<div class="container-fluid main-container">
+
 <!-- tabsets -->
 
 <style type="text/css">
@@ -263,15 +267,6 @@ $(document).ready(function () {
 
 
 
-</head>
-
-<body>
-
-
-<div class="container-fluid main-container">
-
-
-
 
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
@@ -332,7 +327,553 @@ $(document).ready(function () {
 </div>
 
 
+<div id="dependencies" class="section level1">
+<h1>Dependencies</h1>
+<pre class="r"><code>library(ggplot2)
+library(tibble)
+source(&quot;./code/theme_gar.txt&quot;)
+library(ggbeeswarm)
+source(&quot;./code/pb2gen.txt&quot;)
+source(&quot;./code/onesampb.txt&quot;)
+source(&quot;./code/wmwpb.txt&quot;)
+source(&quot;./code/summarySE.txt&quot;) # Define summary function
+# Code from: http://www.cookbook-r.com/Graphs/Plotting_means_and_error_bars_(ggplot2)/</code></pre>
+</div>
+<div id="example-within-x-between-design" class="section level1">
+<h1>Example: within x between design</h1>
+<p>The example is from a 2016 editorial published in the <a href="https://onlinelibrary.wiley.com/doi/full/10.1111/ejn.13400">European Journal of Neuroscience</a>.</p>
+<div id="load-data" class="section level2">
+<h2>Load data</h2>
+<pre class="r"><code>data &lt;- read.csv(&quot;./data/ejn_data.csv&quot;,header=T)
+data$participant &lt;- factor(data$participant)</code></pre>
+</div>
+<div id="bar-graph" class="section level2">
+<h2>Bar graph</h2>
+<pre class="r"><code>datas &lt;- summarySE(data, measurevar=&quot;value&quot;, groupvars=c(&quot;group&quot;,&quot;condition&quot;))
 
+bargraph &lt;- ggplot(datas, aes(x=group, y=value, fill=condition)) + 
+  theme_bw() +
+  geom_bar(position=position_dodge(), stat=&quot;identity&quot;, colour=&quot;black&quot;) +
+  geom_errorbar(aes(ymin=value-se, ymax=value+se),
+                width=.2,                    # Width of the error bars
+                position=position_dodge(.9)) +
+  scale_fill_manual(values = c(&quot;#E69F00&quot;, &quot;#56B4E9&quot;)) +
+theme(axis.text.x = element_text(colour=&quot;grey20&quot;,size=16),
+      axis.text.y = element_text(colour=&quot;grey20&quot;,size=16),  
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank(),
+      legend.title = element_blank(),
+      legend.text = element_text(colour=&quot;grey20&quot;,size=16),
+      legend.key = element_rect(colour = &quot;black&quot;,size=.1),
+      legend.position = c(.15, .90),
+      # plot.margin = unit(c(150,100,5.5,5.5), &quot;pt&quot;),
+      plot.margin = unit(c(5.5,5.5,5.5,5.5), &quot;pt&quot;),
+      plot.title = element_text(colour=&quot;grey20&quot;,size=20)) +
+      labs(title=&quot;Mean +/- SEM&quot;) +
+      scale_y_continuous(limits=c(0, 15),breaks=seq(0,15,5))
+bargraph</code></pre>
+<p><img src="nb7_files/figure-html/bar_graph-1.png" width="672" /></p>
+</div>
+<div id="d-scatterplots-stripcharts-of-differences" class="section level2">
+<h2>1D scatterplots = stripcharts of differences</h2>
+<pre class="r"><code>value &lt;- data$value[data$condition==&quot;condition2&quot;]-data$value[data$condition==&quot;condition1&quot;]
+participant &lt;- data$participant[data$condition==&quot;condition2&quot;]
+group &lt;- data$group[data$condition==&quot;condition2&quot;]
+diff &lt;- data.frame(participant,group,value)
+
+set.seed(8)
+
+diffstrip &lt;- ggplot(diff, aes(x=group, y=value, fill=group, colour=group, shape=group)) + theme_bw() +
+  geom_abline(intercept = 0, slope = 0) +
+  geom_jitter(position=position_jitter(0.1), size=4, stroke=1, alpha=0.6) +
+  scale_shape_manual(values=c(22,21)) +
+  scale_fill_manual(values = c(&quot;grey70&quot;, &quot;grey95&quot;)) +
+  scale_colour_manual(values = c(&quot;grey5&quot;,&quot;grey5&quot;)) +
+  theme(legend.position=&quot;none&quot;,
+        axis.text.x = element_text(colour=&quot;grey20&quot;,size=16),
+        axis.text.y = element_text(colour=&quot;grey20&quot;,size=16),  
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        plot.title = element_text(colour=&quot;grey20&quot;,size=20),
+        plot.margin = unit(c(5.5,5.5,5.5,5.5), &quot;pt&quot;)) +
+        # plot.margin = unit(c(150,200,5.5,5.5), &quot;pt&quot;)
+  labs(title=&quot;Differences: condition1 - condition2&quot;) +
+  scale_y_continuous(limits=c(-2.5, 3.5),breaks=seq(-2,3,1)) 
+diffstrip</code></pre>
+<p><img src="nb7_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+</div>
+<div id="stripchart-linked-observations" class="section level2">
+<h2>Stripchart + linked observations</h2>
+<pre class="r"><code>p &lt;- ggplot(data, aes(x=condition, y=value, fill=condition, group=participant,shape=group)) + theme_bw() +
+  geom_line(size=1, alpha=1) +
+  geom_point(colour = &quot;black&quot;, size = 4, stroke = 1) +
+  scale_shape_manual(values=c(22,21)) +
+  scale_fill_manual(values = c(&quot;#E69F00&quot;, &quot;#56B4E9&quot;)) +
+  theme(axis.text.x = element_text(colour=&quot;grey20&quot;,size=16),
+        axis.text.y = element_text(colour=&quot;grey20&quot;,size=16),  
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        plot.title = element_text(colour=&quot;grey20&quot;,size=20),
+        legend.position=&quot;none&quot;,
+        # plot.margin = unit(c(150,100,5.5,5.5), &quot;pt&quot;)
+        plot.margin = unit(c(5.5,5.5,5.5,5.5), &quot;pt&quot;)) +
+        labs(title=&quot;Paired observations&quot;) +
+  scale_y_continuous(limits=c(0, 20),breaks=seq(0,20,5))
+# p
+linkedstrip &lt;- p + facet_grid(. ~ group) +
+  theme(strip.text.x = element_text(size = 20, colour = &quot;white&quot;),
+        strip.background = element_rect(colour=&quot;darkgrey&quot;, fill=&quot;darkgrey&quot;))
+linkedstrip</code></pre>
+<p><img src="nb7_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+</div>
+<div id="scatterplot-of-paired-observations" class="section level2">
+<h2>Scatterplot of paired observations</h2>
+<pre class="r"><code>condition1 &lt;- data$value[data$condition==&quot;condition1&quot;]
+condition2 &lt;- data$value[data$condition==&quot;condition2&quot;]
+participant &lt;- data$participant[data$condition==&quot;condition2&quot;]
+group &lt;- data$group[data$condition==&quot;condition2&quot;]
+rdata &lt;- data.frame(participant,group,condition1,condition2)
+
+scatterdiff &lt;- ggplot(rdata, aes(x=condition1,y=condition2,group=group,fill=group,colour=group,shape=group)) + 
+  geom_abline(intercept = 0) +
+  geom_point(size=4,stroke=1, alpha = 0.6) +
+  theme_bw() +
+  scale_shape_manual(values=c(22,21)) +
+  scale_fill_manual(values = c(&quot;grey70&quot;, &quot;grey95&quot;)) +
+  scale_colour_manual(values = c(&quot;grey5&quot;,&quot;grey5&quot;)) +
+  theme(axis.text.x = element_text(colour=&quot;grey20&quot;,size=16),
+        axis.text.y = element_text(colour=&quot;grey20&quot;,size=16),  
+        axis.title.x = element_text(colour=&quot;grey20&quot;,size=18),
+        axis.title.y = element_text(colour=&quot;grey20&quot;,size=18),
+        legend.title = element_blank(),
+        legend.position = c(.15, .90),
+        plot.margin = unit(c(5.5,5.5,5.5,5.5), &quot;pt&quot;),
+          legend.text = element_text(colour=&quot;grey20&quot;,size=16),
+        plot.title = element_text(colour=&quot;grey20&quot;,size=20)) +
+  labs(title=&quot;Paired observations&quot;) +
+  scale_x_continuous(limits=c(6, 16),breaks=seq(6,16,2)) +
+  scale_y_continuous(limits=c(6, 19),breaks=seq(6,19,2))
+scatterdiff</code></pre>
+<p><img src="nb7_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+</div>
+<div id="examples-of-standard-group-statistics" class="section level2">
+<h2>Examples of standard group statistics</h2>
+<p>Stats results as reported in the EJN editorial.</p>
+<div id="x-2-anova" class="section level3">
+<h3>2 x 2 ANOVA</h3>
+<pre class="r"><code>aov_gp_cond &lt;- aov(value ~ group*condition + Error(participant/condition), data=data)
+summary(aov_gp_cond)</code></pre>
+<pre><code>## 
+## Error: participant
+##           Df Sum Sq Mean Sq F value Pr(&gt;F)
+## group      1    4.4    4.43   0.261  0.615
+## Residuals 20  339.6   16.98               
+## 
+## Error: participant:condition
+##                 Df Sum Sq Mean Sq F value  Pr(&gt;F)   
+## condition        1  3.986   3.986   7.509 0.01261 * 
+## group:condition  1  4.430   4.430   8.345 0.00908 **
+## Residuals       20 10.617   0.531                   
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+</div>
+<div id="group-1-t-test" class="section level3">
+<h3>Group 1 t-test</h3>
+<pre class="r"><code>x &lt;- data[data$group==&quot;group1&quot; &amp; data$condition==&quot;condition1&quot; ,&quot;value&quot;]
+y &lt;- data[data$group==&quot;group1&quot; &amp; data$condition==&quot;condition2&quot; ,&quot;value&quot;]
+t.test(x,y,paired=T)</code></pre>
+<pre><code>## 
+##  Paired t-test
+## 
+## data:  x and y
+## t = -3.8742, df = 10, p-value = 0.003088
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -1.9477091 -0.5253818
+## sample estimates:
+## mean of the differences 
+##               -1.236545</code></pre>
+</div>
+<div id="group-2-t-test" class="section level3">
+<h3>Group 2 t-test</h3>
+<pre class="r"><code>x &lt;- data[data$group==&quot;group2&quot; &amp; data$condition==&quot;condition1&quot; ,&quot;value&quot;]
+y &lt;- data[data$group==&quot;group2&quot; &amp; data$condition==&quot;condition2&quot; ,&quot;value&quot;]
+t.test(x,y,paired=T)</code></pre>
+<pre><code>## 
+##  Paired t-test
+## 
+## data:  x and y
+## t = 0.1081, df = 10, p-value = 0.9161
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -0.6400830  0.7053557
+## sample estimates:
+## mean of the differences 
+##              0.03263636</code></pre>
+</div>
+</div>
+<div id="make-final-figure-combining-4-panels" class="section level2">
+<h2>Make final figure combining 4 panels</h2>
+<pre class="r"><code>require(cowplot)
+set.seed(8)
+cowplot::plot_grid(bargraph, diffstrip, linkedstrip, scatterdiff, 
+                   labels=c(&quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;), 
+                   ncol = 2, 
+                   nrow = 2, 
+                   rel_heights = c(1, 1),
+                   label_size = 18,
+                   hjust = -1,
+                   scale=.95)
+
+ggsave(filename=&#39;./figures/ejn_summary_figure.pdf&#39;, units = &quot;cm&quot;, width = 30, height = 30)</code></pre>
+</div>
+</div>
+<div id="two-dependent-groups" class="section level1">
+<h1>Two dependent groups</h1>
+<p>Here are two vectors of ages of husbands and wives. The two vectors are matching, such that husbands[1] is married to wives[1].</p>
+<pre class="r"><code>husbands &lt;- c(25,25,51,25,38,30,60,54,31,54,23,34,25,23,19,71,26,31,26,62,29,31,29,35)
+
+wives &lt;- c(22,32,50,25,33,27,45,47,30,44,23,39,24,22,16,73,27,36,24,60,26,23,28,36)
+
+n.couple &lt;- length(wives)</code></pre>
+<div id="illustrate-results" class="section level2">
+<h2>Illustrate results</h2>
+<div id="make-data-frame" class="section level3">
+<h3>Make data frame</h3>
+<pre class="r"><code>df &lt;- tibble(couple = rep(1:n.couple, 2),
+             age = c(husbands, wives),
+             group = rep(c(&quot;husbands&quot;, &quot;wives&quot;), each = n.couple))</code></pre>
+</div>
+<div id="independent-stripcharts-1d-scatterplots" class="section level3">
+<h3>Independent stripcharts (1D scatterplots)</h3>
+<pre class="r"><code>set.seed(44) # reproducible jitter
+
+ggplot(df, aes(x = group,
+               y = age,
+               fill = group)) +
+geom_jitter(alpha = 0.7,
+            shape = 21,
+            size = 4,
+            width = .15) +
+  scale_fill_manual(values=c(&quot;#E69F00&quot;, &quot;#56B4E9&quot;)) +
+    theme_bw() +
+    theme(legend.position = &quot;none&quot;) +
+    theme(axis.title.y = element_text(size=16,face=&quot;bold&quot;),
+        axis.title.x = element_blank(),
+        axis.text = element_text(size=14)) +
+    ylab(&quot;Ages in years&quot;) +
+  scale_y_continuous(limits = c(0, 100))</code></pre>
+<p><img src="nb7_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+</div>
+<div id="stripcharts-with-medians" class="section level3">
+<h3>Stripcharts with medians</h3>
+<pre class="r"><code>set.seed(44) # reproducible jitter
+
+# compute medians
+md.h &lt;- median(husbands)
+md.w &lt;- median(wives)
+
+ggplot(df, aes(x = group,
+               y = age,
+               fill = group)) +
+geom_jitter(alpha = 0.7,
+            shape = 21,
+            size = 4,
+            width = .15) +
+scale_fill_manual(values=c(&quot;#E69F00&quot;, &quot;#56B4E9&quot;)) +
+  theme_bw() +
+  theme(legend.position = &quot;none&quot;) +
+  theme(axis.title.y = element_text(size=16,face=&quot;bold&quot;),
+        axis.title.x = element_blank(),
+        axis.text = element_text(size=14)) +
+        ylab(&quot;Ages in years&quot;) +
+scale_y_continuous(limits = c(0, 100)) +
+# add median for husbands
+
+geom_segment(aes(x = 0.75, y = md.h, xend = 1.25, yend = md.h), size = 1, colour = &quot;black&quot;) +
+# add median for wives
+geom_segment(aes(x = 1.75, y = md.w, xend = 2.25, yend = md.w), size = 1, colour = &quot;black&quot;)</code></pre>
+<p><img src="nb7_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+</div>
+<div id="linked-stripcharts" class="section level3">
+<h3>Linked stripcharts</h3>
+<p>Coloured lines link paired observations.</p>
+<pre class="r"><code>set.seed(44) # reproducible jitter
+
+pd &lt;- position_dodge(width = 0.1)
+
+ggplot(df, aes(x=group, y=age, group=couple)) + theme_bw() +
+  geom_line(aes(colour=couple),size=1, alpha=.9,
+            position=pd) +
+  scale_colour_viridis_c(option = &quot;A&quot;) +
+  theme(axis.text = element_text(size=14),
+        axis.title.x = element_blank(),
+        axis.title.y = element_text(size=16,face=&quot;bold&quot;),
+        legend.position=&quot;none&quot;) +
+  # ylab(&quot;Scores (a.u.)&quot;) +
+  # scale_x_discrete(labels = c(&quot;condition1&quot; = &quot;Condition 1&quot;,&quot;condition2&quot; = &quot;Condition 2&quot;)) +
+  scale_y_continuous(limits=c(0, 100)) +
+  ylab(&quot;Ages in years&quot;)</code></pre>
+<p><img src="nb7_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+</div>
+<div id="d-scatterplot-stripchart-of-differences" class="section level3">
+<h3>1D scatterplot = stripchart of differences</h3>
+<pre class="r"><code># fig.width=0.75, fig.height=1.5
+set.seed(44) # reproducible jitter
+
+df.diff &lt;- tibble(couple = 1:n.couple,
+                  difference = husbands - wives,
+                  gr = rep(&quot;gr&quot;, n.couple))
+
+ggplot(df.diff, aes(x=gr, y=difference)) +
+  geom_abline(intercept = 0, slope = 0, linetype = 2) + # zero reference line
+  geom_jitter(alpha = 0.7,
+              shape = 21,
+              size = 2,
+              width = .15,
+              colour = &quot;grey10&quot;,
+              fill = &quot;grey90&quot;) +
+  theme_bw() +
+  theme(legend.position=&quot;none&quot;,
+        axis.ticks.x = element_line(colour=&quot;white&quot;),
+        axis.text.x = element_text(size=14,colour=&quot;white&quot;),
+        axis.text.y = element_text(size=14),
+        axis.title.x = element_text(size=16,face=&quot;bold&quot;,colour=&quot;white&quot;),
+        axis.title.y = element_text(size=16,face=&quot;bold&quot;),
+        plot.title = element_text(colour=&quot;black&quot;,size=20),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank()) +
+  ylab(&quot;Differences&quot;) +
+  scale_y_continuous(limits=c(-10, 20), breaks=seq(-10, 20, 5))</code></pre>
+<p><img src="nb7_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+</div>
+<div id="scatterplot-of-paired-observations-1" class="section level3">
+<h3>Scatterplot of paired observations</h3>
+<pre class="r"><code># make new data frame for paired data
+df.p &lt;- tibble(husbands = husbands,
+               wives = wives)
+
+ggplot(df.p, aes(x = husbands, y = wives)) + theme_bw() +
+  geom_point(alpha = 0.7,
+              shape = 21,
+              size = 4,
+              colour = &quot;grey10&quot;,
+              fill = &quot;grey90&quot;) +
+  geom_abline(intercept = 0,
+              slope = 1,
+              linetype = &quot;longdash&quot;) + # slope 1 reference line
+  theme(axis.title = element_text(size=16,face=&quot;bold&quot;),
+        axis.text = element_text(size=14)) +
+  xlab(&quot;Wives&quot;) +
+  ylab(&quot;Husbands&quot;) +
+  theme(plot.title = element_blank())</code></pre>
+<p><img src="nb7_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+</div>
+</div>
+<div id="compare-marginals" class="section level2">
+<h2>Compare marginals</h2>
+<p>Treated as two independent groups, are men older than women?</p>
+<pre class="r"><code># percentile bootstrap confidence interval of the difference between
+# medians, treating the groups as independent
+pb2gen(husbands, wives, alpha=.05, nboot=2000, est=median, SEED=FALSE)</code></pre>
+<pre><code>## $est.1
+## [1] 30.5
+## 
+## $est.2
+## [1] 29
+## 
+## $est.dif
+## [1] 1.5
+## 
+## $ci
+## [1] -8.0  7.5
+## 
+## $p.value
+## [1] 0.833
+## 
+## $sq.se
+## [1] 16.99839
+## 
+## $n1
+## [1] 24
+## 
+## $n2
+## [1] 24</code></pre>
+</div>
+<div id="quantify-within-couple-differences" class="section level2">
+<h2>Quantify within couple differences</h2>
+<p>Can we conclude that, within a couple, the wife tends to be older than the husband?</p>
+<pre class="r"><code># Compute confidence interval of the median of the paired differences
+onesampb(husbands - wives, alpha=.05, nboot=2000, est=median, SEED=FALSE)</code></pre>
+<pre><code>## $ci
+## [1] 0.5 3.0
+## 
+## $n
+## [1] 24
+## 
+## $estimate
+## [1] 1
+## 
+## $p.value
+## [1] 0.025</code></pre>
+<div id="summary-statistics" class="section level3">
+<h3>Summary statistics</h3>
+<pre class="r"><code>summary(husbands - wives)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##  -7.000  -0.250   1.000   1.875   3.000  15.000</code></pre>
+</div>
+</div>
+<div id="pdiff-0" class="section level2">
+<h2><span class="math inline">\(P(diff &gt; 0)\)</span></h2>
+<pre class="r"><code>cdiff &lt;- husbands - wives
+mean(cdiff &gt; 0)</code></pre>
+<pre><code>## [1] 0.6666667</code></pre>
+</div>
+<div id="pdiff-0-confidence-interval" class="section level2">
+<h2><span class="math inline">\(P(diff &gt; 0)\)</span> + confidence interval</h2>
+<div id="define-function" class="section level3">
+<h3>Define function</h3>
+<p>Probability than x is larger than zero.</p>
+<pre class="r"><code>pxlz&lt;- function(x){
+  mean(x &gt; 0)
+}</code></pre>
+</div>
+<div id="percentile-bootstrap" class="section level3">
+<h3>Percentile bootstrap</h3>
+<pre class="r"><code>onesampb(cdiff, alpha=.05, nboot=2000, est=pxlz, SEED=FALSE)</code></pre>
+<pre><code>## $ci
+## [1] 0.4583333 0.8333333
+## 
+## $n
+## [1] 24
+## 
+## $estimate
+## [1] 0.6666667
+## 
+## $p.value
+## [1] 0</code></pre>
+</div>
+</div>
+</div>
+<div id="two-independent-groups" class="section level1">
+<h1>Two independent groups</h1>
+<p>A study assessed the effects of ozone on weight gain in rats. The ozone group consisted of 22 70-day old rats kept in an ozone environment for 7 days. The control group consisted of 23 rats of the same age, kept in an ozone-free environment. Here are the weight gains, in grams, for each group:</p>
+<pre class="r"><code>control &lt;- c(41, 38.4, 24.4, 25.9, 21.9, 18.3, 13.1, 27.3, 28.5, -16.9, 26, 17.4, 21.8, 15.4, 27.4, 19.2, 22.4, 17.7, 26, 29.4, 21.4, 26.6, 22.7)
+
+ozone &lt;- c(10.1, 6.1, 20.4, 7.3, 14.3, 15.5, -9.9, 6.8, 28.2, 17.9, -9, -12.9, 14, 6.6, 12.1, 15.7, 39.9, -15.9, 54.6, -14.7, 44.1, -9)
+
+n.control &lt;- length(control)
+n.ozone &lt;- length(ozone)</code></pre>
+<div id="illustrate-results-1" class="section level2">
+<h2>Illustrate results</h2>
+<div id="make-data-frame-1" class="section level3">
+<h3>Make data frame</h3>
+<pre class="r"><code>df &lt;- tibble(weight.gain = c(control, ozone),
+             group = c(rep(&quot;control&quot;, n.control), rep(&quot;ozone&quot;, n.ozone)))</code></pre>
+</div>
+<div id="stripcharts-with-medians-1" class="section level3">
+<h3>Stripcharts with medians</h3>
+<pre class="r"><code>set.seed(44) # reproducible jitter
+
+ggplot(df, aes(x = group,
+               y = weight.gain,
+               fill = group)) +
+geom_jitter(alpha = 0.7,
+            shape = 21,
+            size = 4,
+            width = .15) +
+scale_fill_manual(values=c(&quot;#E69F00&quot;, &quot;#56B4E9&quot;)) +
+  theme_bw() +
+  theme(legend.position = &quot;none&quot;) +
+  theme(axis.title.y = element_text(size=16,face=&quot;bold&quot;),
+        axis.title.x = element_blank(),
+        axis.text = element_text(size=14)) +
+        ylab(&quot;Weight gain in grams&quot;) +
+coord_cartesian(ylim = c(-30, 60)) +
+   stat_summary(fun.y = median, fun.ymin = median, fun.ymax = median,
+                 geom = &quot;crossbar&quot;, width = 0.3) +
+   stat_summary(fun.y = mean, fun.ymin = mean, fun.ymax = mean,
+                 geom = &quot;crossbar&quot;, width = 0.3, colour = &quot;purple&quot;,
+                 fun.args = list(trim = 0.2))</code></pre>
+<p><img src="nb7_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
+<p>These illustrations suggest differences in central tendency and spread between the two groups, as well as overlap, in part due to one or more outliers in the control group. The control group seems overall to gain more weights, with less inter-animal variability than the ozone group.</p>
+</div>
+</div>
+<div id="compare-20-trimmed-means" class="section level2">
+<h2>Compare 20% trimmed means</h2>
+<pre class="r"><code>out &lt;- pb2gen(control, ozone, alpha=.05, nboot=2000,
+              est=mean, SEED=FALSE, trim = 0.2)</code></pre>
+<p>Difference between marginal trimmed means = 14.1, [5, 22.2], <em>P</em>=0.005.</p>
+</div>
+<div id="all-pairwise-differences" class="section level2">
+<h2>All pairwise differences</h2>
+<div id="compute" class="section level3">
+<h3>Compute</h3>
+<pre class="r"><code>apd &lt;- as.vector(outer(control, ozone, FUN=&quot;-&quot;))</code></pre>
+</div>
+<div id="all-pairwise-differences-implementation" class="section level3">
+<h3>All pairwise differences: implementation</h3>
+<pre class="r"><code>x &lt;- 1:5
+y &lt;- 1:5
+outer(x,y,FUN=&quot;-&quot;)</code></pre>
+<pre><code>##      [,1] [,2] [,3] [,4] [,5]
+## [1,]    0   -1   -2   -3   -4
+## [2,]    1    0   -1   -2   -3
+## [3,]    2    1    0   -1   -2
+## [4,]    3    2    1    0   -1
+## [5,]    4    3    2    1    0</code></pre>
+</div>
+<div id="illustrate" class="section level3">
+<h3>Illustrate</h3>
+<p>Make kernel density plot of all pairwise differences</p>
+<pre class="r"><code>ggplot(tibble::enframe(apd), aes(value)) + theme_bw() +
+  geom_density(alpha = 1 , fill = &quot;grey95&quot;, colour = &quot;black&quot;) +
+  geom_vline(xintercept = 0, linetype = &quot;dashed&quot;) + # zero reference line
+  geom_vline(xintercept = median(apd)) + # median difference
+  theme(legend.position=&quot;none&quot;,
+        axis.text = element_text(size=14),
+        axis.title = element_text(size=16,face=&quot;bold&quot;)) +
+  ylab(&quot;Density&quot;) +
+  xlab(&quot;All pairwise differences&quot;)</code></pre>
+<p><img src="nb7_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
+</div>
+<div id="median-of-all-pairwise-differences" class="section level3">
+<h3>Median of all pairwise differences</h3>
+<p>For a measure of effect size preserving the original units, we could report the median of all pairwise differences and its percentile bootstrap confidence interval:</p>
+<pre class="r"><code>out &lt;- wmwpb(control,ozone,est=median,alpha=.05,nboot=2000,SEED=FALSE)</code></pre>
+<p>Median of all pairwise differences = 11.95 [5.3, 21.2], <em>P</em>=0.006.</p>
+<p>This measure answer the questions: what is the typical difference between two observations selected at random from the two groups?</p>
+</div>
+<div id="pxy" class="section level3">
+<h3><span class="math inline">\(P(X&gt;Y)\)</span></h3>
+<p>Given two observations selected at random from these two groups, what is the probability that an observation from group 1 will be larger than one in group 2?</p>
+<p>Using the <code>cid()</code> function:</p>
+<pre class="r"><code>out &lt;- cid(control, ozone)
+out$summary.dvals[3]</code></pre>
+<pre><code>## [1] 0.7608696</code></pre>
+<p><code>cid()</code> also returns the complementary probability <span class="math inline">\(P(X&lt;Y)\)</span> and the robust ordinal measure of effect size known as Cliff’s delta: <span class="math inline">\(d = P(X&gt;Y) - P(X&lt;Y)\)</span>.</p>
+<p>Make our own function to compute the probability that X is greater than Y:</p>
+<pre class="r"><code>pxgy &lt;- function(x,y){
+  mean(outer(x,y,FUN=&quot;-&quot;) &gt; 0)
+}</code></pre>
+<p>Use it:</p>
+<pre class="r"><code>pxgy(control, ozone)</code></pre>
+<pre><code>## [1] 0.7608696</code></pre>
+<p>Confidence interval:</p>
+<pre class="r"><code>set.seed(21)
+
+nboot &lt;- 2000
+b.res &lt;- vector(mode = &quot;numeric&quot;, length = nboot)
+for(B in 1:nboot){
+  b.res[B] &lt;- pxgy(sample(control, n.control, replace = TRUE),
+                   sample(ozone, n.ozone, replace = TRUE))
+}
+quantile(b.res, probs = c(0.025, 0.975))</code></pre>
+<pre><code>##      2.5%     97.5% 
+## 0.5928360 0.9071146</code></pre>
+</div>
+</div>
+</div>
 
 <p> </p>
 <p> </p>
