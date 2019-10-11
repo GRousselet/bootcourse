@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(ggplot2)
 library(tibble)
 source("./code/theme_gar.txt")
-source("./code/Rallfun-v35.txt")
+source("./code/Rallfun-v35-simplified.txt")
 ```
 
 # Bootstrap correlation coefficient
@@ -77,7 +77,7 @@ pval <- sum(boot.corr1 < 0)/nboot
 pval <- 2 * min(pval, 1 - pval)
 ```
 
-The bootstrap results can be obtained by calling the R command: `corb(x1,y1, corfun = spear, SEED = FALSE)`.
+The bootstrap results can be obtained by calling the R command: `corb(x1,y1, corfun = spear, SEED = FALSE)` from `Rallfun-v35.txt`.
 The argument `corfun` can be changed from `spear` to another correlation function, such as `pbcor` for a percentage bend correlation or `wincor` for a Winsorized correlation. For bootstrap inferences about the non-robust Pearson's correlation, a modified bootstrap technique is required, which is implemented in the function `pcorb`.
 
 ## Illustrate bootstrap correlation coefficients

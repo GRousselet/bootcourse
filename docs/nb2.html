@@ -331,9 +331,7 @@ $(document).ready(function () {
 <h1>Dependencies</h1>
 <pre class="r"><code>library(tibble)
 library(ggplot2)
-source(&quot;./code/yuen.txt&quot;)
-source(&quot;./code/onesampb.txt&quot;) # one-sample percentile bootstrap confidence interval
-source(&quot;./code/pb2gen.txt&quot;) # two-sample percentile bootstrap confidence interval
+source(&quot;./code/Rallfun-v35-simplified.txt&quot;)
 source(&quot;./code/theme_gar.txt&quot;) # format ggplot2 figures</code></pre>
 </div>
 <div id="t-test" class="section level1">
@@ -563,7 +561,7 @@ df.pv2 &lt;- tibble(x = df$x[df$x&gt;nv],
 <pre class="r"><code># ggsave(filename=(&#39;./figures/figure_bootdenspval.pdf&#39;),width=7,height=5)</code></pre>
 <p>You can get the bootstrap confidence interval and P value by calling the <code>onesampb()</code> function:</p>
 <pre class="r"><code>set.seed(21)
-onesampb(samp,est=mean,alpha=.05,nboot=1000,SEED=FALSE,nv=2)</code></pre>
+onesampb(samp,est=mean,alpha=.05,nboot=1000,nv=2)</code></pre>
 <pre><code>## $ci
 ## [1] 2.333333 4.833333
 ## 
@@ -576,7 +574,7 @@ onesampb(samp,est=mean,alpha=.05,nboot=1000,SEED=FALSE,nv=2)</code></pre>
 ## $p.value
 ## [1] 0.015</code></pre>
 <p>It can be used with any estimator, define with the <code>est</code> argument, for the median (<code>median</code>), a <a href="https://garstats.wordpress.com/2017/11/28/trimmed-means/"><strong>trimmed mean</strong></a> (<code>tm</code>), a <a href="https://garstats.wordpress.com/2016/06/09/the-harrell-davis-quantile-estimator/"><strong>quantile estimate</strong></a> (<code>hd</code>) or some measure of variability, such as the median absolute deviation to the median (<code>mad</code>).</p>
-<p>Set <code>SEED</code> to <code>TRUE</code> to get the same results every time you use the function. Set it to <code>FALSE</code> to use difference random bootstrap samples, so the function returns different results every time you use it. <code>nv</code> is the null value used in computing the <em>P</em> value.</p>
+<p><code>nv</code> is the null value used in computing the <em>P</em> value.</p>
 </div>
 </div>
 </div>
@@ -867,7 +865,7 @@ pv &lt;- 2*(min(pv,1-pv)) # 0</code></pre>
 <div id="function" class="section level2">
 <h2>Function</h2>
 <pre class="r"><code>set.seed(1)
-pb2gen(g1, g2, alpha=0.05, nboot=1000, est=mean, SEED=FALSE, trim=0.2)</code></pre>
+pb2gen(g1, g2, alpha=0.05, nboot=1000, est=mean, trim=0.2)</code></pre>
 <pre><code>## $est.1
 ## [1] 393.8316
 ## 
@@ -975,7 +973,7 @@ ggplot(df, aes(x = x, y = y)) + theme_gar +
 <div id="function-1" class="section level2">
 <h2>Function</h2>
 <pre class="r"><code>set.seed(1)
-pb2gen(g1, g2, alpha=0.05, nboot=1000, est=mad, SEED=FALSE)</code></pre>
+pb2gen(g1, g2, alpha=0.05, nboot=1000, est=mad)</code></pre>
 <pre><code>## $est.1
 ## [1] 40.29569
 ## 

@@ -13,12 +13,7 @@ library(ggplot2)
 library(tibble)
 library(tidyr)
 source("./code/theme_gar.txt")
-source("./code/onesampb.txt")
-source("./code/pb2gen.txt")
-source("./code/trimcibt.txt")
-source("./code/yuenbt.txt")
-source("./code/yuen.txt")
-source("./code/sintv2.txt") # one-sample inference on the median
+source("./code/Rallfun-v35-simplified.txt")
 library(beepr) # for little auditory rewards :)
 ```
 
@@ -27,7 +22,7 @@ library(beepr) # for little auditory rewards :)
 We compute multiple bootstrap sampling distributions for the same sample.
 
 ## nboot = 100
-```{r, eval = FALSE}
+```{r}
 set.seed(1)
 
 n <- 30 # sample size
@@ -77,7 +72,7 @@ ggplot(tibble(x = as.vector(boot.samp.dist),
 ```
 
 ## nboot = 1000
-```{r, eval = FALSE}
+```{r}
 set.seed(1)
 
 n <- 30 # sample size
@@ -127,7 +122,7 @@ ggplot(tibble(x = as.vector(boot.samp.dist),
 ```
 
 ## nboot = 10000
-```{r, eval = FALSE}
+```{r}
 set.seed(1)
 
 n <- 30 # sample size
@@ -370,9 +365,9 @@ for(S in 1:nsim){ # simulation loop
   if(ptm<=.05) nptm <- nptm + 1 # 20% trimmed mean
   if(pmd<=.05) npmd <- npmd + 1 # median
 }
-print(c(npm/S,nptm/S,npmd/S))
+print(c(npm/nsim,nptm/nsim,npmd/nsim))
 ```
-The results show power of `r round(100*npm/i, digits=1)`% for the mean, `r round(100*nptm/i, digits=1)` for 20% trimmed mean, and `r round(100*npmd/i, digits=1)` for the median.
+The results show power of `r round(100*npm/nsim, digits=1)`% for the mean, `r round(100*nptm/nsim, digits=1)` for 20% trimmed mean, and `r round(100*npmd/nsim, digits=1)` for the median.
 
 ## Large simulation
 This new simulation is an extension of the previous one and includes:

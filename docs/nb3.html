@@ -331,9 +331,7 @@ $(document).ready(function () {
 <h1>Dependencies</h1>
 <pre class="r"><code>library(tibble)
 library(ggplot2)
-source(&quot;./code/yuen.txt&quot;) # compare trimmed means of two independent groups
-source(&quot;./code/outliers.txt&quot;) # detect outliers
-source(&quot;./code/onesampb.txt&quot;) # one-sample percentile bootstrap confidence interval
+source(&quot;./code/Rallfun-v35-simplified.txt&quot;)
 source(&quot;./code/theme_gar.txt&quot;) # format ggplot2 figures
 # library(moments) # functions skewness(), kurtosis()</code></pre>
 </div>
@@ -897,8 +895,8 @@ out</code></pre>
 <div id="independent-groups" class="section level2">
 <h2>Independent groups</h2>
 <pre class="r"><code># to compare any estimators:
-pb2gen(x, y, alpha=0.05, nboot=1000, est=median, SEED=FALSE)
-# If you use SEED=TRUE, the random seed generator is set to the same starting point every time you use the function, such that for the same data, multiple calls will return exactly the same confidence intervals. I strongly recommend to always use SEED=FALSE. For reproducibility, set the seed in your code chunk instead, using set.seed().
+pb2gen(x, y, alpha=0.05, nboot=1000, est=median)
+# If you use the function from Rallfun-v35.txt, it has a SEED argument. If you set SEED=TRUE, the random seed generator is set to the same starting point every time you use the function, such that for the same data, multiple calls will return exactly the same confidence intervals. I strongly recommend to always use SEED=FALSE. For reproducibility, set the seed in your code chunk instead, using set.seed().
 
 # same as pb2gen but only to compare medians:
 medpb2()

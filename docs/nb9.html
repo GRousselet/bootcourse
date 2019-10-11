@@ -327,42 +327,564 @@ $(document).ready(function () {
 </div>
 
 
-<div id="check-ci-coverage" class="section level1">
-<h1>Check CI coverage</h1>
-<p>Example of a simple simulation to check the probability coverage of a confidence interval method. The simulation has 4,000 iterations. Increasing this number would lead to more precise results. For a simple test, 10,000 iterations or more could be used. For more complex applications, time might be a constraint.</p>
+<div id="dependencies" class="section level1">
+<h1>Dependencies</h1>
+<pre class="r"><code>library(ggplot2)
+library(tibble)
+library(tidyr)
+source(&quot;./code/theme_gar.txt&quot;)
+source(&quot;./code/Rallfun-v35-simplified.txt&quot;)
+library(beepr) # for little auditory rewards :)</code></pre>
+</div>
+<div id="number-of-bootstrap-samples" class="section level1">
+<h1>Number of bootstrap samples</h1>
+<p>We compute multiple bootstrap sampling distributions for the same sample.</p>
+<div id="nboot-100" class="section level2">
+<h2>nboot = 100</h2>
+<pre class="r"><code>set.seed(1)
+
+n &lt;- 30 # sample size
+nsim &lt;- 50 # number of bootstrap distributions
+nboot &lt;- 100 # number of bootstrap samples
+tr &lt;- 0.2 # amount of trimming
+samp &lt;- rlnorm(n) # unique sample from lognormal distribution
+
+boot.samp.dist &lt;- matrix(0, nrow = nsim, ncol = nboot)
+boot.q975 &lt;- vector(mode = &quot;numeric&quot;, length = nsim)
+
+for(iter in 1:nsim){
+  boot.samp.dist[iter,] &lt;- apply(matrix(sample(samp, n*nboot, replace = TRUE), nrow = nboot), 1, mean, trim = tr)
+  boot.q975[iter] &lt;- quantile(boot.samp.dist[iter,], probs = 0.975)
+}
+
+p &lt;- ggplot(tibble(x = as.vector(boot.samp.dist), 
+                   samp = factor(rep(1:nsim, nboot))), 
+            aes(x = x)) + theme_gar +
+  # bootstrap distributions from nsim samples
+  geom_line(aes(group = samp, colour = &quot;bootstrap samples&quot;), stat = &quot;density&quot;, size = 0.5) +
+  coord_cartesian(xlim = c(0.5, 3)) +
+  scale_x_continuous(breaks = seq(0.5, 3, 0.5)) +
+  theme(legend.position = &quot;none&quot;) +
+  labs(x = &quot;20% trimmed means&quot;, y = &quot;Density&quot;) +
+  guides(colour = guide_legend(override.aes = list(size = 3))) +
+  ggtitle(&quot;Bootstrap sampling distributions: nboot = 100&quot;)  
+p</code></pre>
+<p><img src="nb9_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<div id="superimpose-0.975-quantile" class="section level3">
+<h3>Superimpose 0.975 quantile</h3>
+<pre class="r"><code>df.q &lt;- tibble(q = boot.q975)
+
+ggplot(tibble(x = as.vector(boot.samp.dist), 
+                   samp = factor(rep(1:nsim, nboot))), 
+            aes(x = x)) + theme_gar +
+  # bootstrap distributions from nsim samples
+  geom_line(aes(group = samp, colour = &quot;bootstrap samples&quot;), stat = &quot;density&quot;, size = 0.5) +
+  geom_vline(data = df.q, mapping=aes(xintercept = q)) +
+  coord_cartesian(xlim = c(1.5, 2.5)) +
+  scale_x_continuous(breaks = seq(0.5, 3, 0.5)) +
+  theme(legend.position = &quot;none&quot;) +
+  labs(x = &quot;20% trimmed means&quot;, y = &quot;Density&quot;) +
+  guides(colour = guide_legend(override.aes = list(size = 3))) +
+  ggtitle(&quot;Bootstrap sampling distributions: nboot = 100&quot;)  </code></pre>
+<p><img src="nb9_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+</div>
+</div>
+<div id="nboot-1000" class="section level2">
+<h2>nboot = 1000</h2>
+<pre class="r"><code>set.seed(1)
+
+n &lt;- 30 # sample size
+nsim &lt;- 50 # number of bootstrap distributions
+nboot &lt;- 1000 # number of bootstrap samples
+tr &lt;- 0.2 # amount of trimming
+samp &lt;- rlnorm(n) # unique sample from lognormal distribution
+
+boot.samp.dist &lt;- matrix(0, nrow = nsim, ncol = nboot)
+boot.q975 &lt;- vector(mode = &quot;numeric&quot;, length = nsim)
+
+for(iter in 1:nsim){
+  boot.samp.dist[iter,] &lt;- apply(matrix(sample(samp, n*nboot, replace = TRUE), nrow = nboot), 1, mean, trim = tr)
+  boot.q975[iter] &lt;- quantile(boot.samp.dist[iter,], probs = 0.975)
+}
+
+p &lt;- ggplot(tibble(x = as.vector(boot.samp.dist), 
+                   samp = factor(rep(1:nsim, nboot))), 
+            aes(x = x)) + theme_gar +
+  # bootstrap distributions from nsim samples
+  geom_line(aes(group = samp, colour = &quot;bootstrap samples&quot;), stat = &quot;density&quot;, size = 0.5) +
+  coord_cartesian(xlim = c(0.5, 3)) +
+  scale_x_continuous(breaks = seq(0.5, 3, 0.5)) +
+  theme(legend.position = &quot;none&quot;) +
+  labs(x = &quot;20% trimmed means&quot;, y = &quot;Density&quot;) +
+  guides(colour = guide_legend(override.aes = list(size = 3))) +
+  ggtitle(&quot;Bootstrap sampling distributions: nboot = 1000&quot;)  
+p</code></pre>
+<p><img src="nb9_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<div id="superimpose-0.975-quantile-1" class="section level3">
+<h3>Superimpose 0.975 quantile</h3>
+<pre class="r"><code>df.q &lt;- tibble(q = boot.q975)
+
+ggplot(tibble(x = as.vector(boot.samp.dist), 
+                   samp = factor(rep(1:nsim, nboot))), 
+            aes(x = x)) + theme_gar +
+  # bootstrap distributions from nsim samples
+  geom_line(aes(group = samp, colour = &quot;bootstrap samples&quot;), stat = &quot;density&quot;, size = 0.5) +
+  geom_vline(data = df.q, mapping=aes(xintercept = q)) +
+  coord_cartesian(xlim = c(1.5, 2.5)) +
+  scale_x_continuous(breaks = seq(0.5, 3, 0.5)) +
+  theme(legend.position = &quot;none&quot;) +
+  labs(x = &quot;20% trimmed means&quot;, y = &quot;Density&quot;) +
+  guides(colour = guide_legend(override.aes = list(size = 3))) +
+  ggtitle(&quot;Bootstrap sampling distributions: nboot = 1000&quot;)  </code></pre>
+<p><img src="nb9_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+</div>
+</div>
+<div id="nboot-10000" class="section level2">
+<h2>nboot = 10000</h2>
+<pre class="r"><code>set.seed(1)
+
+n &lt;- 30 # sample size
+nsim &lt;- 50 # number of bootstrap distributions
+nboot &lt;- 10000 # number of bootstrap samples
+tr &lt;- 0.2 # amount of trimming
+samp &lt;- rlnorm(n) # unique sample from lognormal distribution
+
+boot.samp.dist &lt;- matrix(0, nrow = nsim, ncol = nboot)
+boot.q975 &lt;- vector(mode = &quot;numeric&quot;, length = nsim)
+
+for(iter in 1:nsim){
+  boot.samp.dist[iter,] &lt;- apply(matrix(sample(samp, n*nboot, replace = TRUE), nrow = nboot), 1, mean, trim = tr)
+  boot.q975[iter] &lt;- quantile(boot.samp.dist[iter,], probs = 0.975)
+}
+
+p &lt;- ggplot(tibble(x = as.vector(boot.samp.dist), 
+                   samp = factor(rep(1:nsim, nboot))), 
+            aes(x = x)) + theme_gar +
+  # bootstrap distributions from nsim samples
+  geom_line(aes(group = samp, colour = &quot;bootstrap samples&quot;), stat = &quot;density&quot;, size = 0.5) +
+  coord_cartesian(xlim = c(0.5, 3)) +
+  scale_x_continuous(breaks = seq(0.5, 3, 0.5)) +
+  theme(legend.position = &quot;none&quot;) +
+  labs(x = &quot;20% trimmed means&quot;, y = &quot;Density&quot;) +
+  guides(colour = guide_legend(override.aes = list(size = 3))) +
+  ggtitle(&quot;Bootstrap sampling distributions: nboot = 10000&quot;)  
+p</code></pre>
+<p><img src="nb9_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<div id="superimpose-0.975-quantile-2" class="section level3">
+<h3>Superimpose 0.975 quantile</h3>
+<pre class="r"><code>df.q &lt;- tibble(q = boot.q975)
+
+ggplot(tibble(x = as.vector(boot.samp.dist), 
+                   samp = factor(rep(1:nsim, nboot))), 
+            aes(x = x)) + theme_gar +
+  # bootstrap distributions from nsim samples
+  geom_line(aes(group = samp, colour = &quot;bootstrap samples&quot;), stat = &quot;density&quot;, size = 0.5) +
+  geom_vline(data = df.q, mapping=aes(xintercept = q)) +
+  coord_cartesian(xlim = c(1.5, 2.5)) +
+  scale_x_continuous(breaks = seq(0.5, 3, 0.5)) +
+  theme(legend.position = &quot;none&quot;) +
+  labs(x = &quot;20% trimmed means&quot;, y = &quot;Density&quot;) +
+  guides(colour = guide_legend(override.aes = list(size = 3))) +
+  ggtitle(&quot;Bootstrap sampling distributions: nboot = 1000&quot;)  </code></pre>
+<p><img src="nb9_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+</div>
+</div>
+</div>
+<div id="check-confidence-interval-coverage" class="section level1">
+<h1>Check confidence interval coverage</h1>
+<p>Example of a simple simulation to check the probability coverage of a confidence interval method. The simulation has 2,000 iterations. Increasing this number would lead to more precise results. For a simple test, 10,000 iterations or more could be used (and is often recommended or expected in the literature). For more complex applications, time might be a constraint.</p>
 <p>The sample size is 30, which seems reasonably high for a psychology experiment. A more systematic simulation should include sample size as a parameter.</p>
 <p>The population is lognormal and is generated outside the simulation loop. An alternative is to generate the random numbers directly inside the loop by using <code>samp &lt;- rlnorm(nsamp)</code>. The lognormal distribution is one of many skewed mathematical distributions. It serves to illustrate what can happen when sampling from skewed distributions in general. Other shapes could be used to, if some domain specific information is available. For instance, ex-Gaussian distributions do a good job at capturing the shape of reaction time distributions.</p>
 <p>The population means and trimmed means differ and are estimated independently in the simulation: the sample mean is used to make inferences about the population mean, whereas the sample trimmed mean is used to make inferences about the population trimmed mean.</p>
+<p><strong>DO NOT RUN THE NEXT CHUNK UNLESS YOU’RE PLANNING A BREAK!</strong></p>
 <pre class="r"><code>set.seed(666) # reproducible results
-nsim &lt;- 5000 # simulation iterations
+nsim &lt;- 2000 # simulation iterations
 nsamp &lt;- 30 # sample size
+nboot &lt;- 500 # could use more
 pop &lt;- rlnorm(1000000) # define population
 pop.m &lt;- mean(pop) # population mean
 pop.tm &lt;- mean(pop, trim = 0.2) # population 20% trimmed mean
 ci.coverage &lt;- matrix(0, nrow = nsim, ncol = 3) # declare matrix of results
 
 for(S in 1:nsim){ # simulation loop
+  
+  if(S == 1){
+    print(paste(&quot;iteration&quot;,S,&quot;/&quot;,nsim))
+    beep(2)
+  }
+  if(S %% 500 == 0){
+    print(paste(&quot;iteration&quot;,S,&quot;/&quot;,nsim))
+    beep(2)
+  }
+  
   samp &lt;- sample(pop, nsamp, replace = TRUE) # random sample from population
   # Mean + t-test
   ci &lt;- t.test(samp, mu = pop.m)$conf.int # standard t-test equation
   ci.coverage[S,1] &lt;- ci[1]&lt;pop.m &amp;&amp; ci[2]&gt;pop.m # CI includes population value?
-  # Mean + bootstrap
-  ci &lt;- onesampb(samp, est = mean, SEED = FALSE, nv = pop.m)$ci # get bootstrap confidence interval
+  # Mean + bootstrap-t
+  ci &lt;- trimcibt(samp,tr=0,alpha=.05,nboot=nboot,side=FALSE)$ci # get bootstrap confidence interval
   ci.coverage[S,2] &lt;- ci[1]&lt;pop.m &amp;&amp; ci[2]&gt;pop.m # CI includes population value?
-  # 20% Trimmed mean
-  ci &lt;- onesampb(samp, est = mean, SEED = FALSE, nv = pop.m, trim = 0.2)$ci # get bootstrap confidence interval
+  # 20% trimmed mean + percentile bootstrap
+  ci &lt;- onesampb(samp, est = mean, nboot=nboot, trim = 0.2)$ci # get bootstrap confidence interval
   ci.coverage[S,3] &lt;- ci[1]&lt;pop.tm &amp;&amp; ci[2]&gt;pop.tm # CI includes population value?
 }
 
 apply(ci.coverage, 2, mean) # average across simulations for each method
 
 # save simulation results to load in next chunk
-save(ci.coverage, file = &quot;./data/ci.coverage.RData&quot;)</code></pre>
+save(ci.coverage, file = &quot;./data/ci.coverage.RData&quot;)
+
+beep(8)</code></pre>
 <p>Here are the results:</p>
 <pre class="r"><code>load(&quot;./data/ci.coverage.RData&quot;)
 out &lt;- apply(ci.coverage, 2, mean) # average across simulations</code></pre>
-<p>Coverage is 88.2% for the t-test, 87.5% for the bootstrap + mean, and 94.3% for the bootstrap + 20% trimmed mean. This means that when sampling from a skewed distribution such as the lognormal distribution, coverage can be very different from the expected one (here 95% coverage).</p>
-<p>Want to see more examples of simulations + code? Head <a href="https://garstats.wordpress.com/2017/11/28/your-alpha-is-probably-not-0-05/"><strong>here</strong></a> for type I error simulations, and <a href="https://garstats.wordpress.com/2017/11/28/your-power-is-lower-than-you-think/"><strong>here</strong></a> for power simulations.</p>
+<p>Coverage is 88.2% for the t-test, 92.9% for the bootstrap-t + mean, and 94.2% for the percentile bootstrap + 20% trimmed mean. This means that when sampling from a skewed distribution such as the lognormal distribution, coverage can be very different from the expected one (here 95% coverage).</p>
+</div>
+<div id="alpha-and-power-simulation-under-normality" class="section level1">
+<h1>Alpha and power simulation under normality</h1>
+<p>We start with a standard power analysis. We’re going to look at the power of the one-sample t-test using the mean, as a function of both sample size and effect size.</p>
+<pre class="r"><code># Define parameters
+nsim &lt;- 5000 # number of simulation iterations
+nvec &lt;- seq(10,500,10) # vector of sample sizes to test
+esvec &lt;- seq(0,1,0.1) # vector of effect sizes</code></pre>
+<p><strong>Do not run with 5000 iterations unless you’re planning a long coffee break.</strong></p>
+<pre class="r"><code>set.seed(44) # set number generator for reproducible results
+
+simres &lt;- array(0, dim = c(length(esvec), length(nvec))) # define matrix holding the results
+
+for(S in 1:nsim){ # simulation loop
+  
+  if(S == 1){
+    print(paste(&quot;iteration&quot;,S,&quot;/&quot;,nsim))
+    beep(2)
+  }
+  if(S %% 500 == 0){
+    print(paste(&quot;iteration&quot;,S,&quot;/&quot;,nsim))
+    beep(2)
+  }
+  
+  for(N in 1:length(nvec)){ # sample sizes
+    x &lt;- rnorm(nvec[N]) # draw one sample from normal distribution
+    for(E in 1:length(esvec)){ # effect sizes
+      # one-sample t-test on sample from normal distribution with a variable shift in location:
+      pm = trimci(x + esvec[E], pr=F, tr=0)$p.value
+      if(pm&lt;=.05) simres[E,N] &lt;- simres[E,N] + 1 # number of type I errors
+    }
+  }
+}
+
+power.res &lt;- simres / nsim
+save(power.res, file = &quot;./data/power_res_m.RData&quot;) 
+
+beep(8)</code></pre>
+<p>We get the type I error rate and power for each combination of effect sizes and sample sizes.</p>
+<div id="alpha-proportion-of-false-positives" class="section level2">
+<h2>Alpha = proportion of false positives</h2>
+<pre class="r"><code>load(&quot;./data/power_res_m.RData&quot;)
+
+# create data frame
+df &lt;- tibble(x = nvec, 
+             y = power.res[1,])
+
+# make plot
+p &lt;- ggplot(df, aes(x, y)) + theme_bw() +
+      geom_ribbon(ymin = 0.025, ymax = 0.075, fill = &quot;grey90&quot;) + # Bradley&#39;s (1978) satisfactory range
+      geom_abline(intercept = 0.05, slope = 0) + # 0.05 reference line
+      geom_line(size=1) +
+      theme(axis.title.x = element_text(size = 18),
+            axis.text = element_text(size = 16),
+            axis.title.y = element_text(size = 18)) +
+      scale_y_continuous(limits = c(0,0.16), 
+                         breaks = seq(0, 0.15, 0.025)) +
+      labs(x = &quot;Sample size&quot;, y = &quot;False positive probability&quot;)
+p</code></pre>
+<p><img src="nb9_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+</div>
+<div id="power-proportion-of-true-positives" class="section level2">
+<h2>Power = proportion of true positives</h2>
+<pre class="r"><code># create data frame
+fm &lt;- array(0, dim = c(length(nvec), length(esvec))) # make full matrix
+fm[,1] &lt;- nvec
+fm[,2:length(esvec)] &lt;- t(power.res[2:length(esvec),])
+colnames(fm) &lt;- c(&quot;SS&quot;, &quot;0.1&quot;, &quot;0.2&quot;, &quot;0.3&quot;, &quot;0.4&quot;, &quot;0.5&quot;, &quot;0.6&quot;, &quot;0.7&quot;, &quot;0.8&quot;, &quot;0.9&quot;, &quot;1.0&quot;)
+df &lt;- as_tibble(fm)
+df &lt;- tidyr::gather(df,ES,TP,2:length(esvec))
+df[[2]] &lt;- as.factor(df[[2]])
+
+# make plot
+p &lt;- ggplot(df, aes(SS, TP, group = ES)) + theme_bw() +
+      geom_abline(intercept = 0.80, slope = 0, size = 0.5) + # 0.80 reference line
+      geom_abline(intercept = 0.90, slope = 0, size = 0.5) + # 0.90 reference line
+      geom_line(aes(colour = ES), size=0.5) + # plot results
+      scale_colour_viridis_d() + # change to perceptually uniform colourmap
+      theme(axis.title.x = element_text(size = 18),
+            axis.text = element_text(size = 16),
+            axis.title.y = element_text(size = 18),
+            legend.title=element_text(size=14), 
+            legend.text=element_text(size=12)) +
+      scale_y_continuous(limits = c(0,1), 
+                         breaks = seq(0, 1, 0.2)) +
+      scale_x_continuous(limits = c(0, 500),
+                     breaks = seq(0, 500, 50)) +
+      labs(x = &quot;Sample size&quot;, y = &quot;True positive probability&quot;) +
+      guides(colour = guide_legend(override.aes = list(size=3)))
+p</code></pre>
+<p><img src="nb9_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+</div>
+</div>
+<div id="contrast-alpha-and-power-results-for-normal-vs.lognormal-distributions" class="section level1">
+<h1>Contrast alpha and power results for normal vs. lognormal distributions</h1>
+</div>
+<div id="simple-example-of-power-analysis" class="section level1">
+<h1>Simple example of power analysis</h1>
+<p>We draw samples of n = 30 observations from a lognormal distribution with a mean of 0.5 or a 20% trimmed mean of 0.5. If you want to run your own power analysis, you need to consider all these choices: the shape of the distribution to sample from, the sample size, the effect size, the statistical tests. With the current selection of paramaters, we simply wanted to illustrate that when sampling from a skewed distribution with a relatively large sample size in psychology and neuroscience, the choice of statistical test can have large effects on power. In particular, a t-test on the mean can have very low power, whereas a t-test on a trimmed mean, or a test on the median can provide much larger power.</p>
+<pre class="r"><code>set.seed(44) # set number generator for reproducible results
+
+nsim &lt;- 5000 # number of simulation iterations
+n &lt;- 30 # sample size
+es &lt;- 0.5 # specify effect size
+tr &lt;- 0.2 # amount of trimming
+npm &lt;- 0 # number of positive results for the mean
+nptm &lt;- 0 # number of positive results for the trimmed mean
+npmd &lt;- 0 # number of positive results for the median
+
+# create lognormal population 
+pop &lt;- rlnorm(1000000)
+pop.m &lt;- pop - mean(pop) + es # set mean to `es`
+pop.tm &lt;- pop - mean(pop, trim = tr) + es # set 20% trimmed mean to `es`
+pop.md &lt;- pop - median(pop) + es # set median to `es`
+
+for(S in 1:nsim){ # simulation loop
+  pm &lt;- trimci(sample(pop.m, n, replace = TRUE), pr=F, tr=0)$p.value # t-test on mean
+  ptm &lt;- trimci(sample(pop.tm, n, replace = TRUE), pr=F, tr=tr)$p.value # t-test on 20% trimmed mean
+  pmd &lt;- sintv2(sample(pop.md, n, replace = TRUE), pr=FALSE)$p.value # parametric test on median
+  if(pm&lt;=.05) npm &lt;- npm + 1 # mean
+  if(ptm&lt;=.05) nptm &lt;- nptm + 1 # 20% trimmed mean
+  if(pmd&lt;=.05) npmd &lt;- npmd + 1 # median
+}
+print(c(npm/nsim,nptm/nsim,npmd/nsim))</code></pre>
+<pre><code>## [1] 0.1564 0.6526 0.8506</code></pre>
+<p>The results show power of 15.6% for the mean, 65.3 for 20% trimmed mean, and 85.1 for the median.</p>
+<div id="large-simulation" class="section level2">
+<h2>Large simulation</h2>
+<p>This new simulation is an extension of the previous one and includes: - multiple sample sizes; - sampling from normal and lognormal distributions; - t-tests using means and 20% trimmed means; - parametric test on the median; - different effect sizes. We include an effect size of zero, to assess the type I error rate, or false positives, of the tests.</p>
+<pre class="r"><code># Define parameters
+nsim &lt;- 5000 # number of simulations
+nvec &lt;- seq(10,300,10) # vector of sample sizes to test
+max.size &lt;- max(nvec)
+esvec &lt;- c(0, 0.5) # vector of effect sizes
+tr &lt;- 0.2 # amount of trimming </code></pre>
+<p>To run the chunk below when knitting the notebook, you need to change <code>{r, eval = FALSE}</code> to <code>{r, eval = TRUE}</code>. You could run a faster simulation by changing <code>nsim</code> to 1000 in the previous chunk for instance.</p>
+<p><strong>Do not run with 5000 iterations unless you’re planning a long coffee break.</strong></p>
+<pre class="r"><code>set.seed(45) # set random number generator for reproducibility
+
+# 6 conditions = 2 (normal / skewed) x 3 (mean / trimmed mean / median)
+simres &lt;- array(0, dim = c(6, length(esvec), length(nvec), nsim)) 
+
+pop.norm &lt;- rnorm(1000000)
+pop.lnorm &lt;- rlnorm(1000000)
+pop.lnorm.m &lt;- mean(pop.lnorm)
+pop.lnorm.tm &lt;- mean(pop.lnorm, trim = tr)
+pop.lnorm.md &lt;- median(pop.lnorm)
+
+for(S in 1:nsim){ # simulation iterations
+  large.norm.sample &lt;- sample(pop.norm, max.size, replace = TRUE)
+  large.lnorm.sample &lt;- sample(pop.lnorm, max.size, replace = TRUE)
+  
+  for(N in 1:length(nvec)){ # sample sizes
+    for(E in 1:length(esvec)){ # effect sizes
+      # sub-sample + shift by effect size
+      norm.sample &lt;- large.norm.sample[1:nvec[N]] + esvec[E]
+      lnorm.sample &lt;- large.lnorm.sample[1:nvec[N]] + esvec[E]
+      # normal: t-test on mean
+      simres[1,E,N,S] &lt;- trimci(norm.sample, tr=0, pr=FALSE)$p.value 
+      # normal: t-test on 20% trimmed mean
+      simres[2,E,N,S] &lt;- trimci(norm.sample, tr=0.2, pr=FALSE)$p.value
+      # normal: median test
+      simres[3,E,N,S] &lt;- sintv2(norm.sample, pr=FALSE)$p.value
+      
+      # lognormal: t-test on mean - subtract population mean so the mean is zero + ES on average
+      simres[4,E,N,S] &lt;- trimci(lnorm.sample - pop.lnorm.m, tr=0, pr=FALSE)$p.value 
+      # lognormal: t-test on 20% trimmed mean - subtract population trimmed mean so the trimmed mean is zero + ES on average
+      simres[5,E,N,S] &lt;- trimci(lnorm.sample - pop.lnorm.tm, tr=tr, pr=FALSE)$p.value
+      # lognormal: median test - subtract population median so the median is zero + ES on average
+      simres[6,E,N,S] &lt;- sintv2(lnorm.sample - pop.lnorm.md, pr=FALSE)$p.value
+    }
+  }
+}
+
+power.res &lt;- apply(simres &lt;= 0.05, c(1,2,3), mean)
+save(power.res, file = &quot;./data/power_res_onesample.RData&quot;) 
+
+beep(8)</code></pre>
+<p>We get the type I error rate and power for each combination of tests, sample sizes and effect sizes.</p>
+<pre class="r"><code>load(&quot;./data/power_res_onesample.RData&quot;)</code></pre>
+</div>
+<div id="type-i-error-rate" class="section level2">
+<h2>Type I error rate</h2>
+<pre class="r"><code>E &lt;- 1 # effect size 0, no effect
+
+# create data frame
+y &lt;- c(power.res[1,E,],power.res[2,E,],power.res[3,E,],
+       power.res[4,E,],power.res[5,E,],power.res[6,E,])
+Distribution &lt;- c(rep(&#39;Normal&#39;,length(nvec)*3), rep(&#39;Lognormal&#39;,length(nvec)*3))
+Estimator &lt;- c(rep(&#39;Mean&#39;,length(nvec)), rep(&#39;Trimmed mean&#39;,length(nvec)), rep(&#39;Median&#39;,length(nvec)), 
+               rep(&#39;Mean&#39;,length(nvec)), rep(&#39;Trimmed mean&#39;,length(nvec)), rep(&#39;Median&#39;,length(nvec)))
+df &lt;- tibble(x = rep(nvec, 6), # sample size
+             y = y, # `Type I error probability
+             as.factor(Distribution), 
+             as.factor(Estimator))
+
+# make plot
+p &lt;- ggplot(df, aes(x, y)) + theme_bw() +
+      geom_ribbon(ymin = 0.025, ymax = 0.075, fill = &quot;grey90&quot;) + # Bradley&#39;s (1978) satisfactory range
+      geom_abline(intercept = 0.05, slope = 0) + # 0.05 reference line
+      geom_line(aes(linetype=Distribution, colour=Estimator), size=0.5) +
+      scale_colour_manual(values = c(&quot;#56B4E9&quot;, &quot;#D55E00&quot;, &quot;#009E73&quot;)) +
+      theme(axis.title.x = element_text(size = 18),
+            axis.text = element_text(size = 16),
+            axis.title.y = element_text(size = 18),
+            legend.title=element_text(size=14), 
+            legend.text=element_text(size=12)) +
+      scale_y_continuous(limits = c(0,0.18),
+                         breaks = seq(0, 0.18, 0.025)) +
+      scale_x_continuous(limits = c(0, 300),
+                     breaks = seq(0, 300, 50)) +
+      labs(x = &quot;Sample size&quot;, y = &quot;Type I error probability&quot;) +
+      guides(colour = guide_legend(override.aes = list(size=3)))
+p</code></pre>
+<p><img src="nb9_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+</div>
+<div id="power" class="section level2">
+<h2>Power</h2>
+<pre class="r"><code>E &lt;- 2 # effect size = +0.5 shift in location
+
+# create data frame
+y &lt;- c(power.res[1,E,],power.res[2,E,],power.res[3,E,],
+       power.res[4,E,],power.res[5,E,],power.res[6,E,])
+Distribution &lt;- c(rep(&#39;Normal&#39;,length(nvec)*3), rep(&#39;Lognormal&#39;,length(nvec)*3))
+Estimator &lt;- c(rep(&#39;Mean&#39;,length(nvec)), rep(&#39;Trimmed mean&#39;,length(nvec)), rep(&#39;Median&#39;,length(nvec)), 
+               rep(&#39;Mean&#39;,length(nvec)), rep(&#39;Trimmed mean&#39;,length(nvec)), rep(&#39;Median&#39;,length(nvec)))
+
+df &lt;- tibble(x = rep(nvec, 6), # sample size
+             y = y, # `Type I error probability
+             as.factor(Distribution), 
+             as.factor(Estimator))
+
+# make plot
+p &lt;- ggplot(df, aes(x, y)) + theme_bw() +
+      geom_abline(intercept = 0.80, slope = 0) + # 0.80 reference line
+      geom_abline(intercept = 0.90, slope = 0) + # 0.90 reference line
+      geom_line(aes(linetype=Distribution, colour=Estimator), size=0.5) +
+      scale_colour_manual(values = c(&quot;#56B4E9&quot;, &quot;#D55E00&quot;, &quot;#009E73&quot;)) +
+      theme(axis.title.x = element_text(size = 18),
+            axis.text = element_text(size = 16),
+            axis.title.y = element_text(size = 18),
+            legend.title=element_text(size=14), 
+            legend.text=element_text(size=12)) +
+      scale_y_continuous(limits = c(0,1), 
+                         breaks = seq(0, 1, 0.1)) +
+      scale_x_continuous(limits = c(0, 300),
+                         breaks = seq(0, 300, 50)) +
+      labs(x = &quot;Sample size&quot;, y = &quot;Power (true positive probability)&quot;) +
+      guides(colour = guide_legend(override.aes = list(size=3)))
+p</code></pre>
+<p><img src="nb9_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+</div>
+</div>
+<div id="two-sample-simulation" class="section level1">
+<h1>Two-sample simulation</h1>
+<pre class="r"><code># Define parameters
+nsim &lt;- 5000 # number of simulation iterations
+nvec &lt;- seq(10,300,10) # vector of sample sizes to test
+nmax &lt;- max(nvec) # maximum sample size
+es &lt;- 0.5 # effect size
+tr &lt;- 0 # zero trimming = t-test on means</code></pre>
+<p><strong>Do not run with 5000 iterations unless you’re planning a coffee break.</strong></p>
+<pre class="r"><code>set.seed(44) # set number generator for reproducible results
+
+simres &lt;- array(0, dim = c(3, length(nvec))) # define matrix holding the results
+
+# create normal populations with desired means
+pop1.norm &lt;- rnorm(1000000)
+pop2.norm &lt;- rnorm(1000000)
+pop1.norm &lt;- pop1.norm - mean(pop1.norm) + es # mean = es
+pop2.norm &lt;- pop2.norm - mean(pop2.norm) # mean = 0
+
+# create lognormal populations with desired means
+pop1.lnorm &lt;- rlnorm(1000000)
+pop2.lnorm &lt;- rlnorm(1000000)
+pop1.lnorm &lt;- pop1.lnorm - mean(pop1.lnorm) + es # mean = es
+pop2.lnorm &lt;- pop2.lnorm - mean(pop2.lnorm) # mean = 0
+
+for(S in 1:nsim){ # simulation loop
+  
+  if(S == 1){
+    print(paste(&quot;iteration&quot;,S,&quot;/&quot;,nsim))
+    beep(2)
+  }
+  if(S %% 500 == 0){
+    print(paste(&quot;iteration&quot;,S,&quot;/&quot;,nsim))
+    beep(2)
+  }
+  
+  # draw nmax samples from populations
+  samp1.norm &lt;- sample(pop1.norm, nmax, replace = TRUE)
+  samp2.norm &lt;- sample(pop2.norm, nmax, replace = TRUE)
+  samp1.lnorm &lt;- sample(pop1.lnorm, nmax, replace = TRUE)
+  samp2.lnorm &lt;- sample(pop2.lnorm, nmax, replace = TRUE)
+  
+  for(N in 1:length(nvec)){ # sample sizes = subsample nmax samples
+    # Compare two normal samples
+    pval &lt;- yuen(samp1.norm[1:nvec[N]], samp2.norm[1:nvec[N]], tr=0, alpha=0.05)$p.value
+    if(pval&lt;=.05) simres[1,N] &lt;- simres[1,N] + 1 # number of type I errors
+  
+    # Compare two lognormal samples
+    pval &lt;- yuen(samp1.lnorm[1:nvec[N]], samp2.lnorm[1:nvec[N]], tr=0, alpha=0.05)$p.value
+    if(pval&lt;=.05) simres[2,N] &lt;- simres[2,N] + 1 # number of type I errors
+    
+    # Compare one lognormal sample to a normal sample
+    pval &lt;- yuen(samp1.lnorm[1:nvec[N]], samp2.norm[1:nvec[N]], tr=0, alpha=0.05)$p.value
+    if(pval&lt;=.05) simres[3,N] &lt;- simres[3,N] + 1 # number of type I errors
+  }
+}
+
+power.res &lt;- simres / iter
+save(power.res, file = &quot;./data/power_res_twosample.RData&quot;) 
+
+beep(8)</code></pre>
+<div id="power-proportion-of-true-positives-1" class="section level2">
+<h2>Power = proportion of true positives</h2>
+<pre class="r"><code>load(&quot;./data/power_res_twosample.RData&quot;)</code></pre>
+<div id="figure" class="section level3">
+<h3>Figure</h3>
+<pre class="r"><code># create data frame
+df &lt;- tibble(power = as.vector(power.res),
+             pop = factor(rep(c(&quot;N-N&quot;, &quot;LN-LN&quot;, &quot;LN-N&quot;), length(nvec))),
+             n = rep(nvec, each = 3))
+
+# make plot
+p &lt;- ggplot(df, aes(x = n, y = power, colour = pop)) + theme_bw() +
+      geom_abline(intercept = 0.80, slope = 0, size = 0.5) + # 0.80 reference line
+      geom_abline(intercept = 0.90, slope = 0, size = 0.5) + # 0.90 reference line
+      geom_line(size=1) + # plot results
+      scale_colour_viridis_d(end = 0.9) + # change to perceptually uniform colourmap
+      theme(axis.title.x = element_text(size = 18),
+            axis.text = element_text(size = 16),
+            axis.title.y = element_text(size = 18),
+            legend.title=element_text(size=14), 
+            legend.text=element_text(size=12)) +
+      scale_y_continuous(limits = c(0,1), 
+                         breaks = seq(0, 1, 0.1)) +
+      scale_x_continuous(limits = c(0, 300),
+                     breaks = seq(0, 300, 50)) +
+      labs(x = &quot;Sample size&quot;, y = &quot;True positive probability&quot;) +
+      # ggtitle(&quot;Two-sample t-tests: power&quot;) +
+      guides(colour = guide_legend(override.aes = list(size=3)))
+p</code></pre>
+<p><img src="nb9_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
+</div>
+</div>
 </div>
 
 <p> </p>

@@ -20,6 +20,11 @@ You access the functions by using the `source()` function:
 source("./code/Rallfun-v35.txt")
 ```
 
+For convenience, most of the functions necessary for this course are available in the smaller file `Rallfun-v35-simplified.txt`. In this version, I've removed the option `SEED=TRUE`, which allows users to set the random seed inside the function, which means you get the same results every time you use the function. With `SEED=FALSE`, different random bootstrap samples are returned each time the function is called. It is better practice to set the seed in your R notebook, for reproducibility and transparency. So be careful to use `SEED=FALSE` when using functions from `Rallfun-v35.txt`.
+```{r, eval=FALSE}
+source("./code/Rallfun-v35-simplified.txt")
+```
+
 In some of the notebooks, I've extracted one or a few functions so you can source a smaller file. This prevents your environment from being cluttered with functions you don't need. Creating a well documented R package is a lot of work, so some statisticians don't spend the time required. But that means their code is less accessible.
 
 See more detail and updated versions of the code [here](https://dornsife.usc.edu/labs/rwilcox/software/).

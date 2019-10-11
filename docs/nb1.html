@@ -336,6 +336,8 @@ library(ggplot2)</code></pre>
 <h1>Rand Wilcox’s code</h1>
 <p>When I mention code from Rand Wilcox, it is available in a giant text file. You access the functions by using the <code>source()</code> function:</p>
 <pre class="r"><code>source(&quot;./code/Rallfun-v35.txt&quot;)</code></pre>
+<p>For convenience, most of the functions necessary for this course are available in the smaller file <code>Rallfun-v35-simplified.txt</code>. In this version, I’ve removed the option <code>SEED=TRUE</code>, which allows users to set the random seed inside the function, which means you get the same results every time you use the function. With <code>SEED=FALSE</code>, different random bootstrap samples are returned each time the function is called. It is better practice to set the seed in your R notebook, for reproducibility and transparency. So be careful to use <code>SEED=FALSE</code> when using functions from <code>Rallfun-v35.txt</code>.</p>
+<pre class="r"><code>source(&quot;./code/Rallfun-v35-simplified.txt&quot;)</code></pre>
 <p>In some of the notebooks, I’ve extracted one or a few functions so you can source a smaller file. This prevents your environment from being cluttered with functions you don’t need. Creating a well documented R package is a lot of work, so some statisticians don’t spend the time required. But that means their code is less accessible.</p>
 <p>See more detail and updated versions of the code <a href="https://dornsife.usc.edu/labs/rwilcox/software/">here</a>.</p>
 <p>Some of the functions are also available in the <code>WRS2</code> package.</p>
@@ -407,7 +409,7 @@ df$gp &lt;- factor(df$gp, levels=unique(df$gp))
                 fun.ymax = mean, colour = &quot;grey&quot;, width = .55, size = 3) +
   geom_errorbar(stat = &quot;summary&quot;, fun.y = mean, fun.ymin = mean,
                 fun.ymax = mean, colour = &quot;black&quot;, width = .5, size = 1)</code></pre>
-<p><img src="nb1_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><img src="nb1_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 </div>
 <div id="inferential-statistics" class="section level2">
 <h2>Inferential statistics?</h2>
@@ -453,7 +455,7 @@ ggplot(df, aes(x = x, y = y)) + theme_linedraw() +
   labs(x = &quot;Values&quot;, y = &quot;Experiments&quot;) +
   theme(axis.title = element_text(size = 16),
         axis.text = element_text(size = 14))</code></pre>
-<p><img src="nb1_files/figure-html/unnamed-chunk-9-1.png" width="192" /></p>
+<p><img src="nb1_files/figure-html/unnamed-chunk-10-1.png" width="192" /></p>
 <pre class="r"><code># https://stackoverflow.com/questions/12253239/vertical-lines-between-points-with-ggplot2
 # ggsave(filename = &#39;./50expt_bootci.pdf&#39;)</code></pre>
 </div>
@@ -470,7 +472,7 @@ ggplot(df, aes(x = x, y = y)) + theme_linedraw() +
   labs(x = &quot;Values&quot;, y = &quot;Experiments&quot;) +
   theme(axis.title = element_text(size = 16),
         axis.text = element_text(size = 14))</code></pre>
-<p><img src="nb1_files/figure-html/unnamed-chunk-10-1.png" width="192" /></p>
+<p><img src="nb1_files/figure-html/unnamed-chunk-11-1.png" width="192" /></p>
 <pre class="r"><code># ggsave(filename = &#39;./50expt_ttci.pdf&#39;)</code></pre>
 </div>
 </div>

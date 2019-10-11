@@ -11,9 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library(tibble)
 library(ggplot2)
-source("./code/yuen.txt")
-source("./code/onesampb.txt") # one-sample percentile bootstrap confidence interval
-source("./code/pb2gen.txt") # two-sample percentile bootstrap confidence interval
+source("./code/Rallfun-v35-simplified.txt")
 source("./code/theme_gar.txt") # format ggplot2 figures
 ```
 
@@ -243,12 +241,11 @@ ggplot(df, aes(x = x, y = y)) + theme_gar +
 You can get the bootstrap confidence interval and P value by calling the `onesampb()` function:
 ```{r}
 set.seed(21)
-onesampb(samp,est=mean,alpha=.05,nboot=1000,SEED=FALSE,nv=2)
+onesampb(samp,est=mean,alpha=.05,nboot=1000,nv=2)
 ```
 
 It can be used with any estimator, define with the `est` argument, for the median (`median`), a [**trimmed mean**](https://garstats.wordpress.com/2017/11/28/trimmed-means/) (`tm`), a [**quantile estimate**](https://garstats.wordpress.com/2016/06/09/the-harrell-davis-quantile-estimator/) (`hd`) or some measure of variability, such as the median absolute deviation to the median (`mad`).
 
-Set `SEED` to `TRUE` to get the same results every time you use the function. Set it to `FALSE` to use difference random bootstrap samples, so the function returns different results every time you use it.
 `nv` is the null value used in computing the *P* value.
 
 # Bootstrap *P* value
@@ -551,7 +548,7 @@ pv <- 2*(min(pv,1-pv)) # 0
 ## Function
 ```{r}
 set.seed(1)
-pb2gen(g1, g2, alpha=0.05, nboot=1000, est=mean, SEED=FALSE, trim=0.2)
+pb2gen(g1, g2, alpha=0.05, nboot=1000, est=mean, trim=0.2)
 ```
 
 ## Illustration
@@ -640,7 +637,7 @@ ggplot(df, aes(x = x, y = y)) + theme_gar +
 ## Function
 ```{r}
 set.seed(1)
-pb2gen(g1, g2, alpha=0.05, nboot=1000, est=mad, SEED=FALSE)
+pb2gen(g1, g2, alpha=0.05, nboot=1000, est=mad)
 ```
 
 Instead of looking separately at group differences in central tendency and spread, you can have a more detailed look at how distributions differ by using a [**shift function**](https://garstats.wordpress.com/2016/07/12/shift-function/), which is available in the [**rogme**](https://github.com/GRousselet/rogme) R package. More on this later on in the course.

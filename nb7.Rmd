@@ -13,11 +13,10 @@ library(ggplot2)
 library(tibble)
 source("./code/theme_gar.txt")
 library(ggbeeswarm)
-source("./code/pb2gen.txt")
-source("./code/onesampb.txt")
-source("./code/wmwpb.txt")
+source("./code/Rallfun-v35-simplified.txt")
 source("./code/summarySE.txt") # Define summary function
-# Code from: http://www.cookbook-r.com/Graphs/Plotting_means_and_error_bars_(ggplot2)/
+# Code from: 
+# http://www.cookbook-r.com/Graphs/Plotting_means_and_error_bars_(ggplot2)/
 ```
 
 # Example: within x between design
@@ -335,7 +334,7 @@ Treated as two independent groups, are men older than women?
 ```{r}
 # percentile bootstrap confidence interval of the difference between
 # medians, treating the groups as independent
-pb2gen(husbands, wives, alpha=.05, nboot=2000, est=median, SEED=FALSE)
+pb2gen(husbands, wives, alpha=.05, nboot=2000, est=median)
 ```
 
 
@@ -345,7 +344,7 @@ Can we conclude that, within a couple, the wife tends to be older than the husba
 
 ```{r}
 # Compute confidence interval of the median of the paired differences
-onesampb(husbands - wives, alpha=.05, nboot=2000, est=median, SEED=FALSE)
+onesampb(husbands - wives, alpha=.05, nboot=2000, est=median)
 ```
 
 ### Summary statistics
@@ -370,7 +369,7 @@ pxlz<- function(x){
 
 ### Percentile bootstrap
 ```{r}
-onesampb(cdiff, alpha=.05, nboot=2000, est=pxlz, SEED=FALSE)
+onesampb(cdiff, alpha=.05, nboot=2000, est=pxlz)
 ```
 
 # Two independent groups
@@ -426,7 +425,7 @@ These illustrations suggest differences in central tendency and spread between t
 ## Compare 20% trimmed means
 ```{r}
 out <- pb2gen(control, ozone, alpha=.05, nboot=2000,
-              est=mean, SEED=FALSE, trim = 0.2)
+              est=mean, trim = 0.2)
 ```
 
 Difference between marginal trimmed means = `r round(out$est.dif, digits=1)`, [`r round(out$ci[1], digits=1)`, `r round(out$ci[2], digits=1)`], *P*=`r round(out$p.value, digits=3)`.
@@ -463,7 +462,7 @@ ggplot(tibble::enframe(apd), aes(value)) + theme_bw() +
 
 For a measure of effect size preserving the original units, we could report the median of all pairwise differences and its percentile bootstrap confidence interval:
 ```{r}
-out <- wmwpb(control,ozone,est=median,alpha=.05,nboot=2000,SEED=FALSE)
+out <- wmwpb(control,ozone,est=median,alpha=.05,nboot=2000)
 ```
 
 Median of all pairwise differences = `r out$estimate` [`r out$ci[1]`, `r out$ci[2]`], *P*=`r out$p.value`.

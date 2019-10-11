@@ -332,7 +332,7 @@ $(document).ready(function () {
 <pre class="r"><code>library(ggplot2)
 library(tibble)
 source(&quot;./code/theme_gar.txt&quot;)
-source(&quot;./code/Rallfun-v35.txt&quot;)</code></pre>
+source(&quot;./code/Rallfun-v35-simplified.txt&quot;)</code></pre>
 </div>
 <div id="bootstrap-correlation-coefficient" class="section level1">
 <h1>Bootstrap correlation coefficient</h1>
@@ -389,7 +389,7 @@ for(B in 1:nboot){
 <h2>P value</h2>
 <pre class="r"><code>pval &lt;- sum(boot.corr1 &lt; 0)/nboot
 pval &lt;- 2 * min(pval, 1 - pval)</code></pre>
-<p>The bootstrap results can be obtained by calling the R command: <code>corb(x1,y1, corfun = spear, SEED = FALSE)</code>. The argument <code>corfun</code> can be changed from <code>spear</code> to another correlation function, such as <code>pbcor</code> for a percentage bend correlation or <code>wincor</code> for a Winsorized correlation. For bootstrap inferences about the non-robust Pearson’s correlation, a modified bootstrap technique is required, which is implemented in the function <code>pcorb</code>.</p>
+<p>The bootstrap results can be obtained by calling the R command: <code>corb(x1,y1, corfun = spear, SEED = FALSE)</code> from <code>Rallfun-v35.txt</code>. The argument <code>corfun</code> can be changed from <code>spear</code> to another correlation function, such as <code>pbcor</code> for a percentage bend correlation or <code>wincor</code> for a Winsorized correlation. For bootstrap inferences about the non-robust Pearson’s correlation, a modified bootstrap technique is required, which is implemented in the function <code>pcorb</code>.</p>
 </div>
 <div id="illustrate-bootstrap-correlation-coefficients" class="section level2">
 <h2>Illustrate bootstrap correlation coefficients</h2>

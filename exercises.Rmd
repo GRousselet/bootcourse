@@ -173,12 +173,12 @@ w.sd <- 89.68
 m.sd <- 98.31
 ```
 
-You plan a new experiment in which you would like to replicate the variance difference in total brain volume. Assuming the results from Ritchie et al. are approximately normally distributed, use the values from the previous chunk to simulate experiments to determine the minimum sample size to achieve at least 90% statistical power.
+You plan a new experiment in which you would like to replicate the variance difference in total brain volume. Assuming the results from Ritchie et al. are approximately normally distributed, use the values from the previous chunk to simulate experiments to determine the minimum sample size to achieve at least 90% statistical power. Use at least `nsim=1000` iterations. To check your code, start with `nsim=100`.
 
-To compare variances, a modified percentile bootstrap test is implemented in `comvar2()`. The syntax is `comvar2(x,y,nboot=1000)`. The function return several outputs, including a confidence interval, but no *P* value. You can source the stand-alone function using the next chunk:
+To compare variances, a modified percentile bootstrap test is implemented in `comvar2()`. The syntax is `comvar2(x,y,nboot=1000)`. The function returns several outputs, including a confidence interval, but no *P* value. You can source the function using the next chunk:
 
 ```{r}
-source('./code/comvar2.txt')
+source('./code/Rallfun-v35-simplified.txt')
 ```
 
 Illustrate the results and conclude.

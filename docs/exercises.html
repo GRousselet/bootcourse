@@ -332,7 +332,7 @@ $(document).ready(function () {
 <pre><code>---
 title: &quot;Homework #1&quot;
 author: &quot;Group: the kurtotic avengers&quot;
-date: &quot;2019-10-09&quot;
+date: &quot;2019-10-11&quot;
 output:
   pdf_document:
     fig_caption: no
@@ -463,9 +463,23 @@ Class 5
 </div>
 <div id="exercise-1-4" class="section level2">
 <h2>Exercise 1</h2>
+<p><a href="https://academic.oup.com/cercor/article/28/8/2959/4996558">Ritchie et al. (2018)</a> reported sex differences in the volume of adult human brains from 5216 UK Biobank participants. They found larger mean brain volumes in men than in women (look at the supplementary information to see how they used some of the shift function code to illllustrate the effects!). They also found increased variance in the sample of men relative to the sample of women. The means and standard deviations of total brain volumes for men and women reported by Ritchie et al. are available in the next chunk.</p>
+<pre class="r"><code>w.m &lt;- 1115.76
+m.m &lt;- 1233.58 
+w.sd &lt;- 89.68
+m.sd &lt;- 98.31</code></pre>
+<p>You plan a new experiment in which you would like to replicate the variance difference in total brain volume. Assuming the results from Ritchie et al. are approximately normally distributed, use the values from the previous chunk to simulate experiments to determine the minimum sample size to achieve at least 90% statistical power. Use at least <code>nsim=1000</code> iterations. To check your code, start with <code>nsim=100</code>.</p>
+<p>To compare variances, a modified percentile bootstrap test is implemented in <code>comvar2()</code>. The syntax is <code>comvar2(x,y,nboot=1000)</code>. The function returns several outputs, including a confidence interval, but no <em>P</em> value. You can source the function using the next chunk:</p>
+<pre class="r"><code>source(&#39;./code/Rallfun-v35-simplified.txt&#39;)</code></pre>
+<p>Illustrate the results and conclude.</p>
 </div>
 <div id="exercise-2-4" class="section level2">
 <h2>Exercise 2</h2>
+<p>Repeat exercise 1 using the Kolmogorov-Smirnov test. Illustrate the results and conclude.</p>
+</div>
+<div id="exercise-3-2" class="section level2">
+<h2>Exercise 3</h2>
+<p>Simulate two large normal samples of <em>n</em>=1000 each using the summary statistics from exercise 1. Compare the two samples using a shift function. Conclude.</p>
 </div>
 
 <p> </p>

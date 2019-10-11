@@ -160,8 +160,6 @@ ILOs:
 - Explain the basic principles of the hierarchical bootstrap and examples of applications.  
 - Contrast sampling with and without replacement and from finite and infinite populations.  
 
-[Notebook](nb10.html)
-
-To see the implementation of the hierarchical bootstrap presented in class, see this [bootstrap tutorial](https://psyarxiv.com/h8ft7/), and the associated notebook `2depgps.Rmd`. For an implementation without loops, see this more elaborate [example](https://www.r-bloggers.com/resampling-hierarchically-structured-data-recursively/). 
+No notebook for lecture 10! To see the implementation of the hierarchical bootstrap presented in class, see this [bootstrap tutorial](https://psyarxiv.com/h8ft7/), and the associated notebook `2depgps.Rmd`. For an implementation without loops, see this more elaborate [example](https://www.r-bloggers.com/resampling-hierarchically-structured-data-recursively/). 
 
 
