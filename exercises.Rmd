@@ -163,14 +163,33 @@ t2 <- c(95.2, 94.3, 91.5, 91.9, 100.3, 76.7, 76.8, 101.6, 94.9, 75.2, 77.8, 95.5
 <button type="button" class="btn btn-success btn-lg btn-block font-weight-bold">Class 5</button>
 
 ## Exercise 1
-```{r, eval=FALSE}
 
+[Ritchie et al. (2018)](https://academic.oup.com/cercor/article/28/8/2959/4996558) reported sex differences in the volume of adult human brains from 5216 UK Biobank participants. They found larger mean brain volumes in men than in women (look at the supplementary information to see how they used some of the shift function code to illllustrate the effects!). They also found increased variance in the sample of men relative to the sample of women. The means and standard deviations of total brain volumes for men and women reported by Ritchie et al. are available in the next chunk. 
+
+```{r, eval=FALSE}
+w.m <- 1115.76
+m.m <- 1233.58 
+w.sd <- 89.68
+m.sd <- 98.31
 ```
+
+You plan a new experiment in which you would like to replicate the variance difference in total brain volume. Assuming the results from Ritchie et al. are approximately normally distributed, use the values from the previous chunk to simulate experiments to determine the minimum sample size to achieve at least 90% statistical power.
+
+To compare variances, a modified percentile bootstrap test is implemented in `comvar2()`. The syntax is `comvar2(x,y,nboot=1000)`. The function return several outputs, including a confidence interval, but no *P* value. You can source the stand-alone function using the next chunk:
+
+```{r}
+source('./code/comvar2.txt')
+```
+
+Illustrate the results and conclude.
 
 ## Exercise 2
-```{r, eval=FALSE}
 
-```
+Repeat exercise 1 using the Kolmogorov-Smirnov test. Illustrate the results and conclude.
+
+## Exercise 3
+
+Simulate two large normal samples of *n*=1000 each using the summary statistics from exercise 1. Compare the two samples using a shift function. Conclude.
 
 
 

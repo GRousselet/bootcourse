@@ -142,6 +142,10 @@ ILOs:
 
 ILOs: 
 
+- Define false positives, true positives and confidence interval probability coverage.  
+- Using R, implement simulations to quantify probabilities associated with these quantities for a statistical test.
+- Explain how the number of bootstrap samples can be validated for a particular approach and why it's important.
+
 [Notebook](nb9.html)
 
 ## Lecture 10: Hierarchical bootstrap
@@ -153,5 +157,11 @@ This lecture is divided in 3 parts:
 
 ILOs: 
 
+- Explain the basic principles of the hierarchical bootstrap and examples of applications.  
+- Contrast sampling with and without replacement and from finite and infinite populations.  
+
 [Notebook](nb10.html)
+
+To see the implementation of the hierarchical bootstrap presented in class, see this [bootstrap tutorial](https://psyarxiv.com/h8ft7/), and the associated notebook `2depgps.Rmd`. For an implementation without loops, see this more elaborate [example](https://www.r-bloggers.com/resampling-hierarchically-structured-data-recursively/). 
+
 
