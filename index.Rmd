@@ -110,7 +110,7 @@ ILOs:
 - Explain how the percentile bootstrap can be used to compute confidence intervals for a correlation coefficient and the difference between two correlation coefficients.  
 - In R, use bootstrap functions to make inferences about correlation coefficients.  
 
-[Notebook](nbk6.html)
+[Notebook](nb6.html)
 
 <button type="button" class="btn btn-success btn-lg btn-block font-weight-bold">Class 4</button>
 

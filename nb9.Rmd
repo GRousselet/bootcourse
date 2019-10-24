@@ -34,10 +34,12 @@ samp <- rlnorm(n) # unique sample from lognormal distribution
 boot.samp.dist <- matrix(0, nrow = nsim, ncol = nboot)
 boot.q975 <- vector(mode = "numeric", length = nsim)
 
-for(iter in 1:nsim){
+for(iter in 1:nsim){ # get bootstrap samples multiple times 
   boot.samp.dist[iter,] <- apply(matrix(sample(samp, n*nboot, replace = TRUE), nrow = nboot), 1, mean, trim = tr)
-  boot.q975[iter] <- quantile(boot.samp.dist[iter,], probs = 0.975)
+  boot.q975[iter] <- quantile(boot.samp.dist[iter,], probs = 0.975) # get upper bound of confidence interval
 }
+# boot.samp.dist[iter,] = nsim (50) bootstrap sampling distributions
+# boot.q975[iter] = nsim (50) upper bounds of the percentile bootstrap confidence intervals. These upper bounds are shown as black vertical lines in the next chunk `Superimpose 0.975 quantile`.
 
 p <- ggplot(tibble(x = as.vector(boot.samp.dist), 
                    samp = factor(rep(1:nsim, nboot))), 
@@ -84,10 +86,12 @@ samp <- rlnorm(n) # unique sample from lognormal distribution
 boot.samp.dist <- matrix(0, nrow = nsim, ncol = nboot)
 boot.q975 <- vector(mode = "numeric", length = nsim)
 
-for(iter in 1:nsim){
+for(iter in 1:nsim){ # get bootstrap samples multiple times 
   boot.samp.dist[iter,] <- apply(matrix(sample(samp, n*nboot, replace = TRUE), nrow = nboot), 1, mean, trim = tr)
-  boot.q975[iter] <- quantile(boot.samp.dist[iter,], probs = 0.975)
+  boot.q975[iter] <- quantile(boot.samp.dist[iter,], probs = 0.975) # get upper bound of confidence interval
 }
+# boot.samp.dist[iter,] = nsim (50) bootstrap sampling distributions
+# boot.q975[iter] = nsim (50) upper bounds of the percentile bootstrap confidence intervals. These upper bounds are shown as black vertical lines in the next chunk `Superimpose 0.975 quantile`.
 
 p <- ggplot(tibble(x = as.vector(boot.samp.dist), 
                    samp = factor(rep(1:nsim, nboot))), 
@@ -134,10 +138,12 @@ samp <- rlnorm(n) # unique sample from lognormal distribution
 boot.samp.dist <- matrix(0, nrow = nsim, ncol = nboot)
 boot.q975 <- vector(mode = "numeric", length = nsim)
 
-for(iter in 1:nsim){
+for(iter in 1:nsim){ # get bootstrap samples multiple times 
   boot.samp.dist[iter,] <- apply(matrix(sample(samp, n*nboot, replace = TRUE), nrow = nboot), 1, mean, trim = tr)
-  boot.q975[iter] <- quantile(boot.samp.dist[iter,], probs = 0.975)
+  boot.q975[iter] <- quantile(boot.samp.dist[iter,], probs = 0.975) # get upper bound of confidence interval
 }
+# boot.samp.dist[iter,] = nsim (50) bootstrap sampling distributions
+# boot.q975[iter] = nsim (50) upper bounds of the percentile bootstrap confidence intervals. These upper bounds are shown as black vertical lines in the next chunk `Superimpose 0.975 quantile`.
 
 p <- ggplot(tibble(x = as.vector(boot.samp.dist), 
                    samp = factor(rep(1:nsim, nboot))), 
