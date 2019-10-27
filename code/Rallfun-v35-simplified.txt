@@ -118,13 +118,12 @@ qu<-(1-g)*y[k]+g*y[k-1]
 list(ql=ql,qu=qu)
 }
 
-onesampb<-function(x,est=onestep,alpha=.05,nboot=2000,nv=0,...){
+onesampb<-function(x,est=median,alpha=.05,nboot=2000,nv=0,...){
 #
 #   Compute a bootstrap, .95 confidence interval for the
 #   measure of location corresponding to the argument est.
-#   By default, a one-step
-#   M-estimator of location based on Huber's Psi is used.
-#   The default number of bootstrap samples is nboot=500
+#   By default, the median is used.
+#   The default number of bootstrap samples is nboot=2000.
 #
 #    nv=null value when  computing a p-value
 #
@@ -689,5 +688,3 @@ sig <- 2 * (1 - pt(abs(test), length(x) - 2))
 if(is.null(y[1]))sig<-matrix(sig,ncol=sqrt(length(sig)))
 list(cor=corv,p.value = sig)
 }
-
-
