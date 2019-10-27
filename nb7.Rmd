@@ -275,8 +275,7 @@ ggplot(df, aes(x=group, y=age, group=couple)) + theme_bw() +
 
 ### 1D scatterplot = stripchart of differences
 
-```{r}
-# fig.width=0.75, fig.height=1.5
+```{r, fig.asp=3, fig.width=2}
 set.seed(44) # reproducible jitter
 
 df.diff <- tibble(couple = 1:n.couple,
@@ -311,7 +310,7 @@ ggplot(df.diff, aes(x=gr, y=difference)) +
 df.p <- tibble(husbands = husbands,
                wives = wives)
 
-ggplot(df.p, aes(x = husbands, y = wives)) + theme_bw() +
+ggplot(df.p, aes(x = wives, y = husbands)) + theme_bw() +
   geom_point(alpha = 0.7,
               shape = 21,
               size = 4,
@@ -324,6 +323,7 @@ ggplot(df.p, aes(x = husbands, y = wives)) + theme_bw() +
         axis.text = element_text(size=14)) +
   xlab("Wives") +
   ylab("Husbands") +
+  scale_x_continuous(breaks = seq(20, 70, 10)) +
   theme(plot.title = element_blank())
 ```
 
