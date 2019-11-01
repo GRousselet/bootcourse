@@ -571,15 +571,15 @@ for(S in 1:nsim){ # simulation loop
   for(N in 1:length(nvec)){ # sample sizes = subsample nmax samples
     # Compare two normal samples
     pval <- yuen(samp1.norm[1:nvec[N]], samp2.norm[1:nvec[N]], tr=0, alpha=0.05)$p.value
-    if(pval<=.05) simres[1,N] <- simres[1,N] + 1 # number of type I errors
+    if(pval<=.05) simres[1,N] <- simres[1,N] + 1 # positive test?
   
     # Compare two lognormal samples
     pval <- yuen(samp1.lnorm[1:nvec[N]], samp2.lnorm[1:nvec[N]], tr=0, alpha=0.05)$p.value
-    if(pval<=.05) simres[2,N] <- simres[2,N] + 1 # number of type I errors
+    if(pval<=.05) simres[2,N] <- simres[2,N] + 1 # positive test?
     
     # Compare one lognormal sample to a normal sample
     pval <- yuen(samp1.lnorm[1:nvec[N]], samp2.norm[1:nvec[N]], tr=0, alpha=0.05)$p.value
-    if(pval<=.05) simres[3,N] <- simres[3,N] + 1 # number of type I errors
+    if(pval<=.05) simres[3,N] <- simres[3,N] + 1 # positive test?
   }
 }
 
