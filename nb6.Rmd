@@ -13,6 +13,7 @@ library(ggplot2)
 library(tibble)
 source("./code/theme_gar.txt")
 source("./code/Rallfun-v35-simplified.txt")
+source("./code/Rallfun-v35-corfun.txt")
 ```
 
 # Bootstrap correlation coefficient
